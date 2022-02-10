@@ -2,7 +2,6 @@ using System;
 using LibNoise;
 using Godot;
 using System.Collections.Generic;
-using Hex;
 
 public enum TerrainType {
 	Ocean,
@@ -170,14 +169,6 @@ public class GameWorld {
 	}
 
 	public bool IsValidTile(OffsetCoord coord) {
-		return coord.Col >= 0 && coord.Row >= 0 && coord.Col < worldSize.Col && coord.Row < worldSize.Row;
-	}
-
-	public Tile GetNeighbor(OffsetCoord position, Direction direction) {
-		return GetTile(GetNeighborCoord(position, direction));
-	}
-
-	public OffsetCoord GetNeighborCoord(OffsetCoord position, Direction direction) {
-		return HexUtils.oddq_offset_neighbor(position, direction);
+		return coord.col >= 0 && coord.row >= 0 && coord.col < worldSize.col && coord.row < worldSize.row;
 	}
 }

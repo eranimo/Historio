@@ -1,5 +1,3 @@
-using Hex;
-
 public class Tile {
     public readonly OffsetCoord coord;
 

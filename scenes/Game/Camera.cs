@@ -4,7 +4,7 @@ using System;
 public class Camera : Camera2D {
 	private bool isPanning = false;
 	const float ZOOM_SPEED = 0.25f;
-	const float MIN_ZOOM = 0.5f;
+	const float MIN_ZOOM = 0.25f;
 	const float MAX_ZOOM = 600;
 
 	public override void _Input(InputEvent @event) {
