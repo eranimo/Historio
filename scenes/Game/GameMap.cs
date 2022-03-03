@@ -1,25 +1,68 @@
 using Godot;
 using System;
+using System.Reactive;
+using System.Reactive.Subjects;
+using System.Reactive.Linq;
 
 public class GameMap : Node2D {
 	private GameWorld world;
 	private TileMap terrain;
 	private TileMap features;
 	private TileMap grid;
+	private Sprite selectionHex;
 	private Layout layout;
 
-	private Color LINE_COLOR = new Color(1, 1, 1);
+	// subject events
+	private Subject<Tile> tileUpdates = new Subject<Tile>();
+	private Subject<Tile> pressedTile = new Subject<Tile>();
+	private Subject<Tile> hoveredTile = new Subject<Tile>();
+
+	private BehaviorSubject<Tile> selectedHex = new BehaviorSubject<Tile>(null);
 
 	public void RenderMap(GameWorld world) {
 		this.world = world;
+
 		terrain = (TileMap) GetNode<TileMap>("Terrain");
 		features = (TileMap) GetNode<TileMap>("Features");
 		grid = (TileMap) GetNode<TileMap>("Grid");
+		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
+		selectionHex.Hide();
 		layout = new Layout(Layout.flat, new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
 		
 		foreach(Tile tile in world.tiles) {
-			grid.SetCell(tile.coord.col, tile.coord.row, 1);
-			terrain.SetCell(tile.coord.col, tile.coord.row, 1);
+			drawTile(tile);
+		}
+
+		tileUpdates.Subscribe((Tile tile) => this.drawTile(tile));
+
+		
+		Observable.DistinctUntilChanged(pressedTile).Subscribe((Tile tile) => {
+			if (selectedHex.Value == tile) {
+				selectedHex.OnNext(null);
+			} else {
+				selectedHex.OnNext(tile);
+			}
+		});
+
+		selectedHex.Subscribe((Tile tile) => {
+			if (tile != null) {
+				selectionHex.Show();
+				Hex hex = OffsetCoord.QoffsetToCube(OffsetCoord.ODD, tile.coord);
+				selectionHex.Position = layout.HexToPixel(hex).ToVector() - layout.origin.ToVector();
+			} else {
+				selectionHex.Hide();
+			}
+		});
+	}
+
+	private bool is_placing = false;
+
+	private void drawTile(Tile tile) {
+		grid.SetCell(tile.coord.col, tile.coord.row, 1);
+		terrain.SetCell(tile.coord.col, tile.coord.row, tile.GetTerrainTilesetIndex().Value);
+
+		if (tile.GetFeatureTilesetIndex().HasValue) {
+			features.SetCell(tile.coord.col, tile.coord.row, tile.GetFeatureTilesetIndex().Value);
 		}
 	}
 
@@ -27,15 +70,36 @@ public class GameMap : Node2D {
 		base._Input(@event);
 
 		if (@event.IsActionPressed("view_select")) {
-			var cursorPos = GetLocalMousePosition();
-			var clickedCoord = layout.PixelToHex(new Point(cursorPos.x, cursorPos.y)).HexRound();
+			is_placing = true;
+		} else if (@event.IsActionReleased("view_select")) {
+			is_placing = false;
+		}
 
-			GD.PrintS("Clicked pos:", cursorPos);
-			var clickedCoordOffset = OffsetCoord.QoffsetFromCube(OffsetCoord.ODD, clickedCoord);
-			GD.PrintS("Clicked coord:", clickedCoordOffset);
+		if (@event is InputEventMouseMotion) {
+			var coord = getCoordAtCursor();
+			if (world.IsValidTile(coord)) {
+				var tile = world.GetTile(coord);
+				hoveredTile.OnNext(tile);
+			}
+		}
+	}
 
+	private OffsetCoord getCoordAtCursor() {
+		var cursorPos = GetLocalMousePosition();
+		var clickedCoord = layout.PixelToHex(new Point(cursorPos.x, cursorPos.y)).HexRound();
+		var clickedCoordOffset = OffsetCoord.QoffsetFromCube(OffsetCoord.ODD, clickedCoord);
+		return clickedCoordOffset;
+	}
 
-			terrain.SetCell(clickedCoordOffset.col, clickedCoordOffset.row, 2);
+	public override void _PhysicsProcess(float delta) {
+		base._PhysicsProcess(delta);
+
+		if (is_placing) {
+			var coord = getCoordAtCursor();
+			if (world.IsValidTile(coord)) {
+				Tile tile = world.GetTile(coord);
+				pressedTile.OnNext(tile);
+			}
 		}
 	}
 }

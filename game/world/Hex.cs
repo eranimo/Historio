@@ -91,6 +91,26 @@ public struct Hex {
 		return base.ToString() + string.Format("({0}, {1}, {2})", this.q, this.r, this.s);
 	}
 
+	public List<Hex> Ring(int radius = 1) {
+		List<Hex> results = new List<Hex>();
+		Hex hex = Add(Hex.Direction(4).Scale(radius));
+		for (int i = 0; i < 6; i++) {
+			for (int j = 0; j < radius; j++) {
+				results.Add(hex);
+				hex = hex.Neighbor(i);
+			}
+		}
+		return results;
+	}
+
+	public List<Hex> Spiral(int radius = 1) {
+		List<Hex> results = new List<Hex>();
+		results.Add(this);
+		for (int k = 1; k <= radius; k++) {
+			results.AddRange(Ring(k));
+		}
+		return results;
+	}
 }
 
 public struct FractionalHex {

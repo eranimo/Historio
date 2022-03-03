@@ -3,29 +3,6 @@ using LibNoise;
 using Godot;
 using System.Collections.Generic;
 
-public enum TerrainType {
-	Ocean,
-	Coastline,
-	Temperate,
-	Desert,
-}
-
-public enum FeatureType {
-	Forest,
-	Hills,
-	Mountains,
-	ForestedHills,
-}
-
-public static class TileConstants {
-	public static Dictionary<TerrainType, Color> TerrainColors = new Dictionary<TerrainType, Color> () {
-		{ TerrainType.Ocean, new Color("#ff006eaa") },
-		{ TerrainType.Ocean, new Color("#ff0082cc") },
-		{ TerrainType.Temperate, new Color("#ff378c31") },
-		{ TerrainType.Desert, new Color("#ffd1c075") },
-	};
-}
-
 public class WorldOptions {
 	public WorldSize Size = WorldSize.Small;
 	public int Seed = 12345;
@@ -76,7 +53,7 @@ class WorldNoise {
 		}
 
 		v = (v + 1) / 2;
-		return v * 255;
+		return v;
 	}
 }
 
@@ -111,9 +88,9 @@ public class WorldGenerator {
 
 		for (var x = 0; x < this.TileWidth; x++) {
 			for (var y = 0; y < this.TileHeight; y++) {
-				var height = heightNoise.Get(x, y);
-				var temperature = temperatureNoise.Get(x, y) / 255;
-				var rainfall = rainfallNoise.Get(x, y) / 255;
+				var height = heightNoise.Get(x, y) * 255;
+				var temperature = temperatureNoise.Get(x, y);
+				var rainfall = rainfallNoise.Get(x, y);
 				var coord = new OffsetCoord(x, y);
 				var coordLong = ((x / (double) this.TileWidth) * 360) - 180;
 				var coordLat = ((-y / (double) this.TileHeight) * 180) + 90;
@@ -126,15 +103,22 @@ public class WorldGenerator {
 		}
 
 		foreach (Tile tile in tiles) {
-			if (tile.height < this.options.Sealevel) {
-				tile.terrainType = TerrainType.Ocean;
+			if (tile.height < this.options.Sealevel - 10) {
+				tile.biome = BiomeType.Ocean;
+			} else if (tile.height < this.options.Sealevel) {
+				tile.biome = BiomeType.Coast;
 			} else {
-				if (tile.temperature < 0.60) {
+				if (tile.temperature < 0.10) {
+					tile.biome = BiomeType.Arctic;
+				} else if (tile.temperature < 0.70) {
+					tile.biome = BiomeType.Temperate;
 					if (tile.rainfall > 0.5) {
-						tile.featureType = FeatureType.Forest;
+						tile.feature = FeatureType.Forest;
+					} else {
+						tile.feature = FeatureType.Grassland;
 					}
 				} else {
-					tile.terrainType = TerrainType.Desert;
+					tile.biome = BiomeType.Desert;
 				}
 			}
 		}
