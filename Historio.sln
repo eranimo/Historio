@@ -1,6 +1,6 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Denarius", "Denarius.csproj", "{1449D79F-35B2-45CD-839E-7313FE3E5881}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Historio", "Historio.csproj", "{1449D79F-35B2-45CD-839E-7313FE3E5881}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
