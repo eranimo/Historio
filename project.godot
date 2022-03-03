@@ -10,7 +10,7 @@ config_version=4
 
 [application]
 
-config/name="Denarius"
+config/name="Historio"
 run/main_scene="res://scenes/Game/Game.tscn"
 config/icon="res://icon.png"
 
