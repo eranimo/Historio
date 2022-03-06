@@ -1,0 +1,232 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://assets/terrain.tres" type="TileSet" id=1]
+[ext_resource path="res://assets/features.tres" type="TileSet" id=2]
+[ext_resource path="res://scenes/GameView/GameMap.cs" type="Script" id=3]
+[ext_resource path="res://scenes/GameView/GameHeader.cs" type="Script" id=4]
+[ext_resource path="res://scenes/GameView/Camera.cs" type="Script" id=5]
+[ext_resource path="res://assets/selection.png" type="Texture" id=6]
+[ext_resource path="res://assets/grid-ui.png" type="Texture" id=7]
+[ext_resource path="res://scenes/GameView/GameController.cs" type="Script" id=8]
+
+[sub_resource type="TileSet" id=1]
+0/name = "grid-ui.png 0"
+0/texture = ExtResource( 7 )
+0/tex_offset = Vector2( 0, 0 )
+0/modulate = Color( 1, 1, 1, 1 )
+0/region = Rect2( 0, 0, 32, 32 )
+0/tile_mode = 0
+0/occluder_offset = Vector2( 0, 0 )
+0/navigation_offset = Vector2( 0, 0 )
+0/shape_offset = Vector2( 0, 0 )
+0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+0/shape_one_way = false
+0/shape_one_way_margin = 0.0
+0/shapes = [  ]
+0/z_index = 0
+1/name = "grid-ui.png 1"
+1/texture = ExtResource( 7 )
+1/tex_offset = Vector2( 0, 0 )
+1/modulate = Color( 1, 1, 1, 1 )
+1/region = Rect2( 32, 0, 32, 32 )
+1/tile_mode = 0
+1/occluder_offset = Vector2( 0, 0 )
+1/navigation_offset = Vector2( 0, 0 )
+1/shape_offset = Vector2( 0, 0 )
+1/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+1/shape_one_way = false
+1/shape_one_way_margin = 0.0
+1/shapes = [  ]
+1/z_index = 0
+
+[node name="GameController" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ViewportContainer" type="ViewportContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+stretch = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Viewport" type="Viewport" parent="ViewportContainer"]
+size = Vector2( 1024, 600 )
+handle_input_locally = false
+render_target_update_mode = 3
+
+[node name="GameMap" type="Node2D" parent="ViewportContainer/Viewport"]
+script = ExtResource( 3 )
+
+[node name="Camera" type="Camera2D" parent="ViewportContainer/Viewport/GameMap"]
+current = true
+script = ExtResource( 5 )
+
+[node name="Terrain" type="TileMap" parent="ViewportContainer/Viewport/GameMap"]
+tile_set = ExtResource( 1 )
+cell_size = Vector2( 25, 28 )
+cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
+cell_half_offset = 1
+cell_tile_origin = 1
+format = 1
+
+[node name="Features" type="TileMap" parent="ViewportContainer/Viewport/GameMap"]
+tile_set = ExtResource( 2 )
+cell_size = Vector2( 25, 28 )
+cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
+cell_half_offset = 1
+cell_tile_origin = 1
+format = 1
+
+[node name="Grid" type="TileMap" parent="ViewportContainer/Viewport/GameMap"]
+modulate = Color( 1, 1, 1, 0.133333 )
+tile_set = SubResource( 1 )
+cell_size = Vector2( 25, 28 )
+cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
+cell_half_offset = 1
+format = 1
+
+[node name="SelectionHex" type="Sprite" parent="ViewportContainer/Viewport/GameMap"]
+modulate = Color( 1, 1, 1, 0.521569 )
+texture = ExtResource( 6 )
+centered = false
+
+[node name="Label" type="Label" parent="."]
+margin_right = 43.0
+margin_bottom = 14.0
+text = "Foobar"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GameHeader" type="PanelContainer" parent="."]
+anchor_right = 1.0
+margin_bottom = 40.0
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+playButtonPath = NodePath("MarginContainer/HBoxContainer/Left/PlayButton")
+dateDisplayPath = NodePath("MarginContainer/HBoxContainer/Left/DateDisplay")
+
+[node name="Panel" type="Panel" parent="GameHeader"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1017.0
+margin_bottom = 37.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="GameHeader"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1017.0
+margin_bottom = 37.0
+custom_constants/margin_right = 5
+custom_constants/margin_top = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GameHeader/MarginContainer"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 1005.0
+margin_bottom = 25.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Left" type="HBoxContainer" parent="GameHeader/MarginContainer/HBoxContainer"]
+margin_right = 948.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="PlayButton" type="Button" parent="GameHeader/MarginContainer/HBoxContainer/Left"]
+margin_right = 38.0
+margin_bottom = 20.0
+text = "Play"
+
+[node name="DateDisplay" type="Label" parent="GameHeader/MarginContainer/HBoxContainer/Left"]
+margin_left = 42.0
+margin_top = 3.0
+margin_right = 116.0
+margin_bottom = 17.0
+text = "01 / 01 / 01"
+
+[node name="Right" type="HBoxContainer" parent="GameHeader/MarginContainer/HBoxContainer"]
+margin_left = 952.0
+margin_right = 1000.0
+margin_bottom = 20.0
+
+[node name="MenuButton" type="Button" parent="GameHeader/MarginContainer/HBoxContainer/Right"]
+margin_right = 48.0
+margin_bottom = 20.0
+text = "Menu"
+
+[node name="PolityPanel" type="PanelContainer" parent="."]
+margin_top = 40.0
+margin_right = 383.0
+margin_bottom = 69.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="PolityPanel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 376.0
+margin_bottom = 22.0
+
+[node name="MarginContainer" type="MarginContainer" parent="PolityPanel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 376.0
+margin_bottom = 22.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PolityPanel/MarginContainer"]
+margin_right = 369.0
+margin_bottom = 15.0
+
+[node name="Label" type="Label" parent="PolityPanel/MarginContainer/VBoxContainer"]
+margin_right = 369.0
+margin_bottom = 14.0
+text = "Polity Name"
+
+[node name="TabContainer" type="TabContainer" parent="PolityPanel/MarginContainer/VBoxContainer"]
+visible = false
+margin_top = 18.0
+margin_right = 369.0
+margin_bottom = 263.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tab_align = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Empire" type="Control" parent="PolityPanel/MarginContainer/VBoxContainer/TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 32.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PolityPanel/MarginContainer/VBoxContainer/TabContainer/Empire"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="PolityPanel/MarginContainer/VBoxContainer/TabContainer/Empire/HBoxContainer"]
+margin_top = 13.0
+margin_right = 78.0
+margin_bottom = 27.0
+text = "Polity Name"

@@ -13,6 +13,10 @@ public struct Point {
 	public readonly double x;
 	public readonly double y;
 
+	public override int GetHashCode() {
+		return (x, y).GetHashCode();
+	}
+
 	public Vector2 ToVector() {
 		return new Vector2((float) x, (float) y);
 	}
@@ -28,6 +32,10 @@ public struct Hex {
 	public readonly int q;
 	public readonly int r;
 	public readonly int s;
+
+	public override int GetHashCode() {
+		return (q, r, s).GetHashCode();
+	}
 
 	public Hex Add(Hex b) {
 		return new Hex(q + b.q, r + b.r, s + b.s);
@@ -170,6 +178,10 @@ public struct OffsetCoord {
 	static public int EVEN = 1;
 	static public int ODD = -1;
 
+	public override int GetHashCode() {
+		return (col, row).GetHashCode();
+	}
+
 	static public OffsetCoord QoffsetFromCube(int offset, Hex h) {
 		int col = h.q;
 		int row = h.r + (int)((h.q + offset * (h.q & 1)) / 2);
@@ -221,6 +233,10 @@ public struct DoubledCoord {
 	}
 	public readonly int col;
 	public readonly int row;
+
+	public override int GetHashCode() {
+		return (col, row).GetHashCode();
+	}
 
 	static public DoubledCoord QdoubledFromCube(Hex h) {
 		int col = h.q;
