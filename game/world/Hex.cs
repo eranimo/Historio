@@ -224,6 +224,9 @@ public struct OffsetCoord {
 		return base.ToString() + string.Format("({0}, {1})", this.row, this.col);
 	}
 
+	public Vector2 ToVector() {
+		return new Vector2((float) col, (float) row);
+	}
 }
 
 public struct DoubledCoord {
@@ -323,12 +326,25 @@ public struct Layout {
 	}
 
 	public List<Point> PolygonCorners(Hex h) {
-		List<Point> corners = new List < Point > {};
+		List<Point> corners = new List<Point> {};
 		Point center = HexToPixel(h);
 		for (int i = 0; i < 6; i++) {
 			Point offset = HexCornerOffset(i);
 			corners.Add(new Point(center.x + offset.x, center.y + offset.y));
 		}
 		return corners;
+	}
+
+    public Point HexSize => new Point(
+		2 * size.x,
+		Math.Sqrt(3) * size.y
+	);
+
+    public Point GridDimensions(int cols, int rows) {
+		Hex lastHex = OffsetCoord.QoffsetToCube(OffsetCoord.ODD, new OffsetCoord(cols - 1, rows - 1));
+		var lastHexPoint = HexToPixel(lastHex);
+		double gridWidth = lastHexPoint.x + (HexSize.x / 2);
+		double gridHeight = gridHeight = lastHexPoint.y + (HexSize.y / 2);
+		return new Point(gridWidth, gridHeight);
 	}
 }

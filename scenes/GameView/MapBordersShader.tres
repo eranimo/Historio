@@ -1,0 +1,215 @@
+[gd_resource type="Shader" format=2]
+
+[resource]
+code = "shader_type canvas_item;
+// FROM: https://wiki.orx-project.org/en/tutorials/shaders/hexagongrid2
+
+uniform vec2 hexSize;
+uniform vec2 gridSize;
+uniform vec2 containerSize;
+uniform sampler2D hexTerritoryColor;
+uniform bool territoriesVisible = true;
+uniform float territoryBorderThickness = 1.0;
+uniform float territoryGradientThickness = 4.0;
+uniform float territoryGradientOpacity = 0.6;
+
+const float PI = 3.14159265358979323846;
+const float SQRT_2 = 1.4142135623730951;
+const float SQRT_3 = 1.73205080757;
+
+// orientation
+const float or_f0 = 3.0 / 2.0;
+const float or_f1 = 0.0;
+const float or_f2 = SQRT_3 / 2.0;
+const float or_f3 = SQRT_3;
+const float or_b0 = 2.0 / 3.0;
+const float or_b1 = 0.0;
+const float or_b2 = -1.0 / 3.0;
+const float or_b3 = SQRT_3 / 3.0;
+const float or_start_angle = 0.0;
+
+const float layout_origin_x = 16.5;
+const float layout_origin_y = 18.5;
+const float layout_size_x = 16.666;
+const float layout_size_y = 16.165;
+ 
+// Function to convert cubial coords to axial coords.
+vec2 cubeToAxial(vec3 cube) {
+	return vec2(cube.x, cube.y);
+}
+ 
+// Function to convert axial coords to cubial coords.
+vec3 axialToCube(vec2 axial) {
+	float x = axial.x;
+	float y = axial.y;
+	float z = -x - y;
+	return vec3(x, y, z);
+}
+
+vec2 axialToOffset(vec2 hex) {
+	float col = hex.x;
+	float row = hex.y + (hex.x - (float(int(hex.x) & 1))) / 2.0;
+	return vec2(col, row);
+}
+
+vec2 offsetToAxial(vec2 hex) {
+	float q = hex.y;
+	float r = hex.x - (hex.y - (float(int(hex.y) & 1))) / 2.0;
+	return vec2(q, r);
+}
+ 
+// Function to round float cubial coords to int cubial coords.
+vec3 cubeRound(vec3 cube) {
+	float rx = round(cube.x);
+	float ry = round(cube.y);
+	float rz = round(cube.z);
+ 
+	float xDiff = abs(rx - cube.x);
+	float yDiff = abs(ry - cube.y);
+	float zDiff = abs(rz - cube.z);
+ 
+	if ((xDiff > yDiff) && (xDiff > zDiff))
+		rx = -ry - rz;
+	else if (yDiff > zDiff)
+		ry = -rx - rz;
+	else
+		rz = -rx - ry;
+
+	return vec3(rx, ry, rz);
+}
+ 
+// Function to round float axial coords to int axial coords.
+vec2 axialRound(vec2 axial) {
+	return cubeToAxial(cubeRound(axialToCube(axial)));
+}
+ 
+// Function to return axial hex-grid coords, given a screen position (vertical, flat-top hex layout).
+vec2 pixelToHex(vec2 point) {
+	vec2 pt = vec2((point.x - layout_origin_x) / layout_size_x, (point.y - layout_origin_y) / layout_size_y);
+	float q = or_b0 * pt.x + or_b1 * pt.y;
+	float r = or_b2 * pt.x + or_b3 * pt.y;
+	float s = -q - r;
+	return cubeToAxial(cubeRound(vec3(q, r, s)));
+}
+ 
+// Function to return a screen position, given axial hex-grid coords (vertical, flat-top hex layout).
+vec2 hexToPixel(vec2 hex) {
+	float x = (or_f0 * hex.x + or_f1 * hex.y) * layout_size_x;
+	float y = (or_f2 * hex.x + or_f3 * hex.y) * layout_size_y;
+	return vec2(x + layout_origin_x, y + layout_origin_y);
+}
+
+vec2 axial_direction(int direction) {
+	const vec2 directions[] = {
+		vec2(1, -1),
+		vec2(0, -1),
+		vec2(-1, 0),
+		vec2(-1, 1),
+		vec2(0, 1),
+		vec2(1, 0)
+	};
+	return directions[direction];
+}
+
+vec2 axial_neighbor(vec2 hex, int direction) {
+	return hex + axial_direction(direction);
+}
+
+float distance_to_line(vec2 pt1, vec2 pt2, vec2 testPt) {
+  vec2 lineDir = pt2 - pt1;
+  vec2 perpDir = vec2(lineDir.y, -lineDir.x);
+  vec2 dirToPt1 = pt1 - testPt;
+  return abs(dot(normalize(perpDir), dirToPt1));
+}
+
+vec2 corner_offset(int corner) {
+	float angle = 2.0 * PI * (or_start_angle - float(corner)) / 6.0;
+	return vec2(layout_size_x * cos(angle), layout_size_y * sin(angle));
+}
+
+vec2 flat_hex_corner(vec2 hex, int i) {
+	vec2 center = hexToPixel(hex);
+	vec2 corner = corner_offset(i);
+	return vec2(center.x + corner.x, center.y + corner.y);
+}
+
+
+varying vec2 point;
+
+void vertex(){
+    point = VERTEX;
+}
+
+void fragment() {
+	vec2 hex = axialRound(pixelToHex(point));
+	vec2 offset = axialToOffset(hex);
+ 
+	vec4 color;
+	if (offset.x < 0.0 || offset.y < 0.0 || offset.x >= gridSize.x || offset.y >= gridSize.y) {
+		color = vec4(0.0, 0.0, 0.0, 0.0);
+	} else {
+		// territories
+		vec4 territoryColor = texelFetch(hexTerritoryColor, ivec2(int(offset.x), int(offset.y)), 0);
+		if (territoriesVisible) {
+			if (territoryColor != vec4(0)) {
+				for (int i = 0; i <= 5; i++) {
+					int j;
+					if (i == 5) {
+						j = 0;
+					} else {
+						j = i + 1;
+					}
+					vec2 neighbor_axial = axial_neighbor(hex, i);
+					vec2 p1 = flat_hex_corner(hex, i);
+					vec2 p2 = flat_hex_corner(hex, j);
+					float dist = distance_to_line(p1, p2, point);
+
+					vec2 neighbor_offset = axialToOffset(neighbor_axial);
+					vec4 neighborTerritoryColor = texelFetch(hexTerritoryColor, ivec2(int(neighbor_offset.x), int(neighbor_offset.y)), 0);
+					bool is_same_territory = neighborTerritoryColor.a == territoryColor.a;
+
+					if (!is_same_territory) {
+						color = mix(color, vec4(territoryColor.xyz, territoryGradientOpacity), smoothstep(territoryGradientThickness, 0.0, dist));
+					}
+				}
+			}
+		}
+
+		// territory borders
+		for (int i = 0; i <= 5; i++) {
+			int j;
+			if (i == 5) {
+				j = 0;
+			} else {
+				j = i + 1;
+			}
+			vec2 neighbor_axial = axial_neighbor(hex, i);
+			vec2 neighbor_offset = axialToOffset(neighbor_axial);
+			vec4 neighborTerritoryColor = texelFetch(hexTerritoryColor, ivec2(int(neighbor_offset.x), int(neighbor_offset.y)), 0);
+			bool is_same_territory = neighborTerritoryColor.a == territoryColor.a;
+
+			if (!is_same_territory) {
+				vec2 p1 = flat_hex_corner(hex, i);
+				vec2 p2 = flat_hex_corner(hex, j);
+				float dist = distance_to_line(p1, p2, point);
+				if (neighborTerritoryColor == vec4(0)) {
+					vec4 borderColor = territoryColor;
+					if (dist < territoryBorderThickness) {
+						color = mix(color, vec4(borderColor.xyz, 1.0), smoothstep(territoryBorderThickness, 0.0, dist));
+					}
+				} else {
+					vec4 borderColor = neighborTerritoryColor;
+					if (territoryColor != vec4(0)) {
+						borderColor = territoryColor;
+					}
+					
+					if (dist < territoryBorderThickness) {
+						color = mix(color, vec4(borderColor.xyz, 1.0), smoothstep(territoryBorderThickness, 0.0, dist));
+					}
+				}
+			}
+		}
+	}
+	COLOR = color;
+}
+"

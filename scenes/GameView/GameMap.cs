@@ -5,15 +5,17 @@ using System.Reactive.Subjects;
 using System.Reactive.Linq;
 
 public class GameMap : Node2D {
-	private GameWorld world;
+	public GameWorld world;
+	public Layout layout;
+
 	private TileMap terrain;
 	private TileMap features;
 	private TileMap grid;
 	private Sprite selectionHex;
-	private Layout layout;
+    private MapBorders mapBorders;
 
-	// subject events
-	private Subject<Tile> tileUpdates = new Subject<Tile>();
+    // subject events
+    private Subject<Tile> tileUpdates = new Subject<Tile>();
 	private Subject<Tile> pressedTile = new Subject<Tile>();
 	private Subject<Tile> hoveredTile = new Subject<Tile>();
 
@@ -28,6 +30,9 @@ public class GameMap : Node2D {
 		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
 		selectionHex.Hide();
 		layout = new Layout(Layout.flat, new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
+
+		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
+		mapBorders.DrawBorders(this, world);
 		
 		foreach(Tile tile in world.tiles) {
 			drawTile(tile);
