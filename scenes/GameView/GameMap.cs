@@ -72,6 +72,9 @@ public class GameMap : Node2D {
 	}
 
 	public override void _Input(InputEvent @event) {
+		if (this.world == null) {
+			return;
+		}
 		base._Input(@event);
 
 		if (@event.IsActionPressed("view_select")) {

@@ -4,14 +4,14 @@ using System;
 public class GameHeader : PanelContainer {
 	[Export]
 	private NodePath playButtonPath;
-    private Button playButton;
+	private Button playButton;
 
 
 	[Export]
 	private NodePath dateDisplayPath;
 	private Label dateDisplay;
 
-    private GameContext gameContext;
+	private GameContext gameContext;
 
 	public override void _Ready() {
 		gameContext = (GameContext) GetTree().Root.GetNode("GameContext");

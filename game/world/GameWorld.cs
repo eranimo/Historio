@@ -62,8 +62,8 @@ public class WorldGenerator {
 	private int TileWidth;
 	private int TileHeight;
 
-	public WorldGenerator() {
-		this.options = new WorldOptions();
+	public WorldGenerator(WorldOptions options) {
+		this.options = options;
 	}
 
 	private int GetWorldSize(WorldSize size) {
