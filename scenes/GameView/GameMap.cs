@@ -12,10 +12,10 @@ public class GameMap : Node2D {
 	private TileMap features;
 	private TileMap grid;
 	private Sprite selectionHex;
-    private MapBorders mapBorders;
+	private MapBorders mapBorders;
 
-    // subject events
-    private Subject<Tile> tileUpdates = new Subject<Tile>();
+	// subject events
+	private Subject<Tile> tileUpdates = new Subject<Tile>();
 	private Subject<Tile> pressedTile = new Subject<Tile>();
 	private Subject<Tile> hoveredTile = new Subject<Tile>();
 
@@ -24,23 +24,23 @@ public class GameMap : Node2D {
 	public void RenderMap(GameWorld world) {
 		this.world = world;
 
-		terrain = (TileMap) GetNode<TileMap>("Terrain");
-		features = (TileMap) GetNode<TileMap>("Features");
-		grid = (TileMap) GetNode<TileMap>("Grid");
-		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
+		terrain = (TileMap)GetNode<TileMap>("Terrain");
+		features = (TileMap)GetNode<TileMap>("Features");
+		grid = (TileMap)GetNode<TileMap>("Grid");
+		selectionHex = (Sprite)GetNode<Sprite>("SelectionHex");
 		selectionHex.Hide();
 		layout = new Layout(Layout.flat, new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
 
-		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
+		mapBorders = (MapBorders)GetNode<MapBorders>("MapBorders");
 		mapBorders.DrawBorders(this, world);
-		
-		foreach(Tile tile in world.tiles) {
+
+		foreach (Tile tile in world.tiles) {
 			drawTile(tile);
 		}
 
 		tileUpdates.Subscribe((Tile tile) => this.drawTile(tile));
 
-		
+
 		Observable.DistinctUntilChanged(pressedTile).Subscribe((Tile tile) => {
 			if (selectedHex.Value == tile) {
 				selectedHex.OnNext(null);

@@ -71,7 +71,7 @@ public class GameView : Control {
 	private void OnWorldGenerated() {
 		GameWorld world = generatorThread.world;
 		GD.PrintS("World generated", world.tiles.Count, world.worldSize);
-		
+
 		Game game = new Game();
 		game.world = world;
 		context.OnGameInit(game);

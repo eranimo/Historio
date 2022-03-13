@@ -7,9 +7,9 @@ public class Camera : Camera2D {
 	const float MIN_ZOOM = 0.25f;
 	const float MAX_ZOOM = 600;
 
-  private bool isKeyboardPanning = false;
-  private const float BASE_MOVE_AMOUNT = 10.0f;
-  private Vector2 moveDirection = new Vector2();
+	private bool isKeyboardPanning = false;
+	private const float BASE_MOVE_AMOUNT = 10.0f;
+	private Vector2 moveDirection = new Vector2();
 
 	public override void _Input(InputEvent @event) {
 		base._Input(@event);
@@ -32,27 +32,27 @@ public class Camera : Camera2D {
 		}
 	}
 
-  public override void _PhysicsProcess(float delta) {
-    moveDirection.x = 0;
-    moveDirection.y = 0;
-    var moveAmount = BASE_MOVE_AMOUNT;
-    if (Input.IsKeyPressed((int) Godot.KeyList.Shift)) {
-      moveAmount *= 2;
-    }
-    if (Input.IsActionPressed("view_pan_up")) {
-      moveDirection.y -= moveAmount;
-    }
-    if (Input.IsActionPressed("view_pan_down")) {
-      moveDirection.y += moveAmount;
-    }
-    if (Input.IsActionPressed("view_pan_left")) {
-      moveDirection.x -= moveAmount;
-    }
-    if (Input.IsActionPressed("view_pan_right")) {
-      moveDirection.x += moveAmount;
-    }
-    Offset += moveDirection;
-  }
+	public override void _PhysicsProcess(float delta) {
+		moveDirection.x = 0;
+		moveDirection.y = 0;
+		var moveAmount = BASE_MOVE_AMOUNT;
+		if (Input.IsKeyPressed((int) Godot.KeyList.Shift)) {
+			moveAmount *= 2;
+		}
+		if (Input.IsActionPressed("view_pan_up")) {
+			moveDirection.y -= moveAmount;
+		}
+		if (Input.IsActionPressed("view_pan_down")) {
+			moveDirection.y += moveAmount;
+		}
+		if (Input.IsActionPressed("view_pan_left")) {
+			moveDirection.x -= moveAmount;
+		}
+		if (Input.IsActionPressed("view_pan_right")) {
+			moveDirection.x += moveAmount;
+		}
+		Offset += moveDirection;
+	}
 
 	private void zoomCamera(float zoomFactor, Vector2 mousePosition) {
 		var viewportSize = GetViewport().Size;

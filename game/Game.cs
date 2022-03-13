@@ -4,6 +4,7 @@ using System.Reactive.Subjects;
 
 public class Polity {
 	public string Name;
+	public bool IsPlayer;
 
 	public Polity(string name) {
 		Name = name;
@@ -26,11 +27,11 @@ public class Game {
 	public GameWorld world;
 
 	public Game() {
-		
+
 	}
 
-	public IObservable<bool> PlayState  { get => playState; }
-    public bool IsPlaying { get => playState.Value; }
+	public IObservable<bool> PlayState { get => playState; }
+	public bool IsPlaying { get => playState.Value; }
 	public void Play() {
 		playState.OnNext(true);
 	}

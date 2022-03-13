@@ -129,9 +129,9 @@ public class WorldGenerator {
 }
 
 public class GameWorld {
-    public readonly WorldOptions options;
-    public readonly OffsetCoord worldSize;
-    public readonly List<Tile> tiles;
+	public readonly WorldOptions options;
+	public readonly OffsetCoord worldSize;
+	public readonly List<Tile> tiles;
 	private Dictionary<OffsetCoord, Tile> tilesByCoord = new Dictionary<OffsetCoord, Tile>();
 
 	public GameWorld(
@@ -139,9 +139,9 @@ public class GameWorld {
 		OffsetCoord worldSize,
 		List<Tile> tiles
 	) {
-        this.options = options;
-        this.worldSize = worldSize;
-        this.tiles = tiles;
+		this.options = options;
+		this.worldSize = worldSize;
+		this.tiles = tiles;
 
 		foreach (Tile tile in tiles) {
 			tilesByCoord[tile.coord] = tile;
