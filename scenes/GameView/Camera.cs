@@ -2,18 +2,22 @@ using Godot;
 using System;
 
 public class Camera : Camera2D {
-	private bool isPanning = false;
-    private MapContext mapContext;
-    const float ZOOM_SPEED = 0.25f;
+	private bool isMousePanning = false;
+	const float ZOOM_SPEED = 0.25f;
 	const float MIN_ZOOM = 0.25f;
 	const float MAX_ZOOM = 600;
 
-    public override void _Ready() {
-        base._Ready();
-		mapContext = (MapContext) GetTree().Root.GetNode("MapContext");
-    }
+	private bool isKeyboardPanning = false;
+	private const float BASE_MOVE_AMOUNT = 10.0f;
+	private Vector2 moveDirection = new Vector2();
+	private MapContext mapContext;
 
-    public override void _Input(InputEvent @event) {
+	public override void _Ready() {
+		base._Ready();
+		mapContext = (MapContext) GetTree().Root.GetNode("MapContext");
+	}
+
+	public override void _Input(InputEvent @event) {
 		base._Input(@event);
 
 		if (@event.IsActionPressed("view_zoom_in")) {
@@ -23,15 +27,37 @@ public class Camera : Camera2D {
 		}
 
 		if (@event.IsActionPressed("view_pan_mouse")) {
-			isPanning = true;
+			isMousePanning = true;
 		} else if (@event.IsActionReleased("view_pan_mouse")) {
-			isPanning = false;
+			isMousePanning = false;
 		}
 
-		if (@event is InputEventMouseMotion && isPanning) {
+		if (@event is InputEventMouseMotion && isMousePanning) {
 			var motionEvent = (InputEventMouseMotion) @event;
 			Offset -= motionEvent.Relative * Zoom;
 		}
+	}
+
+	public override void _PhysicsProcess(float delta) {
+		moveDirection.x = 0;
+		moveDirection.y = 0;
+		var moveAmount = BASE_MOVE_AMOUNT;
+		if (Input.IsKeyPressed((int) Godot.KeyList.Shift)) {
+			moveAmount *= 2;
+		}
+		if (Input.IsActionPressed("view_pan_up")) {
+			moveDirection.y -= moveAmount;
+		}
+		if (Input.IsActionPressed("view_pan_down")) {
+			moveDirection.y += moveAmount;
+		}
+		if (Input.IsActionPressed("view_pan_left")) {
+			moveDirection.x -= moveAmount;
+		}
+		if (Input.IsActionPressed("view_pan_right")) {
+			moveDirection.x += moveAmount;
+		}
+		Offset += moveDirection;
 	}
 
 	private void zoomCamera(float zoomFactor, Vector2 mousePosition) {

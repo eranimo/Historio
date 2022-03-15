@@ -1,3 +1,5 @@
+using System;
+using System.Reactive.Subjects;
 using System.Collections.Generic;
 
 public enum BiomeType {
@@ -20,8 +22,8 @@ public enum FeatureType {
 	Jungle,
 }
 
-public class Tile {
-    public readonly OffsetCoord coord;
+public class Tile : Entity {
+	public readonly OffsetCoord coord;
 
 	public float height;
 	public float temperature;
@@ -33,9 +35,9 @@ public class Tile {
 	public HashSet<Tile> roadConnections = new HashSet<Tile>();
 	public HashSet<Tile> riverConnections = new HashSet<Tile>();
 
-    public Tile(OffsetCoord coord) {
-        this.coord = coord;
-    }
+	public Tile(OffsetCoord coord) {
+		this.coord = coord;
+	}
 
 	public override string ToString() {
 		return base.ToString() + string.Format("({0}, {1})", this.coord.col, this.coord.row);
