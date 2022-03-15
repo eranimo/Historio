@@ -2,16 +2,19 @@ using Godot;
 using System;
 
 public class MapBorders : Polygon2D {
-	public override void _Ready(){
-		
+	private GameMap gameMap;
+
+	public override void _Ready() {
 	}
 
 	private ShaderMaterial shader {
 		get { return (this.Material as ShaderMaterial); }
 	}
 
-	public void DrawBorders(GameMap gameMap, GameWorld world) {
-		var containerSize = gameMap.layout.GridDimensions(world.worldSize.col, world.worldSize.row).ToVector();
+	public void DrawBorders(GameMap gameMap) {
+	this.gameMap = gameMap;
+		var worldSize = gameMap.game.manager.state.worldSize;
+		var containerSize = gameMap.layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
 		this.Polygon = new Vector2[] {
 			new Vector2(0, 0),
 			new Vector2(0, containerSize.y),
@@ -19,15 +22,16 @@ public class MapBorders : Polygon2D {
 			new Vector2(containerSize.x, 0),
 		};
 		this.shader.SetShaderParam("hexSize", gameMap.layout.size.ToVector());
-		this.shader.SetShaderParam("gridSize", world.worldSize.ToVector());
+		this.shader.SetShaderParam("gridSize", worldSize.ToVector());
 		this.shader.SetShaderParam("containerSize", containerSize);
 
-		this.UpdateTerritoryMap(world);
+		this.UpdateTerritoryMap();
 	}
 
-	private void UpdateTerritoryMap(GameWorld world) {
+	private void UpdateTerritoryMap() {
+		var worldSize = gameMap.game.manager.state.worldSize;
 		Image hexTerritoryColorImage = new Image();
-		hexTerritoryColorImage.Create(world.worldSize.col, world.worldSize.row, false, Image.Format.Rgbaf);
+		hexTerritoryColorImage.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
 
 		hexTerritoryColorImage.Lock();
 

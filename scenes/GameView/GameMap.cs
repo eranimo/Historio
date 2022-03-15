@@ -5,7 +5,7 @@ using System.Reactive.Subjects;
 using System.Reactive.Linq;
 
 public class GameMap : Node2D {
-	public GameWorld world;
+	public Game game;
 	public Layout layout;
 
 	private TileMap terrain;
@@ -21,25 +21,29 @@ public class GameMap : Node2D {
 
 	private BehaviorSubject<Tile> selectedHex = new BehaviorSubject<Tile>(null);
 
-	public void RenderMap(GameWorld world) {
-		this.world = world;
+	public async void RenderMap(Game game) {
+		GD.PrintS("(GameMap) render map");
+		this.game = game;
 
-		terrain = (TileMap)GetNode<TileMap>("Terrain");
-		features = (TileMap)GetNode<TileMap>("Features");
-		grid = (TileMap)GetNode<TileMap>("Grid");
-		selectionHex = (Sprite)GetNode<Sprite>("SelectionHex");
+		terrain = (TileMap) GetNode<TileMap>("Terrain");
+		features = (TileMap) GetNode<TileMap>("Features");
+		grid = (TileMap) GetNode<TileMap>("Grid");
+		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
 		selectionHex.Hide();
 		layout = new Layout(Layout.flat, new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
 
-		mapBorders = (MapBorders)GetNode<MapBorders>("MapBorders");
-		mapBorders.DrawBorders(this, world);
+		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
+		mapBorders.DrawBorders(this);
 
-		foreach (Tile tile in world.tiles) {
+		var tiles = game.manager.world.GetTiles();
+		var i = 0;
+		foreach (Tile tile in tiles) {
 			drawTile(tile);
+			i++;
 		}
+		GD.PrintS("Draw", i, "tiles");
 
 		tileUpdates.Subscribe((Tile tile) => this.drawTile(tile));
-
 
 		Observable.DistinctUntilChanged(pressedTile).Subscribe((Tile tile) => {
 			if (selectedHex.Value == tile) {
@@ -72,7 +76,7 @@ public class GameMap : Node2D {
 	}
 
 	public override void _Input(InputEvent @event) {
-		if (this.world == null) {
+		if (this.game == null) {
 			return;
 		}
 		base._Input(@event);
@@ -85,8 +89,8 @@ public class GameMap : Node2D {
 
 		if (@event is InputEventMouseMotion) {
 			var coord = getCoordAtCursor();
-			if (world.IsValidTile(coord)) {
-				var tile = world.GetTile(coord);
+			if (game.manager.world.IsValidTile(coord)) {
+				var tile = game.manager.world.GetTile(coord);
 				hoveredTile.OnNext(tile);
 			}
 		}
@@ -104,8 +108,8 @@ public class GameMap : Node2D {
 
 		if (is_placing) {
 			var coord = getCoordAtCursor();
-			if (world.IsValidTile(coord)) {
-				Tile tile = world.GetTile(coord);
+			if (game.manager.world.IsValidTile(coord)) {
+				Tile tile = game.manager.world.GetTile(coord);
 				pressedTile.OnNext(tile);
 			}
 		}

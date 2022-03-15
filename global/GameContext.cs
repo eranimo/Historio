@@ -2,13 +2,13 @@ using Godot;
 using System;
 
 public class GameContext : Node {
-	public Game Game = null;
+	public Game game = null;
 
 	public void OnGameInit(Game game) {
-		this.Game = game;
+		this.game = game;
 	}
 
 	public void OnGameEnd() {
-		this.Game = null;
+		this.game = null;
 	}
 }

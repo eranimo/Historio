@@ -20,7 +20,7 @@ public class GameHeader : PanelContainer {
 
 		playButton.Connect("pressed", this, nameof(handlePlayPressed));
 
-		gameContext.Game.PlayState.Subscribe((bool isPlaying) => {
+		gameContext.game.PlayState.Subscribe((bool isPlaying) => {
 			GD.PrintS("isPlaying", isPlaying);
 			if (isPlaying) {
 				playButton.Text = "Pause";
@@ -31,10 +31,10 @@ public class GameHeader : PanelContainer {
 	}
 
 	private void handlePlayPressed() {
-		if (gameContext.Game.IsPlaying) {
-			gameContext.Game.Pause();
+		if (gameContext.game.IsPlaying) {
+			gameContext.game.Pause();
 		} else {
-			gameContext.Game.Play();
+			gameContext.game.Play();
 		}
 		
 	}
