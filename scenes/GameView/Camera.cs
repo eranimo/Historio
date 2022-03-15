@@ -3,11 +3,17 @@ using System;
 
 public class Camera : Camera2D {
 	private bool isPanning = false;
-	const float ZOOM_SPEED = 0.25f;
+    private MapContext mapContext;
+    const float ZOOM_SPEED = 0.25f;
 	const float MIN_ZOOM = 0.25f;
 	const float MAX_ZOOM = 600;
 
-	public override void _Input(InputEvent @event) {
+    public override void _Ready() {
+        base._Ready();
+		mapContext = (MapContext) GetTree().Root.GetNode("MapContext");
+    }
+
+    public override void _Input(InputEvent @event) {
 		base._Input(@event);
 
 		if (@event.IsActionPressed("view_zoom_in")) {
@@ -36,6 +42,7 @@ public class Camera : Camera2D {
 			Math.Min(MAX_ZOOM, Math.Max(MIN_ZOOM, Zoom.x)),
 			Math.Min(MAX_ZOOM, Math.Max(MIN_ZOOM, Zoom.y))
 		);
+		mapContext.zoom.OnNext(Zoom.x);
 		Offset += ((viewportSize * 0.5f) - mousePosition) * (Zoom - prevZoom);
 	}
 }
