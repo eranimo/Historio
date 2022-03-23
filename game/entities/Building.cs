@@ -1,10 +1,10 @@
 public class Building : Entity {
-  public BuildingType type;
-  public Tile tile;
+	public BuildingType type;
+	public Tile tile;
 
 	public Building(BuildingType type, Tile tile) {
-    this.type = type;
-    this.tile = tile;
+		this.type = type;
+		this.tile = tile;
 	}
 
 	public enum BuildingType {
@@ -13,5 +13,5 @@ public class Building : Entity {
 		Farm,
 		Woodcutter,
 		Mine,
-	}  
+	}
 }

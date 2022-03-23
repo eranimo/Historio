@@ -2,7 +2,7 @@
   "FormattingOptions": {
     "NewLine": "\n",
     "UseTabs": true,
-    "TabSize": 2,
+    "TabSize": 4,
     "IndentationSize": 2,
     "SpacingAfterMethodDeclarationName": false,
     "SpaceWithinMethodDeclarationParenthesis": false,

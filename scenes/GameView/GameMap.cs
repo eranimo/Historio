@@ -44,7 +44,6 @@ public class GameMap : Node2D {
 			drawTile(tile);
 			i++;
 		}
-		GD.PrintS("Draw", i, "tiles");
 
 		tileUpdates.Subscribe((Tile tile) => this.drawTile(tile));
 
