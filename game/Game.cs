@@ -31,6 +31,8 @@ public class Game {
 		this.manager = new GameManager();
 	}
 
+	public GameWorld world => manager.world;
+
 	public IObservable<bool> PlayState { get => playState; }
 	public bool IsPlaying { get => playState.Value; }
 	public void Play() {

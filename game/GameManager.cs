@@ -36,6 +36,9 @@ public class GameManager {
 
 	public void Start() {
 		world.OnStart();
+
+		var b1 = new Building(Building.BuildingType.Village, world.GetTile(new Hex(1, 1)));
+		AddEntity(b1);
 	}
 
 	public IEnumerable<Entity> GetEntitiesByType(Type type) {

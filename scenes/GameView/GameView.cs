@@ -33,6 +33,7 @@ public class WorldGeneratorThread {
 		generator.options.Seed = random.Next();
 
 		generator.Generate(game.manager);
+
 		GD.PrintS($"WorldGenerator: {watch.ElapsedMilliseconds}ms");
 		progress("Generating world", 100);
 		if (callback != null) {
