@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://assets/terrain.tres" type="TileSet" id=1]
 [ext_resource path="res://assets/features.tres" type="TileSet" id=2]
@@ -11,6 +11,7 @@
 [ext_resource path="res://scenes/GameView/MapBorders.cs" type="Script" id=9]
 [ext_resource path="res://scenes/GameView/MapBordersShader.tres" type="Shader" id=10]
 [ext_resource path="res://scenes/GameView/MapLabels.cs" type="Script" id=11]
+[ext_resource path="res://scenes/GameView/MapBuildings.cs" type="Script" id=12]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grid-ui.png 0"
@@ -105,6 +106,9 @@ cell_size = Vector2( 25, 28 )
 cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
 cell_half_offset = 1
 format = 1
+
+[node name="MapBuildings" type="Node2D" parent="ViewportContainer/Viewport/GameMap"]
+script = ExtResource( 12 )
 
 [node name="MapBorders" type="Polygon2D" parent="ViewportContainer/Viewport/GameMap"]
 material = SubResource( 2 )

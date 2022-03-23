@@ -11,8 +11,8 @@ public class WorldGeneratorThread {
 	private GeneratorProgress progress;
 	private WorldGeneratedCallback callback;
 
-	public Game game = new Game();
-  private Random random = new Random();
+	public Game game;
+	private Random random = new Random();
 
 	public WorldGeneratorThread(
 		WorldOptions options,
@@ -30,7 +30,7 @@ public class WorldGeneratorThread {
 		var generator = new WorldGenerator(options);
 
 		generator.options.Size = WorldSize.Medium;
-	generator.options.Seed = random.Next();
+		generator.options.Seed = random.Next();
 
 		generator.Generate(game.manager);
 		GD.PrintS($"WorldGenerator: {watch.ElapsedMilliseconds}ms");
@@ -63,6 +63,7 @@ public class GameView : Control {
 			new GeneratorProgress(OnGeneratorProgress),
 			new WorldGeneratedCallback(OnWorldGenerated)
 		);
+		generatorThread.game = new Game();
 		var t = new System.Threading.Thread(generatorThread.Generate);
 		t.Start(options);
 	}
@@ -77,8 +78,8 @@ public class GameView : Control {
 		context.OnGameInit(generatorThread.game);
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
-		CallDeferred("add_child", gameController);
 		gameController.StartGame(generatorThread.game);
+		CallDeferred("add_child", gameController);
 		GD.PrintS($"GameController init: {watch.ElapsedMilliseconds}ms");
 	}
 }
