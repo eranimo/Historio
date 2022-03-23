@@ -13,12 +13,7 @@ atlas = SubResource( 1 )
 atlas = SubResource( 2 )
 region = Rect2( 0, 0, 32, 32 )
 
-[node name="BuildingIcon" type="Control"]
-margin_right = 32.0
-margin_bottom = 32.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="BuildingIcon" type="Node2D"]
 
 [node name="Sprite" type="Sprite" parent="."]
 texture = SubResource( 3 )

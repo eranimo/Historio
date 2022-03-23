@@ -11,8 +11,8 @@ public class MapBorders : Polygon2D {
 		get { return (this.Material as ShaderMaterial); }
 	}
 
-	public void DrawBorders(GameMap gameMap) {
-	this.gameMap = gameMap;
+	public void RenderMap(GameMap gameMap) {
+		this.gameMap = gameMap;
 		var worldSize = gameMap.game.manager.state.worldSize;
 		var containerSize = gameMap.layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
 		this.Polygon = new Vector2[] {

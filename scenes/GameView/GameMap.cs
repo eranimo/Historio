@@ -33,7 +33,10 @@ public class GameMap : Node2D {
 		layout = new Layout(Layout.flat, new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
 
 		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
-		mapBorders.DrawBorders(this);
+		mapBorders.RenderMap(this);
+
+		mapBuildings = (MapBuildings) GetNode<MapBuildings>("MapBuildings");
+		mapBuildings.RenderMap(this);
 
 		var tiles = game.manager.world.GetTiles();
 		var i = 0;
@@ -65,6 +68,7 @@ public class GameMap : Node2D {
 	}
 
 	private bool is_placing = false;
+	private MapBuildings mapBuildings;
 
 	private void drawTile(Tile tile) {
 		grid.SetCell(tile.coord.col, tile.coord.row, 1);
