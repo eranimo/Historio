@@ -49,7 +49,7 @@ public class WorldGenerator : GameGenerator {
 				var height = heightNoise.Get(x, y) * 255;
 				var temperature = temperatureNoise.Get(x, y);
 				var rainfall = rainfallNoise.Get(x, y);
-				var coord = new OffsetCoord(x, y);
+				var coord = new Hex(x, y);
 				var coordLong = ((x / (double) this.TileWidth) * 360) - 180;
 				var coordLat = ((-y / (double) this.TileHeight) * 180) + 90;
 
@@ -81,7 +81,7 @@ public class WorldGenerator : GameGenerator {
 				}
 			}
 		}
-		var worldSize = new OffsetCoord(TileWidth, TileHeight);
+		var worldSize = new Hex(TileWidth, TileHeight);
 
     foreach (Tile tile in tiles) {
       manager.AddEntity(tile);

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 public class GameWorld : GameSystem {
 	public readonly List<Tile> tiles;
-	private Dictionary<OffsetCoord, Tile> tilesByCoord = new Dictionary<OffsetCoord, Tile>();
+	private Dictionary<Hex, Tile> tilesByCoord = new Dictionary<Hex, Tile>();
 
 	public GameWorld(GameManager manager) : base(manager) { }
 
@@ -33,11 +33,11 @@ public class GameWorld : GameSystem {
 		}
 	}
 
-	public Tile GetTile(OffsetCoord coord) {
+	public Tile GetTile(Hex coord) {
 		return tilesByCoord[coord];
 	}
 
-	public bool IsValidTile(OffsetCoord coord) {
+	public bool IsValidTile(Hex coord) {
 		return coord.col >= 0 && coord.row >= 0 && coord.col < manager.state.worldSize.col && coord.row < manager.state.worldSize.row;
 	}
 }

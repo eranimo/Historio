@@ -23,7 +23,7 @@ public enum FeatureType {
 }
 
 public class Tile : Entity {
-	public readonly OffsetCoord coord;
+	public readonly Hex coord;
 
 	public float height;
 	public float temperature;
@@ -35,7 +35,7 @@ public class Tile : Entity {
 	public HashSet<Tile> roadConnections = new HashSet<Tile>();
 	public HashSet<Tile> riverConnections = new HashSet<Tile>();
 
-	public Tile(OffsetCoord coord) {
+	public Tile(Hex coord) {
 		this.coord = coord;
 	}
 

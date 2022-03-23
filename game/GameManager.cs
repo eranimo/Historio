@@ -6,7 +6,7 @@ using System.Reactive.Subjects;
 // container for global game state
 public class GameState {
   public WorldOptions worldOptions;
-	public OffsetCoord worldSize;
+	public Hex worldSize;
 }
 
 public class GameSystem {

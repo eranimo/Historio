@@ -30,7 +30,7 @@ public class GameMap : Node2D {
 		grid = (TileMap) GetNode<TileMap>("Grid");
 		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
 		selectionHex.Hide();
-		layout = new Layout(Layout.flat, new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
+		layout = new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
 
 		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
 		mapBorders.RenderMap(this);
@@ -59,8 +59,7 @@ public class GameMap : Node2D {
 		selectedHex.Subscribe((Tile tile) => {
 			if (tile != null) {
 				selectionHex.Show();
-				Hex hex = OffsetCoord.QoffsetToCube(OffsetCoord.ODD, tile.coord);
-				selectionHex.Position = layout.HexToPixel(hex).ToVector() - layout.origin.ToVector();
+				selectionHex.Position = layout.HexToPixel(tile.coord).ToVector();
 			} else {
 				selectionHex.Hide();
 			}
@@ -100,11 +99,9 @@ public class GameMap : Node2D {
 		}
 	}
 
-	private OffsetCoord getCoordAtCursor() {
+	private Hex getCoordAtCursor() {
 		var cursorPos = GetLocalMousePosition();
-		var clickedCoord = layout.PixelToHex(new Point(cursorPos.x, cursorPos.y)).HexRound();
-		var clickedCoordOffset = OffsetCoord.QoffsetFromCube(OffsetCoord.ODD, clickedCoord);
-		return clickedCoordOffset;
+		return layout.PixelToHex(new Point(cursorPos.x, cursorPos.y));
 	}
 
 	public override void _PhysicsProcess(float delta) {

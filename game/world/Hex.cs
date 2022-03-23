@@ -17,13 +17,18 @@ public struct Point {
 		return (x, y).GetHashCode();
 	}
 
+	public static Point operator -(Point a, Point b) => new Point(a.x - b.x, a.y - b.y);
+	public static Point operator +(Point a, Point b) => new Point(a.x + b.x, a.y + b.y);
+	public static Point operator /(Point a, Point b) => new Point(a.x / b.x, a.y / b.y);
+	public static Point operator *(Point a, Point b) => new Point(a.x * b.x, a.y * b.y);
+
 	public Vector2 ToVector() {
 		return new Vector2((float) x, (float) y);
 	}
 }
 
-public struct Hex {
-	public Hex(int q, int r, int s) {
+public struct CubeCoord {
+	public CubeCoord(int q, int r, int s) {
 		this.q = q;
 		this.r = r;
 		this.s = s;
@@ -37,61 +42,61 @@ public struct Hex {
 		return (q, r, s).GetHashCode();
 	}
 
-	public Hex Add(Hex b) {
-		return new Hex(q + b.q, r + b.r, s + b.s);
+	public CubeCoord Add(CubeCoord b) {
+		return new CubeCoord(q + b.q, r + b.r, s + b.s);
 	}
 
-	public Hex Subtract(Hex b) {
-		return new Hex(q - b.q, r - b.r, s - b.s);
+	public CubeCoord Subtract(CubeCoord b) {
+		return new CubeCoord(q - b.q, r - b.r, s - b.s);
 	}
 
-	public Hex Scale(int k) {
-		return new Hex(q * k, r * k, s * k);
+	public CubeCoord Scale(int k) {
+		return new CubeCoord(q * k, r * k, s * k);
 	}
 
-	public Hex RotateLeft() {
-		return new Hex(-s, -q, -r);
+	public CubeCoord RotateLeft() {
+		return new CubeCoord(-s, -q, -r);
 	}
 
-	public Hex RotateRight() {
-		return new Hex(-r, -s, -q);
+	public CubeCoord RotateRight() {
+		return new CubeCoord(-r, -s, -q);
 	}
 
-	static public List < Hex > directions = new List < Hex > {
-		new Hex(1, 0, -1),
-		new Hex(1, -1, 0),
-		new Hex(0, -1, 1),
-		new Hex(-1, 0, 1),
-		new Hex(-1, 1, 0),
-		new Hex(0, 1, -1)
+	static public List < CubeCoord > directions = new List < CubeCoord > {
+		new CubeCoord(1, 0, -1),
+		new CubeCoord(1, -1, 0),
+		new CubeCoord(0, -1, 1),
+		new CubeCoord(-1, 0, 1),
+		new CubeCoord(-1, 1, 0),
+		new CubeCoord(0, 1, -1)
 	};
 
-	static public Hex Direction(int direction) {
-		return Hex.directions[direction];
+	static public CubeCoord Direction(int direction) {
+		return CubeCoord.directions[direction];
 	}
 
-	public Hex Neighbor(int direction) {
-		return Add(Hex.Direction(direction));
+	public CubeCoord Neighbor(int direction) {
+		return Add(CubeCoord.Direction(direction));
 	}
 
-	static public List < Hex > diagonals = new List < Hex > {
-		new Hex(2, -1, -1),
-		new Hex(1, -2, 1),
-		new Hex(-1, -1, 2),
-		new Hex(-2, 1, 1),
-		new Hex(-1, 2, -1),
-		new Hex(1, 1, -2)
+	static public List < CubeCoord > diagonals = new List < CubeCoord > {
+		new CubeCoord(2, -1, -1),
+		new CubeCoord(1, -2, 1),
+		new CubeCoord(-1, -1, 2),
+		new CubeCoord(-2, 1, 1),
+		new CubeCoord(-1, 2, -1),
+		new CubeCoord(1, 1, -2)
 	};
 
-	public Hex DiagonalNeighbor(int direction) {
-		return Add(Hex.diagonals[direction]);
+	public CubeCoord DiagonalNeighbor(int direction) {
+		return Add(CubeCoord.diagonals[direction]);
 	}
 
 	public int Length() {
 		return (int)((Math.Abs(q) + Math.Abs(r) + Math.Abs(s)) / 2);
 	}
 
-	public int Distance(Hex b) {
+	public int Distance(CubeCoord b) {
 		return Subtract(b).Length();
 	}
 
@@ -99,9 +104,9 @@ public struct Hex {
 		return base.ToString() + string.Format("({0}, {1}, {2})", this.q, this.r, this.s);
 	}
 
-	public List<Hex> Ring(int radius = 1) {
-		List<Hex> results = new List<Hex>();
-		Hex hex = Add(Hex.Direction(4).Scale(radius));
+	public List<CubeCoord> Ring(int radius = 1) {
+		List<CubeCoord> results = new List<CubeCoord>();
+		CubeCoord hex = Add(CubeCoord.Direction(4).Scale(radius));
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < radius; j++) {
 				results.Add(hex);
@@ -111,8 +116,8 @@ public struct Hex {
 		return results;
 	}
 
-	public List<Hex> Spiral(int radius = 1) {
-		List<Hex> results = new List<Hex>();
+	public List<CubeCoord> Spiral(int radius = 1) {
+		List<CubeCoord> results = new List<CubeCoord>();
 		results.Add(this);
 		for (int k = 1; k <= radius; k++) {
 			results.AddRange(Ring(k));
@@ -121,8 +126,8 @@ public struct Hex {
 	}
 }
 
-public struct FractionalHex {
-	public FractionalHex(double q, double r, double s) {
+public struct FractionalCubeCoord {
+	public FractionalCubeCoord(double q, double r, double s) {
 		this.q = q;
 		this.r = r;
 		this.s = s;
@@ -132,7 +137,7 @@ public struct FractionalHex {
 	public readonly double r;
 	public readonly double s;
 
-	public Hex HexRound() {
+	public CubeCoord HexRound() {
 		int qi = (int)(Math.Round(q));
 		int ri = (int)(Math.Round(r));
 		int si = (int)(Math.Round(s));
@@ -147,18 +152,18 @@ public struct FractionalHex {
 		} else {
 			si = -qi - ri;
 		}
-		return new Hex(qi, ri, si);
+		return new CubeCoord(qi, ri, si);
 	}
 
-	public FractionalHex HexLerp(FractionalHex b, double t) {
-		return new FractionalHex(q * (1.0 - t) + b.q * t, r * (1.0 - t) + b.r * t, s * (1.0 - t) + b.s * t);
+	public FractionalCubeCoord HexLerp(FractionalCubeCoord b, double t) {
+		return new FractionalCubeCoord(q * (1.0 - t) + b.q * t, r * (1.0 - t) + b.r * t, s * (1.0 - t) + b.s * t);
 	}
 
-	static public List < Hex > HexLinedraw(Hex a, Hex b) {
+	static public List < CubeCoord > HexLinedraw(CubeCoord a, CubeCoord b) {
 		int N = a.Distance(b);
-		FractionalHex a_nudge = new FractionalHex(a.q + 1e-06, a.r + 1e-06, a.s - 2e-06);
-		FractionalHex b_nudge = new FractionalHex(b.q + 1e-06, b.r + 1e-06, b.s - 2e-06);
-		List < Hex > results = new List < Hex > {};
+		FractionalCubeCoord a_nudge = new FractionalCubeCoord(a.q + 1e-06, a.r + 1e-06, a.s - 2e-06);
+		FractionalCubeCoord b_nudge = new FractionalCubeCoord(b.q + 1e-06, b.r + 1e-06, b.s - 2e-06);
+		List < CubeCoord > results = new List < CubeCoord > {};
 		double step = 1.0 / Math.Max(N, 1);
 		for (int i = 0; i <= N; i++) {
 			results.Add(a_nudge.HexLerp(b_nudge, step * i).HexRound());
@@ -168,8 +173,8 @@ public struct FractionalHex {
 
 }
 
-public struct OffsetCoord {
-	public OffsetCoord(int col, int row) {
+public struct Hex {
+	public Hex(int col, int row) {
 		this.col = col;
 		this.row = row;
 	}
@@ -182,42 +187,19 @@ public struct OffsetCoord {
 		return (col, row).GetHashCode();
 	}
 
-	static public OffsetCoord QoffsetFromCube(int offset, Hex h) {
+	static public Hex FromCube(CubeCoord h) {
+		int offset = Hex.ODD;
 		int col = h.q;
 		int row = h.r + (int)((h.q + offset * (h.q & 1)) / 2);
-		if (offset != OffsetCoord.EVEN && offset != OffsetCoord.ODD) {
-			throw new ArgumentException("offset must be EVEN (+1) or ODD (-1)");
-		}
-		return new OffsetCoord(col, row);
+		return new Hex(col, row);
 	}
 
-	static public Hex QoffsetToCube(int offset, OffsetCoord h) {
+	static public CubeCoord ToCube(Hex h) {
+		int offset = Hex.ODD;
 		int q = h.col;
 		int r = h.row - (int)((h.col + offset * (h.col & 1)) / 2);
 		int s = -q - r;
-		if (offset != OffsetCoord.EVEN && offset != OffsetCoord.ODD) {
-			throw new ArgumentException("offset must be EVEN (+1) or ODD (-1)");
-		}
-		return new Hex(q, r, s);
-	}
-
-	static public OffsetCoord RoffsetFromCube(int offset, Hex h) {
-		int col = h.q + (int)((h.r + offset * (h.r & 1)) / 2);
-		int row = h.r;
-		if (offset != OffsetCoord.EVEN && offset != OffsetCoord.ODD) {
-			throw new ArgumentException("offset must be EVEN (+1) or ODD (-1)");
-		}
-		return new OffsetCoord(col, row);
-	}
-
-	static public Hex RoffsetToCube(int offset, OffsetCoord h) {
-		int q = h.col - (int)((h.row + offset * (h.row & 1)) / 2);
-		int r = h.row;
-		int s = -q - r;
-		if (offset != OffsetCoord.EVEN && offset != OffsetCoord.ODD) {
-			throw new ArgumentException("offset must be EVEN (+1) or ODD (-1)");
-		}
-		return new Hex(q, r, s);
+		return new CubeCoord(q, r, s);
 	}
 
 	public override string ToString() {
@@ -241,32 +223,31 @@ public struct DoubledCoord {
 		return (col, row).GetHashCode();
 	}
 
-	static public DoubledCoord QdoubledFromCube(Hex h) {
+	static public DoubledCoord QdoubledFromCube(CubeCoord h) {
 		int col = h.q;
 		int row = 2 * h.r + h.q;
 		return new DoubledCoord(col, row);
 	}
 
-	public Hex QdoubledToCube() {
+	public CubeCoord QdoubledToCube() {
 		int q = col;
 		int r = (int)((row - col) / 2);
 		int s = -q - r;
-		return new Hex(q, r, s);
+		return new CubeCoord(q, r, s);
 	}
 
-	static public DoubledCoord RdoubledFromCube(Hex h) {
+	static public DoubledCoord RdoubledFromCube(CubeCoord h) {
 		int col = 2 * h.q + h.r;
 		int row = h.r;
 		return new DoubledCoord(col, row);
 	}
 
-	public Hex RdoubledToCube() {
+	public CubeCoord RdoubledToCube() {
 		int q = (int)((col - row) / 2);
 		int r = row;
 		int s = -q - r;
-		return new Hex(q, r, s);
+		return new CubeCoord(q, r, s);
 	}
-
 }
 
 public struct Orientation {
@@ -293,39 +274,42 @@ public struct Orientation {
 }
 
 public struct Layout {
-	public Layout(Orientation orientation, Point size, Point origin) {
-		this.orientation = orientation;
+	public Layout(Point size, Point origin) {
 		this.size = size;
 		this.origin = origin;
 	}
-	public readonly Orientation orientation;
 	public readonly Point size;
 	public readonly Point origin;
-	static public Orientation pointy = new Orientation(Math.Sqrt(3.0), Math.Sqrt(3.0) / 2.0, 0.0, 3.0 / 2.0, Math.Sqrt(3.0) / 3.0, -1.0 / 3.0, 0.0, 2.0 / 3.0, 0.5);
 	static public Orientation flat = new Orientation(3.0 / 2.0, 0.0, Math.Sqrt(3.0) / 2.0, Math.Sqrt(3.0), 2.0 / 3.0, 0.0, -1.0 / 3.0, Math.Sqrt(3.0) / 3.0, 0.0);
 
-	public Point HexToPixel(Hex h) {
-		Orientation M = orientation;
+	// returns hex origin
+	public Point HexToPixel(CubeCoord h) {
+		Orientation M = flat;
 		double x = (M.f0 * h.q + M.f1 * h.r) * size.x;
 		double y = (M.f2 * h.q + M.f3 * h.r) * size.y;
-		return new Point(x + origin.x, y + origin.y);
+		return new Point(x + origin.x, y + origin.y) - origin;
 	}
 
-	public FractionalHex PixelToHex(Point p) {
-		Orientation M = orientation;
+	public Point HexToPixel(Hex hex) {
+		return HexToPixel(Hex.ToCube(hex));
+	}
+
+	public Hex PixelToHex(Point p) {
+		Orientation M = flat;
 		Point pt = new Point((p.x - origin.x) / size.x, (p.y - origin.y) / size.y);
 		double q = M.b0 * pt.x + M.b1 * pt.y;
 		double r = M.b2 * pt.x + M.b3 * pt.y;
-		return new FractionalHex(q, r, -q - r);
+		var frac = new FractionalCubeCoord(q, r, -q - r);
+		return Hex.FromCube(frac.HexRound());
 	}
 
 	public Point HexCornerOffset(int corner) {
-		Orientation M = orientation;
+		Orientation M = flat;
 		double angle = 2.0 * Math.PI * (M.start_angle - corner) / 6.0;
 		return new Point(size.x * Math.Cos(angle), size.y * Math.Sin(angle));
 	}
 
-	public List<Point> PolygonCorners(Hex h) {
+	public List<Point> PolygonCorners(CubeCoord h) {
 		List<Point> corners = new List<Point> {};
 		Point center = HexToPixel(h);
 		for (int i = 0; i < 6; i++) {
@@ -341,7 +325,7 @@ public struct Layout {
 	);
 
     public Point GridDimensions(int cols, int rows) {
-		Hex lastHex = OffsetCoord.QoffsetToCube(OffsetCoord.ODD, new OffsetCoord(cols - 1, rows - 1));
+		CubeCoord lastHex = Hex.ToCube(new Hex(cols - 1, rows - 1));
 		var lastHexPoint = HexToPixel(lastHex);
 		double gridWidth = lastHexPoint.x + (HexSize.x / 2);
 		double gridHeight = gridHeight = lastHexPoint.y + (HexSize.y / 2);
