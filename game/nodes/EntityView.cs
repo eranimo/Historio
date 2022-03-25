@@ -1,11 +1,11 @@
 using Godot;
 using System;
 
-public abstract class EntitySystem : Node {
+public abstract class EntityView : Node {
 	private GameContext gameContext;
 	private Type entityType;
 
-	public EntitySystem(Type entityType) {
+	public EntityView(Type entityType) {
 		this.entityType = entityType;
 	}
 

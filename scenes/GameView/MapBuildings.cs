@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class MapBuildings : EntitySystem {
+public class MapBuildings : EntityView {
 	private Dictionary<Building, Node> coordBuilding = new Dictionary<Building, Node>();
 	private PackedScene BuildingIconScene;
 	private GameMap gameMap;
