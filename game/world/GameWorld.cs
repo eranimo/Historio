@@ -10,21 +10,20 @@ public class GameWorld : GameSystem {
 
 	public GameWorld(GameManager manager) : base(manager) { }
 
+	public override bool Query(Entity entity) => entity.GetType() == typeof(Tile);
+
 	public override void OnStart() {
 		GD.PrintS("(GameWorld) start");
-		foreach (Tile tile in manager.GetEntitiesByType(typeof(Tile))) {
-			tilesByCoord[tile.coord] = tile;
-		}
-		manager.OnEntityAdded.Subscribe((Entity entity) => {
-			if (entity is Tile tile) {
-				tilesByCoord[tile.coord] = tile;
-			}
-		});
-		manager.OnEntityRemoved.Subscribe((Entity entity) => {
-			if (entity is Tile tile) {
-				tilesByCoord.Remove(tile.coord);
-			}
-		});
+	}
+
+	public override void OnEntityAdded(Entity entity) {
+		var tile = (Tile) entity;
+		tilesByCoord[tile.coord] = tile;
+	}
+
+	public override void OnEntityRemoved(Entity entity) {
+		var tile = (Tile) entity;
+		tilesByCoord.Remove(tile.coord);
 	}
 
 	public IEnumerable<Tile> GetTiles() {

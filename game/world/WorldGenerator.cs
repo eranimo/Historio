@@ -83,10 +83,10 @@ public class WorldGenerator : GameGenerator {
 		}
 		var worldSize = new Hex(TileWidth, TileHeight);
 
-    foreach (Tile tile in tiles) {
-      manager.AddEntity(tile);
-    }
-    manager.state.worldSize = worldSize;
-    manager.state.worldOptions = options;
+		foreach (Tile tile in tiles) {
+			manager.AddEntity(tile);
+		}
+		manager.state.worldSize = worldSize;
+		manager.state.worldOptions = options;
 	}
 }

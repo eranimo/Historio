@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reactive.Subjects;
 
 // container for global game state
@@ -9,14 +10,33 @@ public class GameState {
 	public Hex worldSize;
 }
 
-public class GameSystem {
+public abstract class GameSystem {
 	protected GameManager manager;
 
 	public GameSystem(GameManager manager) {
 		this.manager = manager;
+
+		foreach (Entity entity in manager.Entities) {
+			if (Query(entity)) {
+				OnEntityAdded(entity);
+			}
+		}
+		manager.OnEntityAdded.Subscribe((Entity entity) => {
+			if (Query(entity)) {
+				OnEntityAdded(entity);
+			}
+		});
+		manager.OnEntityRemoved.Subscribe((Entity entity) => {
+			if (Query(entity)) {
+				OnEntityRemoved(entity);
+			}
+		});
 	}
 
-	public virtual void OnStart() { }
+	public abstract void OnStart();
+	public abstract bool Query(Entity entity);
+	public abstract void OnEntityAdded(Entity entity);
+	public abstract void OnEntityRemoved(Entity entity);
 }
 
 public class GameManager {
@@ -46,6 +66,8 @@ public class GameManager {
 			yield return entity;
 		}
 	}
+
+	public IEnumerable<Entity> Entities => entities;
 
 	public void AddEntity(Entity entity) {
 		if (entities.Contains(entity)) {
