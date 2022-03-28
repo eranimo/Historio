@@ -11,7 +11,8 @@ uniform sampler2D hexTerritoryColor;
 uniform bool territoriesVisible = true;
 uniform float territoryBorderThickness = 1.0;
 uniform float territoryGradientThickness = 4.0;
-uniform float territoryGradientOpacity = 0.6;
+uniform float territoryGradientOpacity = 0.8;
+uniform float selectedTerritory;
 
 const float PI = 3.14159265358979323846;
 const float SQRT_2 = 1.4142135623730951;
@@ -169,6 +170,12 @@ void fragment() {
 					bool is_same_territory = neighborTerritoryColor.a == territoryColor.a;
 
 					if (!is_same_territory) {
+						float opacity;
+						if (selectedTerritory == territoryColor.a) {
+							opacity = territoryGradientOpacity;
+						} else {
+							opacity = 0.8 * territoryGradientOpacity;
+						}
 						color = mix(color, vec4(territoryColor.xyz, territoryGradientOpacity), smoothstep(territoryGradientThickness, 0.0, dist));
 					}
 				}

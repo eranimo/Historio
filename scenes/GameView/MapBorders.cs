@@ -28,6 +28,15 @@ public class MapBorders : Polygon2D {
 		this.UpdateTerritoryMap();
 	}
 
+	private int? _selectedTerritory = null;
+	public int? selectedTerritory {
+		get { return _selectedTerritory; }
+		set {
+			_selectedTerritory = value;
+			this.shader.SetShaderParam("selectedTerritory", value);
+		}
+	}
+
 	private void UpdateTerritoryMap() {
 		var worldSize = gameMap.game.manager.state.worldSize;
 		Image hexTerritoryColorImage = new Image();

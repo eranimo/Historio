@@ -17,9 +17,34 @@ public class GameMap : Node2D {
 	// subject events
 	private Subject<Tile> tileUpdates = new Subject<Tile>();
 	private Subject<Tile> pressedTile = new Subject<Tile>();
+	private Subject<Tile> clickedTile = new Subject<Tile>();
 	private Subject<Tile> hoveredTile = new Subject<Tile>();
 
-	private BehaviorSubject<Tile> selectedHex = new BehaviorSubject<Tile>(null);
+	private bool is_placing = false;
+	private MapBuildings mapBuildings;
+
+	public override void _Ready() {
+		var mapContext = (MapContext) GetTree().Root.GetNode("MapContext");
+		var selectedHex = mapContext.selectedHex;
+
+		clickedTile.Subscribe((Tile tile) => {
+			GD.PrintS(selectedHex.Value, tile);
+			if (selectedHex.Value == tile) {
+				selectedHex.OnNext(null);
+			} else {
+				selectedHex.OnNext(tile);
+			}
+		});
+
+		selectedHex.Subscribe((Tile tile) => {
+			if (tile != null) {
+				selectionHex.Show();
+				selectionHex.Position = layout.HexToPixel(tile.coord).ToVector();
+			} else {
+				selectionHex.Hide();
+			}
+		});
+	}
 
 	public async void RenderMap(Game game) {
 		GD.PrintS("(GameMap) render map");
@@ -38,35 +63,15 @@ public class GameMap : Node2D {
 		mapBuildings = (MapBuildings) GetNode<MapBuildings>("MapBuildings");
 		mapBuildings.RenderMap(this);
 
-		var tiles = game.manager.world.GetTiles();
-		var i = 0;
-		foreach (Tile tile in tiles) {
-			drawTile(tile);
-			i++;
-		}
-
+		drawWorld();
 		tileUpdates.Subscribe((Tile tile) => this.drawTile(tile));
-
-		Observable.DistinctUntilChanged(pressedTile).Subscribe((Tile tile) => {
-			if (selectedHex.Value == tile) {
-				selectedHex.OnNext(null);
-			} else {
-				selectedHex.OnNext(tile);
-			}
-		});
-
-		selectedHex.Subscribe((Tile tile) => {
-			if (tile != null) {
-				selectionHex.Show();
-				selectionHex.Position = layout.HexToPixel(tile.coord).ToVector();
-			} else {
-				selectionHex.Hide();
-			}
-		});
 	}
 
-	private bool is_placing = false;
-	private MapBuildings mapBuildings;
+	private void drawWorld() {
+		foreach (Tile tile in game.manager.world.GetTiles()) {
+			drawTile(tile);
+		}
+	}
 
 	private void drawTile(Tile tile) {
 		grid.SetCell(tile.coord.col, tile.coord.row, 1);
@@ -85,6 +90,11 @@ public class GameMap : Node2D {
 
 		if (@event.IsActionPressed("view_select")) {
 			is_placing = true;
+			var coord = getCoordAtCursor();
+			if (game.manager.world.IsValidTile(coord)) {
+				Tile tile = game.manager.world.GetTile(coord);
+				clickedTile.OnNext(tile);
+			}
 		} else if (@event.IsActionReleased("view_select")) {
 			is_placing = false;
 		}

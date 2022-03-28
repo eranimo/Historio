@@ -52,6 +52,7 @@ shader_param/territoriesVisible = true
 shader_param/territoryBorderThickness = 1.0
 shader_param/territoryGradientThickness = 6.0
 shader_param/territoryGradientOpacity = 0.6
+shader_param/selectedTerritory = null
 
 [sub_resource type="NoiseTexture" id=3]
 
@@ -141,15 +142,6 @@ __meta__ = {
 playButtonPath = NodePath("MarginContainer/HBoxContainer/Left/PlayButton")
 dateDisplayPath = NodePath("MarginContainer/HBoxContainer/Left/DateDisplay")
 
-[node name="Panel" type="Panel" parent="GameHeader"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 1017.0
-margin_bottom = 37.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="MarginContainer" type="MarginContainer" parent="GameHeader"]
 margin_left = 7.0
 margin_top = 7.0
@@ -203,12 +195,6 @@ margin_bottom = 69.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Panel" type="Panel" parent="PolityPanel"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 376.0
-margin_bottom = 22.0
 
 [node name="MarginContainer" type="MarginContainer" parent="PolityPanel"]
 margin_left = 7.0
