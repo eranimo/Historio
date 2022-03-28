@@ -1,4 +1,5 @@
 using System;
+using Godot;
 using System.Collections.Generic;
 
 
@@ -15,14 +16,9 @@ public enum WorldSize {
 	Large = 2,
 }
 
-public class WorldGenerator : GameGenerator {
-	public WorldOptions options;
+public class WorldGenerator : IGeneratorStep {
 	private int TileWidth;
 	private int TileHeight;
-
-	public WorldGenerator(WorldOptions options) {
-		this.options = options;
-	}
 
 	private int GetWorldSize(WorldSize size) {
 		switch (size) {
@@ -33,14 +29,15 @@ public class WorldGenerator : GameGenerator {
 		}
 	}
 
-	public override void Generate(GameManager manager) {
-		var size = GetWorldSize(this.options.Size);
+	public void Generate(GameOptions options, GameManager manager) {
+		var worldOptions = options.world;
+		var size = GetWorldSize(worldOptions.Size);
 		this.TileWidth = size * 2;
 		this.TileHeight = size;
 
-		var heightNoise = new WorldNoise(this.TileWidth, this.TileHeight, this.options.Seed);
-		var temperatureNoise = new WorldNoise(this.TileWidth, this.TileHeight, this.options.Seed * 2);
-		var rainfallNoise = new WorldNoise(this.TileWidth, this.TileHeight, this.options.Seed * 3);
+		var heightNoise = new WorldNoise(this.TileWidth, this.TileHeight, worldOptions.Seed);
+		var temperatureNoise = new WorldNoise(this.TileWidth, this.TileHeight, worldOptions.Seed * 2);
+		var rainfallNoise = new WorldNoise(this.TileWidth, this.TileHeight, worldOptions.Seed * 3);
 
 		var tiles = new List<Tile>();
 
@@ -62,9 +59,9 @@ public class WorldGenerator : GameGenerator {
 		}
 
 		foreach (Tile tile in tiles) {
-			if (tile.height < this.options.Sealevel - 10) {
+			if (tile.height < worldOptions.Sealevel - 10) {
 				tile.biome = BiomeType.Ocean;
-			} else if (tile.height < this.options.Sealevel) {
+			} else if (tile.height < worldOptions.Sealevel) {
 				tile.biome = BiomeType.Coast;
 			} else {
 				if (tile.temperature < 0.10) {
@@ -87,6 +84,6 @@ public class WorldGenerator : GameGenerator {
 			manager.AddEntity(tile);
 		}
 		manager.state.worldSize = worldSize;
-		manager.state.worldOptions = options;
+		manager.state.worldOptions = worldOptions;
 	}
 }

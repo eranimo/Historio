@@ -59,10 +59,6 @@ public class GameManager {
 
 		var b1 = new Building(Building.BuildingType.Village, world.GetTile(new Hex(1, 1)));
 		AddEntity(b1);
-
-		var namegen = new NameGenerator("greek");
-		for (int i = 0; i < 10; i++)
-			GD.PrintS(namegen.GetName(3, 7));
 	}
 
 	public IEnumerable<Entity> GetEntitiesByType(Type type) {

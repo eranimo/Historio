@@ -8,8 +8,34 @@ public enum GameSpeed {
 	Fast,
 }
 
+public class GameOptions {
+	public WorldOptions world = new WorldOptions();
+}
+
+public interface IGeneratorStep {
+	void Generate(GameOptions options, GameManager manager);
+}
+
 public class GameGenerator {
-	public virtual void Generate(GameManager manager) { }
+	public GameOptions options;
+	private GameManager manager;
+	public Subject<(string, int)> progress = new Subject<(string, int)>();
+
+	public GameGenerator(
+		GameOptions gameOptions,
+		GameManager manager
+	) {
+		this.options = gameOptions;
+		this.manager = manager;
+	}
+
+	public void Generate() {
+		progress.OnNext(("Generating world", 0));
+		new WorldGenerator().Generate(options, manager);
+		progress.OnNext(("Generating polities", 50));
+		new PolityGenerator().Generate(options, manager);
+		progress.OnNext(("Finished world generation", 100));
+	}
 }
 
 /*
