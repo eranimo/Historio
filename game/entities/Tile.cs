@@ -60,4 +60,10 @@ public class Tile : Entity {
 		}
 		return null;
 	}
+
+	public bool IsLand {
+		get {
+			return biome != BiomeType.Ocean && biome != BiomeType.Coast;
+		}
+	}
 }

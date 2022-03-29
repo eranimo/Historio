@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 public class WorldOptions {
 	public WorldSize Size = WorldSize.Small;
-	public int Seed = 12345;
 	public int Sealevel = 140;
 	public double AxialTilt = 23.45;
 }
@@ -35,9 +34,9 @@ public class WorldGenerator : IGeneratorStep {
 		this.TileWidth = size * 2;
 		this.TileHeight = size;
 
-		var heightNoise = new WorldNoise(this.TileWidth, this.TileHeight, worldOptions.Seed);
-		var temperatureNoise = new WorldNoise(this.TileWidth, this.TileHeight, worldOptions.Seed * 2);
-		var rainfallNoise = new WorldNoise(this.TileWidth, this.TileHeight, worldOptions.Seed * 3);
+		var heightNoise = new WorldNoise(this.TileWidth, this.TileHeight, options.Seed);
+		var temperatureNoise = new WorldNoise(this.TileWidth, this.TileHeight, options.Seed * 2);
+		var rainfallNoise = new WorldNoise(this.TileWidth, this.TileHeight, options.Seed * 3);
 
 		var tiles = new List<Tile>();
 

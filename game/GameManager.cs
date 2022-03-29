@@ -10,35 +10,6 @@ public class GameState {
 	public Hex worldSize;
 }
 
-public abstract class GameSystem {
-	protected GameManager manager;
-
-	public GameSystem(GameManager manager) {
-		this.manager = manager;
-
-		foreach (Entity entity in manager.Entities) {
-			if (Query(entity)) {
-				OnEntityAdded(entity);
-			}
-		}
-		manager.OnEntityAdded.Subscribe((Entity entity) => {
-			if (Query(entity)) {
-				OnEntityAdded(entity);
-			}
-		});
-		manager.OnEntityRemoved.Subscribe((Entity entity) => {
-			if (Query(entity)) {
-				OnEntityRemoved(entity);
-			}
-		});
-	}
-
-	public abstract void OnStart();
-	public abstract bool Query(Entity entity);
-	public abstract void OnEntityAdded(Entity entity);
-	public abstract void OnEntityRemoved(Entity entity);
-}
-
 public class GameManager {
 	private HashSet<Entity> entities = new HashSet<Entity>();
 	private Dictionary<Type, List<Entity>> entitiesByType = new Dictionary<Type, List<Entity>>();

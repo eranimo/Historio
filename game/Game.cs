@@ -9,6 +9,7 @@ public enum GameSpeed {
 }
 
 public class GameOptions {
+	public int Seed = 12345;
 	public WorldOptions world = new WorldOptions();
 }
 

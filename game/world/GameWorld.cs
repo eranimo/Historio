@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 
 public class GameWorld : GameSystem {
-	public readonly List<Tile> tiles;
 	private Dictionary<Hex, Tile> tilesByCoord = new Dictionary<Hex, Tile>();
 
 	public GameWorld(GameManager manager) : base(manager) { }
@@ -15,6 +14,8 @@ public class GameWorld : GameSystem {
 	public override void OnStart() {
 		GD.PrintS("(GameWorld) start");
 	}
+
+	public IEnumerable<Tile> tiles => tilesByCoord.Values;
 
 	public override void OnEntityAdded(Entity entity) {
 		var tile = (Tile) entity;
