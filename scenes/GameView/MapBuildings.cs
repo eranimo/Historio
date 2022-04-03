@@ -2,13 +2,24 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class MapBuildings : EntityView {
+public class MapBuildings : Node {
 	private Dictionary<Building, Node> coordBuilding = new Dictionary<Building, Node>();
 	private PackedScene BuildingIconScene;
 	private GameMap gameMap;
+	private EntityQuery<Building> query;
 
-	public MapBuildings() : base(typeof(Building)) {
+	public MapBuildings() {
 		BuildingIconScene = ResourceLoader.Load<PackedScene>("res://scenes/GameView/BuildingIcon.tscn");
+	}
+
+	public override void _Ready() {
+		var gameContext = (GameContext) GetTree().Root.GetNode("GameContext");
+		var manager = gameContext.game.manager;
+		query = manager.Query<Building>().Execute(onEntityAdded, onEntityRemoved);
+	}
+
+	public override void _ExitTree() {
+		query.Dispose();
 	}
 
 	public void RenderMap(GameMap gameMap) {
@@ -16,7 +27,7 @@ public class MapBuildings : EntityView {
 		GD.PrintS("MapBuildings render");
 	}
 
-	public override void OnEntityAdded(Entity entity) {
+	private void onEntityAdded(Entity entity) {
 		GD.PrintS("Building added", entity);
 		var buildingIcon = (Node2D) BuildingIconScene.Instance();
 		AddChild(buildingIcon);
@@ -25,7 +36,7 @@ public class MapBuildings : EntityView {
 		coordBuilding.Add(building, buildingIcon);
 	}
 
-	public override void OnEntityRemoved(Entity entity) {
+	private void onEntityRemoved(Entity entity) {
 		GD.PrintS("Building removed", entity);
 		var building = (Building) entity;
 		RemoveChild(coordBuilding[building]);

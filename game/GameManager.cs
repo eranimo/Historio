@@ -10,15 +10,22 @@ public class GameState {
 	public Hex worldSize;
 }
 
+public class EntityTypeSubscription {
+	public Subject<Entity> OnEntityAdded = new Subject<Entity>();
+	public Subject<Entity> OnEntityRemoved = new Subject<Entity>();
+}
+
 public class GameManager {
 	private HashSet<Entity> entities = new HashSet<Entity>();
 	private Dictionary<Type, List<Entity>> entitiesByType = new Dictionary<Type, List<Entity>>();
+	private Dictionary<Type, EntityTypeSubscription> entityTypeSubscriptions = new Dictionary<Type, EntityTypeSubscription>();
 	private Queue<Entity> deleteQueue = new Queue<Entity>();
 	public Subject<Entity> OnEntityAdded = new Subject<Entity>();
 	public Subject<Entity> OnEntityRemoved = new Subject<Entity>();
 
 	public GameState state = new GameState();
 	public GameWorld world;
+
 
 	public GameManager() {
 		// setup GameSystems
@@ -39,6 +46,7 @@ public class GameManager {
 	}
 
 	public IEnumerable<Entity> Entities => entities;
+	public EntityQuery<T> Query<T>() where T : Entity => new EntityQuery<T>(this, typeof(T));
 
 	public void AddEntity(Entity entity) {
 		if (entities.Contains(entity)) {
@@ -50,21 +58,28 @@ public class GameManager {
 
 		if (!entitiesByType.ContainsKey(entity.GetType())) {
 			entitiesByType[entityType] = new List<Entity>();
+			entityTypeSubscriptions[entityType] = new EntityTypeSubscription();
 		}
+
 		entitiesByType[entityType].Add(entity);
 		entity.Init(this);
 		entity.OnAdded();
 		OnEntityAdded.OnNext(entity);
+		entityTypeSubscriptions[entityType].OnEntityAdded.OnNext(entity);
 	}
 
 	public void RemoveEntity(Entity entity) {
 		if (entities.Contains(entity)) {
 			throw new Exception("Cannot remove Entity that is not added");
 		}
+		var entityType = entity.GetType();
 		deleteQueue.Enqueue(entity);
 		entity.deleted = true;
 		OnEntityRemoved.OnNext(entity);
+		entityTypeSubscriptions[entityType].OnEntityRemoved.OnNext(entity);
 	}
+
+	public EntityTypeSubscription EntityType(Type entityType) => entityTypeSubscriptions[entityType];
 
 	public void Process(GameDate date) {
 		foreach (Entity entity in entities) {
