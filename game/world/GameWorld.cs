@@ -4,25 +4,25 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class GameWorld : GameSystem {
+public class GameWorld {
 	private Dictionary<Hex, Tile> tilesByCoord = new Dictionary<Hex, Tile>();
+	private readonly GameManager manager;
 
-	public GameWorld(GameManager manager) : base(manager) { }
+	public GameWorld(GameManager manager) {
+		this.manager = manager;
 
-	public override bool Query(Entity entity) => entity.GetType() == typeof(Tile);
-
-	public override void OnStart() {
 		GD.PrintS("(GameWorld) start");
+		manager.Query<Tile>().Execute(onEntityAdded, onEntityRemoved);
 	}
 
 	public IEnumerable<Tile> tiles => tilesByCoord.Values;
 
-	public override void OnEntityAdded(Entity entity) {
+	private void onEntityAdded(Entity entity) {
 		var tile = (Tile) entity;
 		tilesByCoord[tile.coord] = tile;
 	}
 
-	public override void OnEntityRemoved(Entity entity) {
+	private void onEntityRemoved(Entity entity) {
 		var tile = (Tile) entity;
 		tilesByCoord.Remove(tile.coord);
 	}

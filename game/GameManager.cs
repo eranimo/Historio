@@ -33,13 +33,15 @@ public class GameManager {
 	}
 
 	public void Start() {
-		world.OnStart();
 
 		var b1 = new Building(Building.BuildingType.Village, world.GetTile(new Hex(1, 1)));
 		AddEntity(b1);
 	}
 
 	public IEnumerable<Entity> GetEntitiesByType(Type type) {
+		if (!entitiesByType.ContainsKey(type)) {
+			yield break;
+		}
 		foreach (Entity entity in entitiesByType[type]) {
 			yield return entity;
 		}
@@ -47,6 +49,14 @@ public class GameManager {
 
 	public IEnumerable<Entity> Entities => entities;
 	public EntityQuery<T> Query<T>() where T : Entity => new EntityQuery<T>(this, typeof(T));
+
+	public void RegisterEntityType(Type entityType) {
+		if (!entitiesByType.ContainsKey(entityType)) {
+			entitiesByType[entityType] = new List<Entity>();
+			entityTypeSubscriptions[entityType] = new EntityTypeSubscription();
+		}
+	}
+
 
 	public void AddEntity(Entity entity) {
 		if (entities.Contains(entity)) {
@@ -56,10 +66,7 @@ public class GameManager {
 
 		var entityType = entity.GetType();
 
-		if (!entitiesByType.ContainsKey(entity.GetType())) {
-			entitiesByType[entityType] = new List<Entity>();
-			entityTypeSubscriptions[entityType] = new EntityTypeSubscription();
-		}
+		RegisterEntityType(entityType);
 
 		entitiesByType[entityType].Add(entity);
 		entity.Init(this);

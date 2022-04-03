@@ -50,6 +50,7 @@ public class EntityQuery<T> where T : Entity {
 	}
 
 	public EntityQuery<T> Execute(Action<Entity> onEntityAdded, Action<Entity> onEntityRemoved) {
+		manager.RegisterEntityType(entityType);
 		foreach (Entity entity in manager.GetEntitiesByType(entityType).Where(shouldAddEntity)) {
 			onEntityAdded(entity);
 		}
