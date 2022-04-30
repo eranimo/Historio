@@ -23,6 +23,10 @@ public class PolityGenerator : IGeneratorStep {
 			var capital = new Settlement(settlementName);
 			capital.territory.Add(sourceTile);
 			polity.settlements.Add(capital);
+			manager.AddEntity(capital);
+
+			var capitalBuilding = new Building(Building.BuildingType.Village, sourceTile);
+			manager.AddEntity(capitalBuilding);
 
 			polities[i] = polity;
 			manager.AddEntity(polity);
