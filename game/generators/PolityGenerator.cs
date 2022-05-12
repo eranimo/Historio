@@ -1,35 +1,44 @@
-using Godot;
+using RelEcs;
 using System;
 using System.Linq;
 
 public class PolityGenerator : IGeneratorStep {
 	public void Generate(GameOptions options, GameManager manager) {
-		var namegen = new NameGenerator("greek");
+		var namegen = new NameFactory("greek");
 		var rng = new Random(options.Seed);
-		var landTiles = from tile in manager.world.tiles where tile.IsLand select tile;
+		var landTiles = from tile in manager.world.tiles where tile.Get<TileData>().IsLand select tile;
 		var availableLandTiles = landTiles.ToHashSet();
 
-		var numPolities = 10;
+		var numPolities = 10; // TODO: make setting
 
-		Polity[] polities = new Polity[numPolities];
+		if (availableLandTiles.Count == 0) {
+			throw new Exception("No available tiles to generate polities");
+		}
 
 		for (int i = 0; i < numPolities; i++) {
+			// find suitable hex for polity capital
 			var sourceTile = availableLandTiles.ElementAt(rng.Next(availableLandTiles.Count));
 			availableLandTiles.Remove(sourceTile);
+
+			// polity
 			var polityName = namegen.GetName();
-			var polity = new Polity(polityName);
+			var polityData = new PolityData{ name = polityName };
+			var polity = manager.state.Spawn();
+			polity.Add<PolityData>();
 
-			var settlementName = namegen.GetName();
-			var capital = new Settlement(settlementName);
-			capital.territory.Add(sourceTile);
-			polity.settlements.Add(capital);
-			manager.AddEntity(capital);
+			// capital territory
+			var capitalName = namegen.GetName();
+			var capitalTerritoryData = new TerritoryData { name = capitalName };
+			var capitalTerritory = manager.state.Spawn();
+			capitalTerritory.Add<TerritoryData>(capitalTerritoryData);
+			capitalTerritory.Add<TerritoryOwner>(polity);
 
-			var capitalBuilding = new Building(Building.BuildingType.Village, sourceTile);
-			manager.AddEntity(capitalBuilding);
+			// add capital building
+			var buildingData = new BuildingData { type = Building.BuildingType.Village };
+			var building = manager.state.Spawn();
+			building.Add<BuildingData>(buildingData);
+			building.Add<Hex>(sourceTile);
 
-			polities[i] = polity;
-			manager.AddEntity(polity);
 		}
 	}
 }

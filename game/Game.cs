@@ -1,6 +1,6 @@
-using Godot;
 using System;
 using System.Reactive.Subjects;
+using RelEcs;
 
 public enum GameSpeed {
 	Slow,
@@ -58,8 +58,6 @@ public class Game {
 		this.manager = new GameManager();
 	}
 
-	public GameWorld world => manager.world;
-
 	public IObservable<bool> PlayState { get => playState; }
 	public bool IsPlaying { get => playState.Value; }
 	public void Play() {
@@ -68,6 +66,8 @@ public class Game {
 	public void Pause() {
 		playState.OnNext(false);
 	}
+
+	public RelEcs.World GameState => manager.state;
 
 	public IObservable<GameDate> GameDateChanged { get => gameDateChanged; }
 	public IObservable<GameSpeed> Speed { get => speed; }

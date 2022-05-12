@@ -5,6 +5,15 @@ using System.Linq;
 using System.Collections.Generic;
 using Godot;
 
+public enum Direction {
+	SouthEast = 0,
+	NorthEast = 1,
+	North = 2,
+	NorthWest = 3,
+	SouthWest = 4,
+	South = 5,
+}
+
 public struct Point {
 	public Point(double x, double y) {
 		this.x = x;
@@ -62,7 +71,7 @@ public struct CubeCoord {
 		return new CubeCoord(-r, -s, -q);
 	}
 
-	static public List < CubeCoord > directions = new List < CubeCoord > {
+	static public List<CubeCoord> directions = new List<CubeCoord> {
 		new CubeCoord(1, 0, -1),
 		new CubeCoord(1, -1, 0),
 		new CubeCoord(0, -1, 1),
@@ -71,15 +80,15 @@ public struct CubeCoord {
 		new CubeCoord(0, 1, -1)
 	};
 
-	static public CubeCoord Direction(int direction) {
-		return CubeCoord.directions[direction];
+	static public CubeCoord Direction(Direction direction) {
+		return CubeCoord.directions[(int) direction];
 	}
 
-	public CubeCoord Neighbor(int direction) {
+	public CubeCoord Neighbor(Direction direction) {
 		return Add(CubeCoord.Direction(direction));
 	}
 
-	static public List < CubeCoord > diagonals = new List < CubeCoord > {
+	static public List<CubeCoord> diagonals = new List<CubeCoord> {
 		new CubeCoord(2, -1, -1),
 		new CubeCoord(1, -2, 1),
 		new CubeCoord(-1, -1, 2),
@@ -88,8 +97,8 @@ public struct CubeCoord {
 		new CubeCoord(1, 1, -2)
 	};
 
-	public CubeCoord DiagonalNeighbor(int direction) {
-		return Add(CubeCoord.diagonals[direction]);
+	public CubeCoord DiagonalNeighbor(Direction direction) {
+		return Add(CubeCoord.diagonals[(int) direction]);
 	}
 
 	public int Length() {
@@ -106,11 +115,11 @@ public struct CubeCoord {
 
 	public List<CubeCoord> Ring(int radius = 1) {
 		List<CubeCoord> results = new List<CubeCoord>();
-		CubeCoord hex = Add(CubeCoord.Direction(4).Scale(radius));
+		CubeCoord hex = Add(CubeCoord.Direction((Direction) 4).Scale(radius));
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < radius; j++) {
 				results.Add(hex);
-				hex = hex.Neighbor(i);
+				hex = hex.Neighbor((Direction) i);
 			}
 		}
 		return results;

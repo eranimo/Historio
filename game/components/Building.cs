@@ -1,14 +1,6 @@
 using System.Collections.Generic;
 
-public class Building : Entity {
-	public BuildingType type;
-	public Tile tile;
-
-	public Building(BuildingType type, Tile tile) {
-		this.type = type;
-		this.tile = tile;
-	}
-
+public static class Building {
 	public enum BuildingType {
 		Village,
 		Fort,
@@ -25,3 +17,8 @@ public class Building : Entity {
 		{ BuildingType.Mine, 5 },
 	};
 }
+
+public struct BuildingData {
+	public Building.BuildingType type;
+}
+public struct BuildingOwner {}

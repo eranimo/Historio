@@ -1,7 +1,7 @@
 using System;
 using LibNoise;
 
-class WorldNoise {
+public class WorldNoise {
 	public int width;
 	public int height;
 	public int octaves;

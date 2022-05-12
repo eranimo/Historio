@@ -6,5 +6,5 @@ public class MapContext : Node {
 	public BehaviorSubject<float> zoom = new BehaviorSubject<float>(1);
 	public IObservable<float> OnZoom { get => zoom; }
 	
-	public BehaviorSubject<Tile> selectedHex = new BehaviorSubject<Tile>(null);
+	public BehaviorSubject<Nullable<RelEcs.Entity>> selectedHex = new BehaviorSubject<Nullable<RelEcs.Entity>>(null);
 }

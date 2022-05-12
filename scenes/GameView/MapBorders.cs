@@ -26,9 +26,10 @@ public class MapBorders : Polygon2D {
 
 	public override void _Ready() {}
 
+	private Hex worldSize => gameMap.game.GameState.GetElement<WorldData>().worldSize;
+
 	public void RenderMap(GameMap gameMap) {
 		this.gameMap = gameMap;
-		var worldSize = gameMap.game.manager.state.worldSize;
 		var containerSize = gameMap.layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
 		this.Polygon = new Vector2[] {
 			new Vector2(0, 0),
@@ -47,7 +48,6 @@ public class MapBorders : Polygon2D {
 	}
 
 	public void setupMap() {
-		var worldSize = gameMap.game.manager.state.worldSize;
 		hexTerritoryColorImage = new Image();
 		hexTerritoryColorImage.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
 		hexAreaColorImage = new Image();

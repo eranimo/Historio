@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System;
 using System.Collections;
 
-class NameGenerator {
+class NameFactory {
 	private int seed;
 	private Random rng;
 
 	private Dictionary<char, List<char>> markov = new Dictionary<char, List<char>>();
 	private HashSet<char> possibleFirstLetters = new HashSet<char>(); 
 
-	public NameGenerator(string name) {
+	public NameFactory(string name) {
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 		this.seed = 0;
 		rng = new Random(seed);
