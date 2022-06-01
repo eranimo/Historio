@@ -12,6 +12,7 @@ public class GameMap : Node2D {
 	private TileMap features;
 	private TileMap grid;
 	private Sprite selectionHex;
+	private Sprite hoverHex;
 	private MapBorders mapBorders;
 
 	// subject events
@@ -44,6 +45,16 @@ public class GameMap : Node2D {
 				selectionHex.Position = layout.HexToPixel(coord).ToVector();
 			}
 		});
+
+		hoveredTile.Subscribe((RelEcs.Entity tile) => {
+			if (tile is null) {
+				hoverHex.Hide();
+			} else {
+				hoverHex.Show();
+				var coord = tile.Get<Hex>();
+				hoverHex.Position = layout.HexToPixel(coord).ToVector();
+			}
+		});
 	}
 
 	public void RenderMap(Game game) {
@@ -55,6 +66,8 @@ public class GameMap : Node2D {
 		grid = (TileMap) GetNode<TileMap>("Grid");
 		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
 		selectionHex.Hide();
+		hoverHex = (Sprite) GetNode<Sprite>("HoverHex");
+		hoverHex.Hide();
 		layout = new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
 
 		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");

@@ -124,6 +124,11 @@ modulate = Color( 1, 1, 1, 0.521569 )
 texture = ExtResource( 6 )
 centered = false
 
+[node name="HoverHex" type="Sprite" parent="ViewportContainer/Viewport/GameMap"]
+modulate = Color( 1, 1, 1, 0.207843 )
+texture = ExtResource( 6 )
+centered = false
+
 [node name="Label" type="Label" parent="."]
 margin_right = 43.0
 margin_bottom = 14.0
