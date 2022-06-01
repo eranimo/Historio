@@ -1,30 +1,42 @@
 using Godot;
+using RelEcs;
 using System;
 using System.Collections.Generic;
 
 public class MapBuildings : Node {
-	// private Dictionary<Building, Node> coordBuilding = new Dictionary<Building, Node>();
-	// private PackedScene BuildingIconScene;
-	// private GameMap gameMap;
-	// private EntityQuery<Building> query;
+	private PackedScene BuildingIconScene;
+	private GameMap gameMap;
+	private GameManager manager;
+	private ViewSystem viewSystem;
 
-	// public MapBuildings() {
-	// 	BuildingIconScene = ResourceLoader.Load<PackedScene>("res://scenes/GameView/BuildingIcon.tscn");
-	// }
+	public MapBuildings() {
+		BuildingIconScene = ResourceLoader.Load<PackedScene>("res://scenes/GameView/BuildingIcon.tscn");
+	}
 
-	// public override void _Ready() {
-	// 	var gameContext = (GameContext) GetTree().Root.GetNode("GameContext");
-	// 	var manager = gameContext.game.manager;
-	// }
+	class ViewSystem : ISystem {
+		void ISystem.Run(Commands commands) {
+			var query = commands.Query<BuildingData, Hex>();
+			foreach(var (building, coord) in query) {
+				GD.PrintS("Building", coord);
+			}
+		}
+	}
 
-	// public override void _ExitTree() {
-	// 	query.Dispose();
-	// }
+	public override void _Ready() {
+		var gameView = (GameView) GetTree().Root.GetNode("GameView");
+		manager = gameView.game.manager;
+		viewSystem = new ViewSystem();
+		manager.viewSystems.Add(viewSystem);
+	}
 
-	// public void RenderMap(GameMap gameMap) {
-	// 	this.gameMap = gameMap;
-	// 	GD.PrintS("MapBuildings render");
-	// }
+	public override void _ExitTree() {
+		manager.viewSystems.Remove(viewSystem);
+	}
+
+	public void RenderMap(GameMap gameMap) {
+		this.gameMap = gameMap;
+		GD.PrintS("MapBuildings render");
+	}
 
 	// private void onEntityAdded(Entity entity) {
 	// 	GD.PrintS("Building added", entity);

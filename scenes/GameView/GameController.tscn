@@ -108,11 +108,6 @@ cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
 cell_half_offset = 1
 format = 1
 
-[node name="SelectionHex" type="Sprite" parent="ViewportContainer/Viewport/GameMap"]
-modulate = Color( 1, 1, 1, 0.521569 )
-texture = ExtResource( 6 )
-centered = false
-
 [node name="MapBuildings" type="Node2D" parent="ViewportContainer/Viewport/GameMap"]
 script = ExtResource( 12 )
 
@@ -123,6 +118,11 @@ script = ExtResource( 9 )
 
 [node name="MapLabels" type="Node2D" parent="ViewportContainer/Viewport/GameMap"]
 script = ExtResource( 11 )
+
+[node name="SelectionHex" type="Sprite" parent="ViewportContainer/Viewport/GameMap"]
+modulate = Color( 1, 1, 1, 0.521569 )
+texture = ExtResource( 6 )
+centered = false
 
 [node name="Label" type="Label" parent="."]
 margin_right = 43.0

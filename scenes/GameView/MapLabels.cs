@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 public class MapLabels : Node2D {
 	private List<Label> labels = new List<Label>();
-	private MapContext mapContext;
+	private GameView gameView;
 
 	public override void _Ready() {
-		mapContext = (MapContext) GetTree().Root.GetNode("MapContext");
+		gameView = (GameView) GetTree().Root.GetNode("GameView");
 		AddLabel("Test Label", new Vector2(0, 0));
 
-		mapContext.OnZoom.Subscribe((float zoom) => {
+		gameView.OnZoom.Subscribe((float zoom) => {
 			foreach (Label label in labels) {
 				resizeLabel(label);
 			}
@@ -30,6 +30,6 @@ public class MapLabels : Node2D {
 	}
 
 	private void resizeLabel(Label label) {
-		label.RectScale = new Vector2(mapContext.zoom.Value, mapContext.zoom.Value);
+		label.RectScale = new Vector2(gameView.zoom.Value, gameView.zoom.Value);
 	}
 }

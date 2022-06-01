@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public struct TerritoryData {
+public class TerritoryData {
 	public string name;
 }
-public struct TerritoryOwner {};
+public class TerritoryOwner {};

@@ -1,4 +1,13 @@
+using System.Collections.Generic;
 using RelEcs;
+
+
+public class ViewSystem : ISystem {
+	void ISystem.Run(Commands commands) {
+		Process(commands);
+	}
+	public virtual void Process(Commands commands) {}
+}
 
 public class GameManager {
 	public RelEcs.World state;
@@ -9,17 +18,18 @@ public class GameManager {
 	// runs every day (game)
     SystemGroup runSystems = new SystemGroup();
 
-	// runs every day (UI)
-    SystemGroup uiSystems = new SystemGroup();
-
 	// runs after game ends or player exists
     SystemGroup stopSystems = new SystemGroup();
+
+	// runs every day (UI)
+    public HashSet<ISystem> viewSystems = new HashSet<ISystem>();
 
 	public WorldService world;
 
 	public GameManager() {
 		world = new WorldService(this);
 		state = new RelEcs.World();
+		state.AddElement(world);
 	}
 
 	// called when game starts
@@ -35,6 +45,12 @@ public class GameManager {
 
 	public void Process(GameDate date) {
 		runSystems.Run(state);
+		Godot.GD.PrintS("Process", date.dayTicks);
+
+		foreach (ISystem system in viewSystems) {
+			system.Run(new RelEcs.Commands(state, system));
+		}
+
 		state.Tick();
 	}
 }

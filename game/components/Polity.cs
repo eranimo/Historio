@@ -1,5 +1,5 @@
 using System.Collections.Generic;
 
-public struct PolityData {
+public class PolityData {
 	public string name;
 }

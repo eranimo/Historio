@@ -1,15 +1,19 @@
 using Godot;
+using System;
+using System.Reactive.Subjects;
 
 public class GameView : Control {
-	SimpleInjector.Container container;
-	public GameContext context;
 	private Label desc;
 	private ProgressBar progress;
 	private GameGeneratorThread generatorThread;
 	private GameController gameController;
 
+	public Game game;
+	public BehaviorSubject<float> zoom = new BehaviorSubject<float>(1);
+	public IObservable<float> OnZoom { get => zoom; }
+	public BehaviorSubject<RelEcs.Entity> selectedHex = new BehaviorSubject<RelEcs.Entity>(null);
+
 	public override void _Ready() {
-		context = (GameContext) GetTree().Root.GetNode("GameContext");
 		desc = (Label) GetNode("LoadingDisplay/MarginContainer/VBoxContainer/Desc");
 		progress = (ProgressBar) GetNode("LoadingDisplay/MarginContainer/VBoxContainer/ProgressBar");
 
@@ -34,7 +38,7 @@ public class GameView : Control {
 
 	private void OnGameGenerated() {
 		GD.PrintS("Game generated");
-		context.OnGameInit(generatorThread.game);
+		game = generatorThread.game;
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 		gameController.StartGame(generatorThread.game);

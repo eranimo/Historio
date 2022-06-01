@@ -82,6 +82,8 @@ public class WorldGenerator : IGeneratorStep {
 				manager.world.AddTile(hex, tile);
 			}
 		}
+		GD.PrintS($"Added {manager.world.tiles.Count} tiles");
+
 		manager.state.AddElement<WorldData>(new WorldData {
 			worldSize = new Hex(TileWidth, TileHeight),
 			options = worldOptions,

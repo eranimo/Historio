@@ -44,12 +44,12 @@ public class GameGenerator {
 - contains GameManager
 */
 public class Game {
-	public readonly int TICKS_PER_DAY = 4;
+	public readonly int TICKS_PER_DAY = 1;
 	private BehaviorSubject<bool> playState = new BehaviorSubject<bool>(false);
 	private BehaviorSubject<GameSpeed> speed = new BehaviorSubject<GameSpeed>(GameSpeed.Normal);
 
 	private Subject<GameDate> gameDateChanged = new Subject<GameDate>();
-	private readonly GameDate date;
+	public GameDate date;
 	public readonly GameManager manager;
 	private int ticksInDay = 0;
 

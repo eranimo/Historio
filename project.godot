@@ -14,11 +14,6 @@ config/name="Historio"
 run/main_scene="res://scenes/GameView/GameView.tscn"
 config/icon="res://icon.png"
 
-[autoload]
-
-GameContext="*res://global/GameContext.cs"
-MapContext="*res://global/MapContext.cs"
-
 [input]
 
 ui_accept={

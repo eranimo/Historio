@@ -24,7 +24,7 @@ public static class Tile {
 	}
 }
 
-public struct TileData {
+public class TileData {
 	public float height;
 	public float temperature;
 	public float rainfall;
@@ -58,10 +58,10 @@ public struct TileData {
 	}
 }
 
-public struct RiverConnection {
+public class RiverConnection {
 	public Direction dir;
 }
 
-public struct RoadConnection {
+public class RoadConnection {
 	public Direction dir;
 }

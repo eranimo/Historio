@@ -10,11 +10,11 @@ public class Camera : Camera2D {
 	private bool isKeyboardPanning = false;
 	private const float BASE_MOVE_AMOUNT = 10.0f;
 	private Vector2 moveDirection = new Vector2();
-	private MapContext mapContext;
+	private GameView gameView;
 
 	public override void _Ready() {
 		base._Ready();
-		mapContext = (MapContext) GetTree().Root.GetNode("MapContext");
+		gameView = (GameView) GetTree().Root.GetNode("GameView");
 	}
 
 	public override void _Input(InputEvent @event) {
@@ -68,7 +68,7 @@ public class Camera : Camera2D {
 			Math.Min(MAX_ZOOM, Math.Max(MIN_ZOOM, Zoom.x)),
 			Math.Min(MAX_ZOOM, Math.Max(MIN_ZOOM, Zoom.y))
 		);
-		mapContext.zoom.OnNext(Zoom.x);
+		gameView.zoom.OnNext(Zoom.x);
 		Offset += ((viewportSize * 0.5f) - mousePosition) * (Zoom - prevZoom);
 	}
 }

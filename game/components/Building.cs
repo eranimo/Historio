@@ -18,7 +18,11 @@ public static class Building {
 	};
 }
 
-public struct BuildingData {
+public class BuildingData {
 	public Building.BuildingType type;
 }
-public struct BuildingOwner {}
+public class BuildingOwner {}
+
+public class BuildingAdded {
+	RelEcs.Entity building;
+}

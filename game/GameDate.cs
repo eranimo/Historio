@@ -9,14 +9,16 @@ public struct GameDate {
 		this.dayTicks = dayTicks;
 	}
 
-	public GameDate NextDay() {
-		return new GameDate(dayTicks + 1);
+	public void NextDay() {
+		dayTicks += 1;
+		dateTime = dateTime.Add(TimeSpan.FromDays(1));
 	}
 
 	public bool isFirstOfMonth { get { return dateTime.Day == 1; } }
 	public bool isFirstOfWeek { get { return dateTime.DayOfWeek == DayOfWeek.Monday; } }
 
 	public override string ToString() {
-		return $"{dateTime.ToString("dddd")}, {dateTime.ToString("MMMM d")}, year {dateTime.Year}";
+		// return $"{dateTime.ToString("d")}, {dateTime.ToString("MMMM d")}, year {dateTime.Year}";
+		return dateTime.ToString("dd / MM / yy");
 	}
 }

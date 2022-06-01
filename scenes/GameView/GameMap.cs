@@ -24,11 +24,10 @@ public class GameMap : Node2D {
 	private MapBuildings mapBuildings;
 
 	public override void _Ready() {
-		var mapContext = (MapContext) GetTree().Root.GetNode("MapContext");
-		var selectedHex = mapContext.selectedHex;
+		var gameView = (GameView) GetTree().Root.GetNode("GameView");
+		var selectedHex = gameView.selectedHex;
 
 		clickedTile.Subscribe((RelEcs.Entity tile) => {
-			GD.PrintS(selectedHex.Value, tile);
 			if (selectedHex.Value == tile) {
 				selectedHex.OnNext(null);
 			} else {
@@ -36,18 +35,18 @@ public class GameMap : Node2D {
 			}
 		});
 
-		selectedHex.Subscribe((Nullable<RelEcs.Entity> tile) => {
-			if (tile != null) {
-				selectionHex.Show();
-				var coord = tile.Value.Get<Hex>();
-				selectionHex.Position = layout.HexToPixel(coord).ToVector();
-			} else {
+		selectedHex.Subscribe((RelEcs.Entity tile) => {
+			if (tile is null) {
 				selectionHex.Hide();
+			} else {
+				selectionHex.Show();
+				var coord = tile.Get<Hex>();
+				selectionHex.Position = layout.HexToPixel(coord).ToVector();
 			}
 		});
 	}
 
-	public async void RenderMap(Game game) {
+	public void RenderMap(Game game) {
 		GD.PrintS("(GameMap) render map");
 		this.game = game;
 

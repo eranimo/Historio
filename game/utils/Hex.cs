@@ -182,7 +182,8 @@ public struct FractionalCubeCoord {
 
 }
 
-public struct Hex {
+public class Hex {
+	public Hex() {}
 	public Hex(int col, int row) {
 		this.col = col;
 		this.row = row;
@@ -195,6 +196,11 @@ public struct Hex {
 	public override int GetHashCode() {
 		return (col, row).GetHashCode();
 	}
+
+	public override bool Equals(object obj)  { 
+        var hex = obj as Hex;
+		return hex.col == col && hex.row == row; 
+    }
 
 	static public Hex FromCube(CubeCoord h) {
 		int offset = Hex.ODD;
