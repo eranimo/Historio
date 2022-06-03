@@ -11,7 +11,6 @@ public class GameView : Control {
 	public Game game;
 	public BehaviorSubject<float> zoom = new BehaviorSubject<float>(1);
 	public IObservable<float> OnZoom { get => zoom; }
-	public BehaviorSubject<RelEcs.Entity> selectedHex = new BehaviorSubject<RelEcs.Entity>(null);
 
 	public override void _Ready() {
 		desc = (Label) GetNode("LoadingDisplay/MarginContainer/VBoxContainer/Desc");
@@ -41,7 +40,7 @@ public class GameView : Control {
 		game = generatorThread.game;
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
-		gameController.StartGame(generatorThread.game);
+		gameController.game = game;
 		CallDeferred("add_child", gameController);
 		GD.PrintS($"GameController init: {watch.ElapsedMilliseconds}ms");
 	}

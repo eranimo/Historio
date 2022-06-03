@@ -24,5 +24,8 @@ public class BuildingData {
 public class BuildingOwner {}
 
 public class BuildingAdded {
-	RelEcs.Entity building;
+	public RelEcs.Entity building;
+}
+public class BuildingRemoved {
+	public RelEcs.Entity building;
 }

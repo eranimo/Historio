@@ -21,12 +21,23 @@ public class GameMap : Node2D {
 	private Subject<RelEcs.Entity> clickedTile = new Subject<RelEcs.Entity>();
 	private Subject<RelEcs.Entity> hoveredTile = new Subject<RelEcs.Entity>();
 
+	public BehaviorSubject<RelEcs.Entity> selectedHex = new BehaviorSubject<RelEcs.Entity>(null);
+
 	private bool is_placing = false;
-	private MapBuildings mapBuildings;
+	public MapBuildings mapBuildings;
 
 	public override void _Ready() {
-		var gameView = (GameView) GetTree().Root.GetNode("GameView");
-		var selectedHex = gameView.selectedHex;
+		GD.PrintS("(GameMap) ready");
+		terrain = (TileMap) GetNode<TileMap>("Terrain");
+		features = (TileMap) GetNode<TileMap>("Features");
+		grid = (TileMap) GetNode<TileMap>("Grid");
+		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
+		hoverHex = (Sprite) GetNode<Sprite>("HoverHex");
+		mapBuildings = (MapBuildings) GetNode<MapBuildings>("MapBuildings");
+		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
+
+		layout = new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
+		mapBuildings.InitMap(layout);
 
 		clickedTile.Subscribe((RelEcs.Entity tile) => {
 			if (selectedHex.Value == tile) {
@@ -61,20 +72,9 @@ public class GameMap : Node2D {
 		GD.PrintS("(GameMap) render map");
 		this.game = game;
 
-		terrain = (TileMap) GetNode<TileMap>("Terrain");
-		features = (TileMap) GetNode<TileMap>("Features");
-		grid = (TileMap) GetNode<TileMap>("Grid");
-		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
 		selectionHex.Hide();
-		hoverHex = (Sprite) GetNode<Sprite>("HoverHex");
 		hoverHex.Hide();
-		layout = new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
-
-		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
 		mapBorders.RenderMap(this);
-
-		mapBuildings = (MapBuildings) GetNode<MapBuildings>("MapBuildings");
-		// mapBuildings.RenderMap(this);
 
 		drawWorld();
 		tileUpdates.Subscribe((RelEcs.Entity tile) => this.drawTile(tile));

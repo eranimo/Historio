@@ -36,9 +36,11 @@ public class PolityGenerator : IGeneratorStep {
 			// add capital building
 			var buildingData = new BuildingData { type = Building.BuildingType.Village };
 			var building = manager.state.Spawn();
+			var sourceTileCoord = sourceTile.Get<Hex>();
 			building.Add<BuildingData>(buildingData);
-			building.Add<Hex>(sourceTile);
-
+			building.Add<Hex>(sourceTileCoord);
+			manager.state.Send(new BuildingAdded { building = building });
+			Godot.GD.PrintS("Added building to", sourceTileCoord);
 		}
 	}
 }

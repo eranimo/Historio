@@ -21,8 +21,8 @@ public class GameManager {
 	// runs after game ends or player exists
     SystemGroup stopSystems = new SystemGroup();
 
-	// runs every day (UI)
-    public HashSet<ISystem> viewSystems = new HashSet<ISystem>();
+	// runs every day and at game start
+   	SystemGroup renderSystems = new SystemGroup();
 
 	public WorldService world;
 
@@ -30,12 +30,15 @@ public class GameManager {
 		world = new WorldService(this);
 		state = new RelEcs.World();
 		state.AddElement(world);
+
+		renderSystems.Add(new BuildingRenderSystem());
 	}
 
 	// called when game starts
 	public void Start() {
-		Godot.GD.PrintS("GameManager start");
+		Godot.GD.PrintS("(GameManager) start");
 		startSystems.Run(state);
+		renderSystems.Run(state);
 	}
 
 	// called when game stops
@@ -45,12 +48,8 @@ public class GameManager {
 
 	public void Process(GameDate date) {
 		runSystems.Run(state);
+		renderSystems.Run(state);
 		Godot.GD.PrintS("Process", date.dayTicks);
-
-		foreach (ISystem system in viewSystems) {
-			system.Run(new RelEcs.Commands(state, system));
-		}
-
 		state.Tick();
 	}
 }

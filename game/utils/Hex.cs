@@ -34,6 +34,10 @@ public struct Point {
 	public Vector2 ToVector() {
 		return new Vector2((float) x, (float) y);
 	}
+
+	public override string ToString() {
+		return base.ToString() + string.Format("({0}, {1})", this.x, this.y);
+	}
 }
 
 public struct CubeCoord {
