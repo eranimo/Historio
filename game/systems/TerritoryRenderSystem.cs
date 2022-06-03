@@ -55,7 +55,7 @@ public class TerritoryRenderSystem : ISystem {
 				var polityHexes = territoryUpdatesPerPolity[polity];
 				gameMap.mapLabels.RemoveChild(label);
 				gameMap.mapLabels.AddChild(label);
-				label.SetPosition(gameMap.layout.Centroid(polityHexes).ToVector());
+				label.SetPosition(gameMap.layout.Centroid(polityHexes).ToVector() - new Godot.Vector2(0, 23));
 			}
 		}
 	}

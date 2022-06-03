@@ -31,8 +31,9 @@ public class MapLabel : Label {
 		gameView.OnZoom.Subscribe((float zoom) => resize());
 	}
 
-	private void SetPosition(Vector2 position) {
+	public void SetPosition(Vector2 position) {
 		base.SetPosition(position - RectSize / 2);
+		// base.SetPosition(position);
 	}
 
 	private void resize() {
