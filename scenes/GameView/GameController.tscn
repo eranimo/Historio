@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://assets/terrain.tres" type="TileSet" id=1]
 [ext_resource path="res://assets/features.tres" type="TileSet" id=2]
@@ -10,7 +10,6 @@
 [ext_resource path="res://scenes/GameView/GameController.cs" type="Script" id=8]
 [ext_resource path="res://scenes/GameView/MapBorders.cs" type="Script" id=9]
 [ext_resource path="res://scenes/GameView/MapBordersShader.tres" type="Shader" id=10]
-[ext_resource path="res://scenes/GameView/MapLabels.cs" type="Script" id=11]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grid-ui.png 0"
@@ -112,7 +111,6 @@ texture = SubResource( 3 )
 script = ExtResource( 9 )
 
 [node name="MapLabels" type="Node2D" parent="ViewportContainer/Viewport/GameMap"]
-script = ExtResource( 11 )
 
 [node name="SelectionHex" type="Sprite" parent="ViewportContainer/Viewport/GameMap"]
 modulate = Color( 1, 1, 1, 0.521569 )

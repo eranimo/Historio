@@ -3,7 +3,6 @@ using RelEcs;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Linq;
 
 public class PolityGenerator : IGeneratorStep {
 	private HashSet<Entity> availableLandTiles;
@@ -28,8 +27,8 @@ public class PolityGenerator : IGeneratorStep {
 		var polityTerritory = new Dictionary<Entity, HashSet<Entity>>();
 		var polityColors = new Dictionary<Entity, Color>();
 
+		// create polities and capital buildings
 		for (int i = 0; i < numPolities; i++) {
-			// polity
 			var polityName = nameFactory.GetName();
 			var polityData = new PolityData{ name = polityName };
 			var polity = manager.state.Spawn();
@@ -41,6 +40,12 @@ public class PolityGenerator : IGeneratorStep {
 			territoryHexes.Add(sourceTile);
 			polityColors.Add(polity, polityColor);
 			polityTerritory.Add(polity, territoryHexes);
+
+			// add label
+			var label = new MapLabel();
+			label.LabelType = MapLabel.MapLabelType.Territory;
+			label.Text = polityName;
+			polity.Add(label);
 
 			// add capital building
 			var buildingData = new BuildingData { type = Building.BuildingType.Village };
@@ -56,6 +61,7 @@ public class PolityGenerator : IGeneratorStep {
 			manager.state.Send(new SpriteAdded { entity = building });
 		}
 
+		// grow each polities territory
 		for(var j = 0; j < maxTilesPerTerritory; j++) {
 			foreach (var (polity, territoryHexes) in polityTerritory) {
 				var newTile = findAvailableTileBorderingSet(territoryHexes);
@@ -66,6 +72,7 @@ public class PolityGenerator : IGeneratorStep {
 			}
 		}
 
+		// add territory entities
 		foreach (var (polity, territoryHexes) in polityTerritory) {
 			var polityColor = polityColors[polity];
 			// capital territory
@@ -73,10 +80,16 @@ public class PolityGenerator : IGeneratorStep {
 			var capitalTerritoryData = new TerritoryData {
 				name = capitalName,
 				color = polityColor,
+				ownerPolity = polity,
 			};
 			var capitalTerritory = manager.state.Spawn();
 			capitalTerritory.Add<TerritoryData>(capitalTerritoryData);
-			capitalTerritory.Add<TerritoryPolityOwner>(polity);
+
+			// add label
+			var label = new MapLabel();
+			label.LabelType = MapLabel.MapLabelType.Region;
+			label.Text = capitalName;
+			capitalTerritory.Add(label);
 
 			foreach (var tile in territoryHexes) {
 				manager.state.Send(new TerritoryTileUpdate { territory = capitalTerritory, tile = tile });
@@ -119,7 +132,6 @@ public class PolityGenerator : IGeneratorStep {
 				.OrderBy(item => item.numValidNeighbors)
 				.Select(item => item.tile)
 				.First();
-			// return neighboringAvailable.ElementAt(rng.Next(neighboringAvailable.Count));
 		}
 		return null;
 	}

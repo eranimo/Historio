@@ -28,6 +28,7 @@ public class GameMap : Node2D {
 
 	public MapBorders mapBorders;
 	public Node2D spriteContainer;
+	public Node2D mapLabels;
 
 	public override void _Ready() {
 		GD.PrintS("(GameMap) ready");
@@ -38,6 +39,7 @@ public class GameMap : Node2D {
 		hoverHex = (Sprite) GetNode<Sprite>("HoverHex");
 		spriteContainer = (Node2D) GetNode<Node2D>("SpriteContainer");
 		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
+		mapLabels = (Node2D) GetNode<Node2D>("MapLabels");
 
 		layout = new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
 

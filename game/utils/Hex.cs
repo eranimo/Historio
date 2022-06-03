@@ -365,4 +365,15 @@ public struct Layout {
 		double gridHeight = gridHeight = lastHexPoint.y + (HexSize.y / 2);
 		return new Point(gridWidth, gridHeight);
 	}
+
+	public Point Centroid(IEnumerable<Hex> hexes) {
+		double x = 0;
+		double y = 0;
+		foreach (var hex in hexes) {
+			var point = HexToPixel(hex);
+			x += point.x;
+			y += point.y;
+		}
+		return new Point(x / hexes.Count(), y / hexes.Count());
+	}
 }
