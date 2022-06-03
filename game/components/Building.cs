@@ -9,12 +9,12 @@ public static class Building {
 		Mine,
 	}
 
-	public static Dictionary<BuildingType, int> BuildingTypeIconIndex = new Dictionary<BuildingType, int> () {
-		{ BuildingType.Village, 1 },
-		{ BuildingType.Fort, 2 },
-		{ BuildingType.Farm, 3 },
-		{ BuildingType.Woodcutter, 4 },
-		{ BuildingType.Mine, 5 },
+	public static Dictionary<BuildingType, string> buildingTypeSpritePath = new Dictionary<BuildingType, string> () {
+		{ BuildingType.Village, "res://assets/sprites/buildings/village.tres" },
+		{ BuildingType.Fort, "res://assets/sprites/buildings/fort.tres" },
+		{ BuildingType.Farm, "res://assets/sprites/buildings/farm.tres" },
+		{ BuildingType.Woodcutter, "res://assets/sprites/buildings/woodcutter.tres" },
+		{ BuildingType.Mine, "res://assets/sprites/buildings/mine.tres" },
 	};
 }
 
@@ -23,9 +23,10 @@ public class BuildingData {
 }
 public class BuildingOwner {}
 
-public class BuildingAdded {
-	public RelEcs.Entity building;
+public class SpriteAdded {
+	public RelEcs.Entity entity;
 }
-public class BuildingRemoved {
-	public RelEcs.Entity building;
+
+public class SpriteRemoved {
+	public RelEcs.Entity entity;
 }

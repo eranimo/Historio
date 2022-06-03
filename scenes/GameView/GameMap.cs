@@ -1,5 +1,7 @@
 using Godot;
+using RelEcs;
 using System;
+using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Reactive.Linq;
@@ -13,18 +15,19 @@ public class GameMap : Node2D {
 	private TileMap grid;
 	private Sprite selectionHex;
 	private Sprite hoverHex;
-	private MapBorders mapBorders;
 
 	// subject events
-	private Subject<RelEcs.Entity> tileUpdates = new Subject<RelEcs.Entity>();
-	private Subject<RelEcs.Entity> pressedTile = new Subject<RelEcs.Entity>();
-	private Subject<RelEcs.Entity> clickedTile = new Subject<RelEcs.Entity>();
-	private Subject<RelEcs.Entity> hoveredTile = new Subject<RelEcs.Entity>();
+	private Subject<Entity> tileUpdates = new Subject<Entity>();
+	private Subject<Entity> pressedTile = new Subject<Entity>();
+	private Subject<Entity> clickedTile = new Subject<Entity>();
+	private Subject<Entity> hoveredTile = new Subject<Entity>();
 
-	public BehaviorSubject<RelEcs.Entity> selectedHex = new BehaviorSubject<RelEcs.Entity>(null);
+	public BehaviorSubject<Entity> selectedHex = new BehaviorSubject<Entity>(null);
 
 	private bool is_placing = false;
-	public MapBuildings mapBuildings;
+
+	public MapBorders mapBorders;
+	public Node2D spriteContainer;
 
 	public override void _Ready() {
 		GD.PrintS("(GameMap) ready");
@@ -33,13 +36,12 @@ public class GameMap : Node2D {
 		grid = (TileMap) GetNode<TileMap>("Grid");
 		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
 		hoverHex = (Sprite) GetNode<Sprite>("HoverHex");
-		mapBuildings = (MapBuildings) GetNode<MapBuildings>("MapBuildings");
+		spriteContainer = (Node2D) GetNode<Node2D>("SpriteContainer");
 		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
 
 		layout = new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
-		mapBuildings.InitMap(layout);
 
-		clickedTile.Subscribe((RelEcs.Entity tile) => {
+		clickedTile.Subscribe((Entity tile) => {
 			if (selectedHex.Value == tile) {
 				selectedHex.OnNext(null);
 			} else {
@@ -47,7 +49,7 @@ public class GameMap : Node2D {
 			}
 		});
 
-		selectedHex.Subscribe((RelEcs.Entity tile) => {
+		selectedHex.Subscribe((Entity tile) => {
 			if (tile is null) {
 				selectionHex.Hide();
 			} else {
@@ -57,7 +59,7 @@ public class GameMap : Node2D {
 			}
 		});
 
-		hoveredTile.Subscribe((RelEcs.Entity tile) => {
+		hoveredTile.Subscribe((Entity tile) => {
 			if (tile is null) {
 				hoverHex.Hide();
 			} else {
@@ -77,16 +79,16 @@ public class GameMap : Node2D {
 		mapBorders.RenderMap(this);
 
 		drawWorld();
-		tileUpdates.Subscribe((RelEcs.Entity tile) => this.drawTile(tile));
+		tileUpdates.Subscribe((Entity tile) => this.drawTile(tile));
 	}
 
 	private void drawWorld() {
-		foreach (RelEcs.Entity tile in game.manager.world.tiles) {
+		foreach (Entity tile in game.manager.world.tiles) {
 			drawTile(tile);
 		}
 	}
 
-	private void drawTile(RelEcs.Entity tile) {
+	private void drawTile(Entity tile) {
 		var coord = tile.Get<Hex>();
 		var data = tile.Get<TileData>();
 		grid.SetCell(coord.col, coord.row, 1);

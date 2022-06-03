@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 /**
 Territories are groups of cells 
@@ -12,9 +13,11 @@ public class MapBorders : Polygon2D {
 	}
 	private int? _selectedTerritory = null;
 	private Image hexTerritoryColorImage;
+	private Image hexAreaColorImage;
 	private ImageTexture hexTerritoryColors;
 	private ImageTexture hexAreaColors;
-	private Image hexAreaColorImage;
+
+	private Dictionary<RelEcs.Entity, int> activeTerritoryEntities = new Dictionary<RelEcs.Entity, int>();
 
 	public int? selectedTerritory {
 		get { return _selectedTerritory; }
@@ -42,9 +45,6 @@ public class MapBorders : Polygon2D {
 		this.shader.SetShaderParam("containerSize", containerSize);
 
 		this.setupMap();
-
-		this.updateTerritoryMap();
-		this.updateAreaMap();
 	}
 
 	public void setupMap() {
@@ -57,16 +57,22 @@ public class MapBorders : Polygon2D {
 		hexAreaColors = new ImageTexture();
 	}
 
-	private void updateTerritoryMap() {
+	public void updateTerritoryMap(List<(Hex hex, RelEcs.Entity territory)> updates) {
 		hexTerritoryColorImage.Lock();
-
-		var t1 = Color.FromHsv(0.1f, 0.9f, 0.8f, 1f / 10_000);
-		var t2 = Color.FromHsv(0.2f, 0.9f, 0.8f, 2f / 10_000);
-		hexTerritoryColorImage.SetPixel(1, 1, t1);
-		hexTerritoryColorImage.SetPixel(1, 2, t1);
-		hexTerritoryColorImage.SetPixel(2, 3, t2);
-		hexTerritoryColorImage.SetPixel(3, 3, t2);
-		hexTerritoryColorImage.SetPixel(3, 4, t2);
+		
+		foreach (var (hex, territory) in updates) {
+			var color = territory.Get<TerritoryData>().color;
+			int id;
+			if (activeTerritoryEntities.ContainsKey(territory)) {
+				id = activeTerritoryEntities[territory];
+			} else {
+				id = activeTerritoryEntities.Count + 1;
+				activeTerritoryEntities.Add(territory, id);
+			}
+			var c = new Color(color);
+			c.a = (float) id / 10_000;
+			hexTerritoryColorImage.SetPixel(hex.col, hex.row, c);
+		}
 
 		hexTerritoryColorImage.Unlock();
 		
@@ -74,17 +80,21 @@ public class MapBorders : Polygon2D {
 		this.shader.SetShaderParam("hexTerritoryColor", hexTerritoryColors);
 	}
 
-	private void updateAreaMap() {
+	public void updateAreaMap(List<(Hex hex, RelEcs.Entity territory)> updates) {
 		hexAreaColorImage.Lock();
 
-		var a1 = Color.FromHsv(0f, 0f, 0f, 1f / 10_000);
-		var a2 = Color.FromHsv(0f, 0f, 0f, 2f / 10_000);
-		var a3 = Color.FromHsv(0f, 0f, 0f, 3f / 10_000);
-		hexAreaColorImage.SetPixel(1, 1, a1);
-		hexAreaColorImage.SetPixel(1, 2, a1);
-		hexAreaColorImage.SetPixel(2, 3, a2);
-		hexAreaColorImage.SetPixel(3, 3, a2);
-		hexAreaColorImage.SetPixel(3, 4, a3);
+		foreach (var (hex, territory) in updates) {
+			var color = territory.Get<TerritoryData>().color;
+			int id;
+			if (activeTerritoryEntities.ContainsKey(territory)) {
+				id = activeTerritoryEntities[territory];
+			} else {
+				id = activeTerritoryEntities.Count + 1;
+				activeTerritoryEntities.Add(territory, id);
+			}
+			var c = Color.FromHsv(0f, 0f, 0f, (float) id / 10_000);
+			hexAreaColorImage.SetPixel(hex.col, hex.row, c);
+		}
 
 		hexAreaColorImage.Unlock();
 		

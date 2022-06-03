@@ -206,6 +206,21 @@ public class Hex {
 		return hex.col == col && hex.row == row; 
     }
 
+	public Hex Neighbor(Direction direction) {
+		return Hex.FromCube(ToCube(this).Neighbor(direction));
+	}
+
+	public Hex[] Neighbors() {
+		return new Hex[] {
+			Neighbor(Direction.SouthEast),
+			Neighbor(Direction.NorthEast),
+			Neighbor(Direction.North),
+			Neighbor(Direction.NorthWest),
+			Neighbor(Direction.SouthWest),
+			Neighbor(Direction.South),
+		};
+	}
+
 	static public Hex FromCube(CubeCoord h) {
 		int offset = Hex.ODD;
 		int col = h.q;

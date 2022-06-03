@@ -31,7 +31,9 @@ public class GameManager {
 		state = new RelEcs.World();
 		state.AddElement(world);
 
-		renderSystems.Add(new BuildingRenderSystem());
+		renderSystems
+			.Add(new SpriteRenderSystem())
+			.Add(new TerritoryRenderSystem());
 	}
 
 	// called when game starts

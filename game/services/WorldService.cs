@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using RelEcs;
 
 public class WorldService {
@@ -6,6 +7,7 @@ public class WorldService {
 	public List<Entity> tiles = new List<Entity>();
 	private Dictionary<Hex, Entity> tileByHex;
 	private Point size;
+	private Dictionary<Entity, Entity[]> neighbors = new Dictionary<Entity, Entity[]>();
 
 	public WorldService(GameManager manager) {
 		this.manager = manager;
@@ -26,6 +28,20 @@ public class WorldService {
 
 	public Entity GetTile(Hex coord) {
 		return tileByHex[coord];
+	}
+
+	public Entity[] GetNeighbors(Entity tile) {
+		if (neighbors.ContainsKey(tile)) {
+			return neighbors[tile];
+		} else {
+			var tileNeighbors = tile.Get<Hex>()
+				.Neighbors()
+				.Where(hex => IsValidTile(hex))
+				.Select(hex => GetTile(hex))
+				.ToArray();
+			neighbors.Add(tile, tileNeighbors);
+			return tileNeighbors;
+		}
 	}
 
 	public bool IsValidTile(Hex coord) {
