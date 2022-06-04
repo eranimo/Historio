@@ -1,6 +1,7 @@
 // FROM https://www.redblobgames.com/grids/hexagons/codegen/output/lib.cs
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Godot;
 
@@ -237,6 +238,18 @@ public class Hex {
 
 	public override string ToString() {
 		return base.ToString() + string.Format("({0}, {1})", this.row, this.col);
+	}
+
+	public List<Hex> Ring(int radius = 1) {
+		return Hex.ToCube(this).Ring(radius).Select(cube => Hex.FromCube(cube)).ToList();
+	}
+
+	public List<Hex> Spiral(int radius = 1) {
+		return Hex.ToCube(this).Spiral(radius).Select(cube => Hex.FromCube(cube)).ToList();
+	}
+
+	public int Distance(Hex hex) {
+		return Hex.ToCube(this).Distance(Hex.ToCube(hex));
 	}
 
 	public Vector2 ToVector() {

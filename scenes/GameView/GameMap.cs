@@ -42,8 +42,13 @@ public class GameMap : Node2D {
 		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
 		mapLabels = (Node2D) GetNode<Node2D>("MapLabels");
 		viewState = (TileMap) GetNode<TileMap>("ViewState");
+	}
 
-		layout = new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5));
+	public void RenderMap(Game game) {
+		GD.PrintS("(GameMap) render map");
+		this.game = game;
+		
+		layout = game.manager.state.GetElement<Layout>();
 
 		clickedTile.Subscribe((Entity tile) => {
 			if (selectedHex.Value == tile) {
@@ -72,11 +77,6 @@ public class GameMap : Node2D {
 				hoverHex.Position = layout.HexToPixel(coord).ToVector();
 			}
 		});
-	}
-
-	public void RenderMap(Game game) {
-		GD.PrintS("(GameMap) render map");
-		this.game = game;
 
 		selectionHex.Hide();
 		hoverHex.Hide();

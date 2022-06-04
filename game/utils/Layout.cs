@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Godot;
 
-public struct Layout {
+public class Layout {
 	public Layout(Point size, Point origin) {
 		this.size = size;
 		this.origin = origin;

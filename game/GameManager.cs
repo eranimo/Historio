@@ -30,6 +30,7 @@ public class GameManager {
 		world = new World(this);
 		state = new RelEcs.World();
 		state.AddElement(world);
+		state.AddElement(new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5)));
 		state.AddElement(new MapViewState(this));
 		
 		startSystems
@@ -44,8 +45,8 @@ public class GameManager {
 	// called when game starts
 	public void Start() {
 		Godot.GD.PrintS("(GameManager) start");
-		renderSystems.Run(state);
 		startSystems.Run(state);
+		renderSystems.Run(state);
 	}
 
 	// called when game stops

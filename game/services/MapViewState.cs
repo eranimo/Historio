@@ -18,23 +18,49 @@ public static class TileViewStateMethods {
 	}
 }
 
+/**
+
+Handles a world map of view states
+Values refer to how many neighboring tiles view state propagates to
+
+*/
 public class PolityViewState {
 	private readonly GameManager manager;
-	private Dictionary<Entity, TileViewState> state = new Dictionary<Entity, TileViewState>();
+	public Dictionary<Entity, TileViewState> state = new Dictionary<Entity, TileViewState>();
+	private Dictionary<Entity, int> values = new Dictionary<Entity, int>();
+	private HashSet<Entity> changedTiles = new HashSet<Entity>();
 
 	public PolityViewState(GameManager manager) {
 		this.manager = manager;
 	}
 
-	public void set(Entity tile, TileViewState viewState) {
-		state[tile] = viewState;
+	public void setTileValue(Entity tile, int value) {
+		changedTiles.Add(tile);
+		values[tile] = value;
 	}
 
-	public TileViewState get(Entity tile) {
+	private void set(Entity tile, TileViewState viewState) {
 		if (state.ContainsKey(tile)) {
-			return state[tile];
+			state[tile] = viewState;
+		} else {
+			state.Add(tile, viewState);
 		}
-		return TileViewState.Unexplored;
+	}
+
+	public void calculate() {
+		var layout = manager.state.GetElement<Layout>();
+		foreach (var tile in changedTiles) {
+			var hex = tile.Get<Hex>();
+			var value = values[tile];
+			set(tile, TileViewState.Observed);
+			foreach (var surroundingHex in hex.Ring(value)) {
+				if (manager.world.IsValidTile(surroundingHex)) {
+					var surroundingTile = manager.world.GetTile(surroundingHex);
+					set(surroundingTile, TileViewState.Observed);
+				}
+			}
+		}
+		changedTiles.Clear();
 	}
 }
 
