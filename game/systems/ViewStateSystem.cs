@@ -15,10 +15,9 @@ public class ViewStateSystem : ISystem {
 		// TODO: remove view state when polity removed
 
 		var changedPolities = new HashSet<Entity>();
-		commands.Receive((TerritoryTileUpdate e) => {
-			var territoryData = e.territory.Get<TerritoryData>();
-			mapViewState.getViewState(territoryData.ownerPolity).setTileValue(e.tile, 3);
-			changedPolities.Add(territoryData.ownerPolity);
+		commands.Receive((TileViewStateUpdated e) => {
+			mapViewState.getViewState(e.polity).setTileValue(e.tile, e.value);
+			changedPolities.Add(e.polity);
 		});
 
 		foreach (var polity in changedPolities) {

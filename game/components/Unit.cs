@@ -13,6 +13,7 @@ public static class Unit {
 
 public class UnitData {
 	public Unit.UnitType type;
+	public Entity ownerPolity;
 }
 
 public class UnitPolityOwner {}

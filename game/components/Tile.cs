@@ -60,6 +60,7 @@ public class TileData {
 
 // Trigger when tile view state for a polity updates
 public class TileViewStateUpdated {
+	public RelEcs.Entity polity;
 	public RelEcs.Entity tile;
-	public TileViewState viewState;
+	public int value;
 }

@@ -58,7 +58,7 @@ public class PolityGenerator : IGeneratorStep {
 				manager.state.AddElement(player);
 
 				// give the player a scout
-				AddUnit(hex, Unit.UnitType.Scout);
+				AddUnit(polity, hex, Unit.UnitType.Scout);
 			}
 		}
 
@@ -95,6 +95,7 @@ public class PolityGenerator : IGeneratorStep {
 			foreach (var tile in territoryHexes) {
 				tile.Add(new TerritoryTile { territory = capitalTerritory });
 				manager.state.Send(new TerritoryTileUpdate { territory = capitalTerritory, tile = tile });
+				manager.state.Send(new TileViewStateUpdated { tile = tile, polity = polity, value = 3 });
 			}
 		}
 	}
@@ -113,8 +114,8 @@ public class PolityGenerator : IGeneratorStep {
 		return building;
 	}
 
-	private Entity AddUnit(Hex hex, Unit.UnitType unitType) {
-		var unitData = new UnitData { type = unitType };
+	private Entity AddUnit(Entity polity, Hex hex, Unit.UnitType unitType) {
+		var unitData = new UnitData { type = unitType, ownerPolity = polity };
 		var unit = manager.state.Spawn();
 		unit.Add(unitData);
 		unit.Add(hex);
