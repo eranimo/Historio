@@ -49,22 +49,16 @@ public class PolityGenerator : IGeneratorStep {
 			label.Text = polityName;
 			polity.Add(label);
 
+			var hex = sourceTile.Get<Hex>();
 			// add capital building
-			var buildingData = new BuildingData { type = Building.BuildingType.Village };
-			var building = manager.state.Spawn();
-			var sourceTileCoord = sourceTile.Get<Hex>();
-			building.Add(buildingData);
-			building.Add(sourceTileCoord);
-
-			var sprite = new Sprite();
-			sprite.Centered = false;
-			sprite.Texture = ResourceLoader.Load<Texture>(Building.buildingTypeSpritePath[buildingData.type]);
-			building.Add(sprite);
-			manager.state.Send(new SpriteAdded { entity = building });
+			AddBuilding(hex, Building.BuildingType.Village);
 
 			if (i == 0) {
 				var player = new Player { playerPolity = polity };
 				manager.state.AddElement(player);
+
+				// give the player a scout
+				AddUnit(hex, Unit.UnitType.Scout);
 			}
 		}
 
@@ -103,6 +97,34 @@ public class PolityGenerator : IGeneratorStep {
 				manager.state.Send(new TerritoryTileUpdate { territory = capitalTerritory, tile = tile });
 			}
 		}
+	}
+
+	private Entity AddBuilding(Hex hex, Building.BuildingType buildingType) {
+		var buildingData = new BuildingData { type = buildingType };
+		var building = manager.state.Spawn();
+		building.Add(buildingData);
+		building.Add(hex);
+
+		var sprite = new Sprite();
+		sprite.Centered = false;
+		sprite.Texture = ResourceLoader.Load<Texture>(Building.buildingTypeSpritePath[buildingData.type]);
+		building.Add(sprite);
+		manager.state.Send(new SpriteAdded { entity = building });
+		return building;
+	}
+
+	private Entity AddUnit(Hex hex, Unit.UnitType unitType) {
+		var unitData = new UnitData { type = unitType };
+		var unit = manager.state.Spawn();
+		unit.Add(unitData);
+		unit.Add(hex);
+
+		var sprite = new Sprite();
+		sprite.Centered = false;
+		sprite.Texture = ResourceLoader.Load<Texture>(Unit.unitTypeSpritePath[unitType]);
+		unit.Add(sprite);
+		manager.state.Send(new SpriteAdded { entity = unit });
+		return unit;
 	}
 
 	private Entity findAvailableTile() {
