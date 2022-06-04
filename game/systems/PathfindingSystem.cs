@@ -14,18 +14,14 @@ public class PathfindingSystem : ISystem {
 			if (movement.currentTarget != null && movement.moveQueue.Count == 0) {
 				var fromTile = world.GetTile(hex);
 				var toTile = world.GetTile(movement.currentTarget);
-				GD.PrintS("From:", hex, "To:", movement.currentTarget);
+				// GD.PrintS("From:", hex, "To:", movement.currentTarget);
 				var path = pathfinder.getPath(fromTile, toTile);
 				if (path == null) {
-					GD.PrintS("No path to target, removing target");
+					// GD.PrintS("No path to target, removing target");
 					movement.currentTarget = null;
 				} else {
-					GD.PrintS("Found path:", String.Join(", ", path));
+					// GD.PrintS("Found path:", String.Join(", ", path));
 					movement.moveQueue = new Queue<Hex>(path);
-					// movement.moveQueue.Clear();
-					// foreach (var h in path) {
-					// 	movement.moveQueue.Enqueue(h);
-					// }
 				}
 			}
 		}

@@ -276,6 +276,14 @@ public class Hex {
 		return Hex.ToCube(this).Ring(radius).Select(cube => Hex.FromCube(cube)).ToList();
 	}
 
+	public List<Hex> Bubble(int radius = 1) {
+		var hexes = new List<Hex>();
+		for (int i = radius; i > 0; i--) {
+			hexes.AddRange(Ring(i));
+		}
+		return hexes;
+	}
+
 	public List<Hex> Spiral(int radius = 1) {
 		return Hex.ToCube(this).Spiral(radius).Select(cube => Hex.FromCube(cube)).ToList();
 	}

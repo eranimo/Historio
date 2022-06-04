@@ -94,8 +94,9 @@ public class PolityGenerator : IGeneratorStep {
 
 			foreach (var tile in territoryHexes) {
 				tile.Add(new TerritoryTile { territory = capitalTerritory });
+				tile.Add(new ViewStateNode { polity = polity, range = 3 });
 				manager.state.Send(new TerritoryTileUpdate { territory = capitalTerritory, tile = tile });
-				manager.state.Send(new TileViewStateUpdated { tile = tile, polity = polity, value = 3 });
+				manager.state.Send(new ViewStateNodeUpdated { entity = tile });
 			}
 		}
 	}
@@ -127,8 +128,10 @@ public class PolityGenerator : IGeneratorStep {
 		manager.state.Send(new SpriteAdded { entity = unit });
 
 		var movement = new Movement();
-		movement.currentTarget = hex.Neighbor(Direction.South, 5);
+		movement.currentTarget = hex.Neighbor(Direction.South, 5).Neighbor(Direction.SouthWest, 15);
 		unit.Add(movement);
+		unit.Add(new ViewStateNode { polity = polity, range = 2 });
+		manager.state.Send(new ViewStateNodeUpdated { entity = unit } );
 		return unit;
 	}
 

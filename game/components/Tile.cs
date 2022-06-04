@@ -1,4 +1,5 @@
 using System;
+using RelEcs;
 using System.Reactive.Subjects;
 using System.Collections.Generic;
 
@@ -58,9 +59,17 @@ public class TileData {
 	}
 }
 
-// Trigger when tile view state for a polity updates
-public class TileViewStateUpdated {
-	public RelEcs.Entity polity;
-	public RelEcs.Entity tile;
-	public int value;
+public class TileViewState {
+	public Dictionary<Entity, ViewState> politiesToViewStates = new Dictionary<Entity, ViewState>();
+}
+
+// Added to entities with Hex components to propagate areas where that polity is "observing" a tile
+public class ViewStateNode {
+	public Entity polity;
+	public int range;
+}
+
+// Trigger when view state nodes for a polity updates
+public class ViewStateNodeUpdated {
+	public Entity entity;
 }

@@ -15,17 +15,19 @@ public class ViewStateSystem : ISystem {
 		// TODO: remove view state when polity removed
 
 		var changedPolities = new HashSet<Entity>();
-		commands.Receive((TileViewStateUpdated e) => {
-			mapViewState.getViewState(e.polity).setTileValue(e.tile, e.value);
-			changedPolities.Add(e.polity);
+		commands.Receive((ViewStateNodeUpdated e) => {
+			var viewStateNode = e.entity.Get<ViewStateNode>();
+			mapViewState.getViewState(viewStateNode.polity).addNodeEntity(e.entity);
+			changedPolities.Add(viewStateNode.polity);
 		});
 
 		foreach (var polity in changedPolities) {
 			var polityViewState = mapViewState.getViewState(polity);
 			polityViewState.calculate();
 			if (player.playerPolity == polity) {
-				foreach (var (tile, tileViewState) in polityViewState.state) {
+				foreach (var tile in polityViewState.activeTiles) {
 					var hex = tile.Get<Hex>();
+					var tileViewState = polityViewState.get(tile);
 					gameMap.viewState.SetCell(hex.col, hex.row, tileViewState.GetTileMapTile());
 				}
 			}
@@ -40,7 +42,7 @@ public class ViewStateStartupSystem : ISystem {
 		// set view state tilemap to all unexplored
 		foreach (var tile in commands.GetElement<World>().tiles) {
 			var hex = tile.Get<Hex>();
-			gameMap.viewState.SetCell(hex.col, hex.row, TileViewState.Unexplored.GetTileMapTile());
+			gameMap.viewState.SetCell(hex.col, hex.row, ViewState.Unexplored.GetTileMapTile());
 		}
 	}
 }

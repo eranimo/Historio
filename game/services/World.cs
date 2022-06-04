@@ -22,6 +22,7 @@ public class World {
 		var tile = manager.state.Spawn();
 		tile.Add<Hex>(coord);
 		tile.Add<TileData>(tileData);
+		tile.Add(new TileViewState());
 		tileByHex.Add(coord, tile);
 		tiles.Add(tile);
 	}

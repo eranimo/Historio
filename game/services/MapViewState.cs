@@ -1,17 +1,17 @@
 using RelEcs;
 using System.Collections.Generic;
 
-public enum TileViewState {
+public enum ViewState {
 	Unexplored,
 	Unobserved,
 	Observed,
 }
 
 public static class TileViewStateMethods {
-	public static int GetTileMapTile(this TileViewState tileViewState) {
-		if (tileViewState == TileViewState.Unexplored) {
+	public static int GetTileMapTile(this ViewState tileViewState) {
+		if (tileViewState == ViewState.Unexplored) {
 			return 0;
-		} else if (tileViewState == TileViewState.Unobserved) {
+		} else if (tileViewState == ViewState.Unobserved) {
 			return 1;
 		}
 		return -1;
@@ -26,41 +26,50 @@ Values refer to how many neighboring tiles view state propagates to
 */
 public class PolityViewState {
 	private readonly GameManager manager;
-	public Dictionary<Entity, TileViewState> state = new Dictionary<Entity, TileViewState>();
-	private Dictionary<Entity, int> values = new Dictionary<Entity, int>();
-	private HashSet<Entity> changedTiles = new HashSet<Entity>();
+	private readonly Entity polity;
+	private HashSet<Entity> nodeEntities = new HashSet<Entity>();
+	public HashSet<Entity> activeTiles = new HashSet<Entity>();
 
-	public PolityViewState(GameManager manager) {
+	public PolityViewState(GameManager manager, Entity polity) {
 		this.manager = manager;
+		this.polity = polity;
 	}
 
-	public void setTileValue(Entity tile, int value) {
-		changedTiles.Add(tile);
-		values[tile] = value;
+	public void addNodeEntity(Entity entityWithNode) {
+		nodeEntities.Add(entityWithNode);
 	}
 
-	private void set(Entity tile, TileViewState viewState) {
-		if (state.ContainsKey(tile)) {
-			state[tile] = viewState;
-		} else {
-			state.Add(tile, viewState);
-		}
+	public ViewState get(Entity tile) {
+		return tile.Get<TileViewState>().politiesToViewStates[polity];
+	}
+
+	public void set(Entity tile, ViewState viewState) {
+		tile.Get<TileViewState>().politiesToViewStates[polity] = viewState;
 	}
 
 	public void calculate() {
 		var layout = manager.state.GetElement<Layout>();
-		foreach (var tile in changedTiles) {
-			var hex = tile.Get<Hex>();
-			var value = values[tile];
-			set(tile, TileViewState.Observed);
-			foreach (var surroundingHex in hex.Ring(value)) {
+
+		// set all previously explored tiles to Unobserved
+		foreach (var tile in activeTiles) {
+			set(tile, ViewState.Unobserved);
+		}
+
+		// mark all tiles within range of nodes as observed
+		foreach(var nodeEntity in nodeEntities) {
+			var hex = nodeEntity.Get<Hex>();
+			var viewStateNode = nodeEntity.Get<ViewStateNode>();
+			var tile = manager.world.GetTile(hex);
+
+			set(tile, ViewState.Observed);
+			foreach (var surroundingHex in hex.Bubble(viewStateNode.range)) {
 				if (manager.world.IsValidTile(surroundingHex)) {
 					var surroundingTile = manager.world.GetTile(surroundingHex);
-					set(surroundingTile, TileViewState.Observed);
+					activeTiles.Add(surroundingTile);
+					set(surroundingTile, ViewState.Observed);
 				}
 			}
 		}
-		changedTiles.Clear();
 	}
 }
 
@@ -75,8 +84,8 @@ public class MapViewState {
 		this.manager = manager;
 	}
 
-	public void add(Entity entity) {
-		polityViewState.Add(entity, new PolityViewState(manager));
+	public void add(Entity polity) {
+		polityViewState.Add(polity, new PolityViewState(manager, polity));
 	}
 
 	public void remove(Entity polity) {
