@@ -2,14 +2,14 @@ using System.Collections.Generic;
 using System.Linq;
 using RelEcs;
 
-public class WorldService {
+public class World {
 	private readonly GameManager manager;
 	public List<Entity> tiles = new List<Entity>();
 	private Dictionary<Hex, Entity> tileByHex;
 	private Point size;
 	private Dictionary<Entity, Entity[]> neighbors = new Dictionary<Entity, Entity[]>();
 
-	public WorldService(GameManager manager) {
+	public World(GameManager manager) {
 		this.manager = manager;
 	}
 

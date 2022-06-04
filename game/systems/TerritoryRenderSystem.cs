@@ -15,7 +15,7 @@ public class TerritoryRenderSystem : ISystem {
 
 	public void Run(Commands commands) {
 		var gameMap = commands.GetElement<GameMap>();
-		var world = commands.GetElement<WorldService>();
+		var world = commands.GetElement<World>();
 
 		hexUpdates.Clear();
 		territoryUpdates.Clear();

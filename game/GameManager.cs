@@ -24,10 +24,10 @@ public class GameManager {
 	// runs every day and at game start
    	SystemGroup renderSystems = new SystemGroup();
 
-	public WorldService world;
+	public World world;
 
 	public GameManager() {
-		world = new WorldService(this);
+		world = new World(this);
 		state = new RelEcs.World();
 		state.AddElement(world);
 
