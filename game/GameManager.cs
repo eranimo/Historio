@@ -30,17 +30,22 @@ public class GameManager {
 		world = new World(this);
 		state = new RelEcs.World();
 		state.AddElement(world);
+		state.AddElement(new MapViewState(this));
+		
+		startSystems
+			.Add(new ViewStateStartupSystem());
 
 		renderSystems
 			.Add(new SpriteRenderSystem())
-			.Add(new TerritoryRenderSystem());
+			.Add(new TerritoryRenderSystem())
+			.Add(new ViewStateSystem());
 	}
 
 	// called when game starts
 	public void Start() {
 		Godot.GD.PrintS("(GameManager) start");
-		startSystems.Run(state);
 		renderSystems.Run(state);
+		startSystems.Run(state);
 	}
 
 	// called when game stops

@@ -58,10 +58,8 @@ public class TileData {
 	}
 }
 
-public class RiverConnection {
-	public Direction dir;
-}
-
-public class RoadConnection {
-	public Direction dir;
+// Trigger when tile view state for a polity updates
+public class TileViewStateUpdated {
+	public RelEcs.Entity tile;
+	public TileViewState viewState;
 }

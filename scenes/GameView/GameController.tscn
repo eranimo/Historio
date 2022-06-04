@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://assets/terrain.tres" type="TileSet" id=1]
 [ext_resource path="res://assets/features.tres" type="TileSet" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://scenes/GameView/GameController.cs" type="Script" id=8]
 [ext_resource path="res://scenes/GameView/MapBorders.cs" type="Script" id=9]
 [ext_resource path="res://scenes/GameView/MapBordersShader.tres" type="Shader" id=10]
+[ext_resource path="res://assets/viewstate.png" type="Texture" id=11]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grid-ui.png 0"
@@ -53,6 +54,36 @@ shader_param/territoryGradientOpacity = 0.6
 shader_param/selectedTerritory = null
 
 [sub_resource type="NoiseTexture" id=3]
+
+[sub_resource type="TileSet" id=4]
+0/name = "viewstate.png 0"
+0/texture = ExtResource( 11 )
+0/tex_offset = Vector2( 0, 0 )
+0/modulate = Color( 1, 1, 1, 1 )
+0/region = Rect2( 0, 0, 32, 32 )
+0/tile_mode = 0
+0/occluder_offset = Vector2( 0, 0 )
+0/navigation_offset = Vector2( 0, 0 )
+0/shape_offset = Vector2( 0, 0 )
+0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+0/shape_one_way = false
+0/shape_one_way_margin = 0.0
+0/shapes = [  ]
+0/z_index = 0
+1/name = "viewstate.png 1"
+1/texture = ExtResource( 11 )
+1/tex_offset = Vector2( 0, 0 )
+1/modulate = Color( 1, 1, 1, 1 )
+1/region = Rect2( 32, 0, 32, 32 )
+1/tile_mode = 0
+1/occluder_offset = Vector2( 0, 0 )
+1/navigation_offset = Vector2( 0, 0 )
+1/shape_offset = Vector2( 0, 0 )
+1/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+1/shape_one_way = false
+1/shape_one_way_margin = 0.0
+1/shapes = [  ]
+1/z_index = 0
 
 [node name="GameController" type="Control"]
 anchor_right = 1.0
@@ -111,6 +142,13 @@ texture = SubResource( 3 )
 script = ExtResource( 9 )
 
 [node name="MapLabels" type="Node2D" parent="ViewportContainer/Viewport/GameMap"]
+
+[node name="ViewState" type="TileMap" parent="ViewportContainer/Viewport/GameMap"]
+tile_set = SubResource( 4 )
+cell_size = Vector2( 25, 28 )
+cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
+cell_half_offset = 1
+format = 1
 
 [node name="SelectionHex" type="Sprite" parent="ViewportContainer/Viewport/GameMap"]
 modulate = Color( 1, 1, 1, 0.521569 )

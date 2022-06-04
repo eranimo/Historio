@@ -41,6 +41,8 @@ public class PolityGenerator : IGeneratorStep {
 			polityColors.Add(polity, polityColor);
 			polityTerritory.Add(polity, territoryHexes);
 
+			manager.state.Send(new PolityAdded { polity = polity });
+
 			// add label
 			var label = new MapLabel();
 			label.LabelType = MapLabel.MapLabelType.Territory;
@@ -59,6 +61,11 @@ public class PolityGenerator : IGeneratorStep {
 			sprite.Texture = ResourceLoader.Load<Texture>(Building.buildingTypeSpritePath[buildingData.type]);
 			building.Add(sprite);
 			manager.state.Send(new SpriteAdded { entity = building });
+
+			if (i == 0) {
+				var player = new Player { playerPolity = polity };
+				manager.state.AddElement(player);
+			}
 		}
 
 		// grow each polities territory
@@ -92,6 +99,7 @@ public class PolityGenerator : IGeneratorStep {
 			capitalTerritory.Add(label);
 
 			foreach (var tile in territoryHexes) {
+				tile.Add(new TerritoryTile { territory = capitalTerritory });
 				manager.state.Send(new TerritoryTileUpdate { territory = capitalTerritory, tile = tile });
 			}
 		}
