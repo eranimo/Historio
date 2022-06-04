@@ -32,8 +32,10 @@ public class GameManager {
 		state.AddElement(world);
 		state.AddElement(new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5)));
 		state.AddElement(new MapViewState(this));
+		state.AddElement(new Pathfinder(this));
 
 		runSystems
+			.Add(new PathfindingSystem())
 			.Add(new MovementSystem());
 		
 		startSystems
@@ -60,7 +62,6 @@ public class GameManager {
 	public void Process(GameDate date) {
 		runSystems.Run(state);
 		renderSystems.Run(state);
-		Godot.GD.PrintS("Process", date.dayTicks);
 		state.Tick();
 	}
 }

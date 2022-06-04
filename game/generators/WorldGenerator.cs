@@ -83,6 +83,7 @@ public class WorldGenerator : IGeneratorStep {
 			}
 		}
 		GD.PrintS($"Added {manager.world.tiles.Count} tiles");
+		manager.state.GetElement<Pathfinder>().setup();
 
 		manager.state.AddElement<WorldData>(new WorldData {
 			worldSize = new Hex(TileWidth, TileHeight),

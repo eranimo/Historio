@@ -196,10 +196,20 @@ public class Hex {
 		this.col = col;
 		this.row = row;
 	}
-	public readonly int col;
-	public readonly int row;
+	public int col;
+	public int row;
 	static public int EVEN = 1;
 	static public int ODD = -1;
+
+	public void Set(Hex hex) {
+		row = hex.row;
+		col = hex.col;
+	}
+
+	public void Set(int col, int row) {
+		this.row = row;
+		this.col = col;
+	}
 
 	public override int GetHashCode() {
 		return (col, row).GetHashCode();
@@ -209,6 +219,20 @@ public class Hex {
         var hex = obj as Hex;
 		return hex.col == col && hex.row == row; 
     }
+
+	public static bool operator == (Hex h1, Hex h2) {
+		if (((object) h1) == null || ((object) h2) == null) {
+			return System.Object.Equals(h1, h2);
+		}
+		return h1.Equals(h2);
+	}
+
+	public static bool operator != (Hex h1, Hex h2) {
+		if (((object) h1) == null || ((object) h2) == null) {
+			return !System.Object.Equals(h1, h2);
+		}
+		return !h1.Equals(h2);
+	}
 
 	public Hex Neighbor(Direction direction) {
 		return Hex.FromCube(ToCube(this).Neighbor(direction));
@@ -262,6 +286,10 @@ public class Hex {
 
 	public Vector2 ToVector() {
 		return new Vector2((float) col, (float) row);
+	}
+
+	public static Hex FromVector(Vector2 vector) {
+		return new Hex((int) vector.x, (int) vector.y);
 	}
 }
 

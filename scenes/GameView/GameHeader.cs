@@ -26,7 +26,6 @@ public class GameHeader : PanelContainer {
 		playButton.Connect("pressed", this, nameof(handlePlayPressed));
 
 		gameView.game.PlayState.Subscribe((bool isPlaying) => {
-			GD.PrintS("isPlaying", isPlaying);
 			if (isPlaying) {
 				playButton.Text = "Pause";
 			} else {
