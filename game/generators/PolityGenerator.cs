@@ -124,6 +124,10 @@ public class PolityGenerator : IGeneratorStep {
 		sprite.Texture = ResourceLoader.Load<Texture>(Unit.unitTypeSpritePath[unitType]);
 		unit.Add(sprite);
 		manager.state.Send(new SpriteAdded { entity = unit });
+
+		var movement = new Movement();
+		movement.currentTarget = hex.Neighbor(Direction.South);
+		unit.Add(movement);
 		return unit;
 	}
 

@@ -92,6 +92,10 @@ public struct CubeCoord {
 		return Add(CubeCoord.Direction(direction));
 	}
 
+	public CubeCoord Neighbor(Direction direction, int distance) {
+		return Add(CubeCoord.Direction(direction).Scale(distance));
+	}
+
 	static public List<CubeCoord> diagonals = new List<CubeCoord> {
 		new CubeCoord(2, -1, -1),
 		new CubeCoord(1, -2, 1),
@@ -208,6 +212,10 @@ public class Hex {
 
 	public Hex Neighbor(Direction direction) {
 		return Hex.FromCube(ToCube(this).Neighbor(direction));
+	}
+
+	public Hex Neighbor(Direction direction, int distance) {
+		return Hex.FromCube(ToCube(this).Neighbor(direction, distance));
 	}
 
 	public Hex[] Neighbors() {

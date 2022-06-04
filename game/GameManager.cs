@@ -32,6 +32,9 @@ public class GameManager {
 		state.AddElement(world);
 		state.AddElement(new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5)));
 		state.AddElement(new MapViewState(this));
+
+		runSystems
+			.Add(new MovementSystem());
 		
 		startSystems
 			.Add(new ViewStateStartupSystem());
