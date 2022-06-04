@@ -94,9 +94,6 @@ script = ExtResource( 8 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 stretch = true
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Viewport" type="Viewport" parent="ViewportContainer"]
 size = Vector2( 1024, 600 )
@@ -148,6 +145,7 @@ tile_set = SubResource( 4 )
 cell_size = Vector2( 25, 28 )
 cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
 cell_half_offset = 1
+cell_clip_uv = true
 format = 1
 
 [node name="SelectionHex" type="Sprite" parent="ViewportContainer/Viewport/GameMap"]

@@ -70,5 +70,9 @@ public class Camera : Camera2D {
 		);
 		gameView.zoom.OnNext(Zoom.x);
 		Offset += ((viewportSize * 0.5f) - mousePosition) * (Zoom - prevZoom);
+		Offset = new Vector2(
+			(float) Math.Round(Offset.x),
+			(float) Math.Round(Offset.y)
+		);
 	}
 }
