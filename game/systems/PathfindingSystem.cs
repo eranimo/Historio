@@ -8,13 +8,13 @@ public class PathfindingSystem : ISystem {
 	public void Run(Commands commands) {
 		var world = commands.GetElement<World>();
 		var pathfinder = commands.GetElement<Pathfinder>();
-		var query = commands.Query<Hex, Movement>();
+		var query = commands.Query<Location, Movement>();
 
-		foreach (var (hex, movement) in query) {
+		foreach (var (location, movement) in query) {
 			if (movement.currentTarget != null && movement.moveQueue.Count == 0) {
-				var fromTile = world.GetTile(hex);
+				var fromTile = world.GetTile(location.hex);
 				var toTile = world.GetTile(movement.currentTarget);
-				// GD.PrintS("From:", hex, "To:", movement.currentTarget);
+				// GD.PrintS("From:", location, "To:", movement.currentTarget);
 				var path = pathfinder.getPath(fromTile, toTile);
 				if (path == null) {
 					// GD.PrintS("No path to target, removing target");

@@ -196,20 +196,10 @@ public class Hex {
 		this.col = col;
 		this.row = row;
 	}
-	public int col;
-	public int row;
+	public readonly int col;
+	public readonly int row;
 	static public int EVEN = 1;
 	static public int ODD = -1;
-
-	public void Set(Hex hex) {
-		row = hex.row;
-		col = hex.col;
-	}
-
-	public void Set(int col, int row) {
-		this.row = row;
-		this.col = col;
-	}
 
 	public override int GetHashCode() {
 		return (col, row).GetHashCode();

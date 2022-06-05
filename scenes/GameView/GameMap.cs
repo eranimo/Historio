@@ -63,7 +63,7 @@ public class GameMap : Node2D {
 				selectionHex.Hide();
 			} else {
 				selectionHex.Show();
-				var coord = tile.Get<Hex>();
+				var coord = tile.Get<Location>().hex;
 				selectionHex.Position = layout.HexToPixel(coord).ToVector();
 			}
 		});
@@ -73,7 +73,7 @@ public class GameMap : Node2D {
 				hoverHex.Hide();
 			} else {
 				hoverHex.Show();
-				var coord = tile.Get<Hex>();
+				var coord = tile.Get<Location>().hex;
 				hoverHex.Position = layout.HexToPixel(coord).ToVector();
 			}
 		});
@@ -93,7 +93,7 @@ public class GameMap : Node2D {
 	}
 
 	private void drawTile(Entity tile) {
-		var coord = tile.Get<Hex>();
+		var coord = tile.Get<Location>().hex;
 		var data = tile.Get<TileData>();
 		grid.SetCell(coord.col, coord.row, 1);
 		terrain.SetCell(coord.col, coord.row, data.GetTerrainTilesetIndex().Value);

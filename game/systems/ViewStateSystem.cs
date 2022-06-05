@@ -26,9 +26,9 @@ public class ViewStateSystem : ISystem {
 			polityViewState.calculate();
 			if (player.playerPolity == polity) {
 				foreach (var tile in polityViewState.activeTiles) {
-					var hex = tile.Get<Hex>();
+					var location = tile.Get<Location>();
 					var tileViewState = polityViewState.get(tile);
-					gameMap.viewState.SetCell(hex.col, hex.row, tileViewState.GetTileMapTile());
+					gameMap.viewState.SetCell(location.hex.col, location.hex.row, tileViewState.GetTileMapTile());
 				}
 			}
 		}
@@ -41,8 +41,8 @@ public class ViewStateStartupSystem : ISystem {
 
 		// set view state tilemap to all unexplored
 		foreach (var tile in commands.GetElement<World>().tiles) {
-			var hex = tile.Get<Hex>();
-			gameMap.viewState.SetCell(hex.col, hex.row, ViewState.Unexplored.GetTileMapTile());
+			var location = tile.Get<Location>();
+			gameMap.viewState.SetCell(location.hex.col, location.hex.row, ViewState.Unexplored.GetTileMapTile());
 		}
 	}
 }

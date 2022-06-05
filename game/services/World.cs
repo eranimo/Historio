@@ -20,7 +20,7 @@ public class World {
 
 	public void AddTile(Hex coord, TileData tileData) {
 		var tile = manager.state.Spawn();
-		tile.Add<Hex>(coord);
+		tile.Add<Location>(new Location { hex = coord });
 		tile.Add<TileData>(tileData);
 		tile.Add(new TileViewState());
 		tileByHex.Add(coord, tile);
@@ -35,7 +35,7 @@ public class World {
 		if (neighbors.ContainsKey(tile)) {
 			return neighbors[tile];
 		} else {
-			var tileNeighbors = tile.Get<Hex>()
+			var tileNeighbors = tile.Get<Location>().hex
 				.Neighbors()
 				.Where(hex => IsValidTile(hex))
 				.Select(hex => GetTile(hex))

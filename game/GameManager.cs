@@ -48,7 +48,8 @@ public class GameManager {
 	}
 
 	// called when game starts
-	public void Start() {
+	public void Start(GameDate date) {
+		state.AddElement<GameDate>(date);
 		Godot.GD.PrintS("(GameManager) start");
 		startSystems.Run(state);
 		renderSystems.Run(state);
@@ -59,7 +60,7 @@ public class GameManager {
 		stopSystems.Run(state);
 	}
 
-	public void Process(GameDate date) {
+	public void Process() {
 		runSystems.Run(state);
 		renderSystems.Run(state);
 		state.Tick();

@@ -22,9 +22,9 @@ public class TerritoryRenderSystem : ISystem {
 		polityUpdates.Clear();
 		
 		commands.Receive((TerritoryTileUpdate e) => {
-			var hex = e.tile.Get<Hex>();
+			var location = e.tile.Get<Location>();
 			var territoryData = e.territory.Get<TerritoryData>();
-			hexUpdates.Add((hex, e.territory));
+			hexUpdates.Add((location.hex, e.territory));
 			territoryUpdates.Add(e.territory);
 			polityUpdates.Add(territoryData.ownerPolity);
 		});

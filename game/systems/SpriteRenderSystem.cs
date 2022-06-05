@@ -5,9 +5,9 @@ public class SpriteRenderSystem : ISystem {
 		var gameMap = commands.GetElement<GameMap>();
 
 		commands.Receive((SpriteAdded e) => {
-			var hex = e.entity.Get<Hex>();
+			var location = e.entity.Get<Location>();
 			var sprite = e.entity.Get<Godot.Sprite>();
-			sprite.Position = gameMap.layout.HexToPixel(hex).ToVector();
+			sprite.Position = gameMap.layout.HexToPixel(location.hex).ToVector();
 			gameMap.spriteContainer.AddChild(sprite);
 		});
 

@@ -49,7 +49,7 @@ public class PolityGenerator : IGeneratorStep {
 			label.Text = polityName;
 			polity.Add(label);
 
-			var hex = sourceTile.Get<Hex>();
+			var hex = sourceTile.Get<Location>().hex;
 			// add capital building
 			AddBuilding(hex, Building.BuildingType.Village);
 
@@ -105,7 +105,7 @@ public class PolityGenerator : IGeneratorStep {
 		var buildingData = new BuildingData { type = buildingType };
 		var building = manager.state.Spawn();
 		building.Add(buildingData);
-		building.Add(hex);
+		building.Add(new Location { hex = hex });
 
 		var sprite = new Sprite();
 		sprite.Centered = false;
@@ -119,7 +119,7 @@ public class PolityGenerator : IGeneratorStep {
 		var unitData = new UnitData { type = unitType, ownerPolity = polity };
 		var unit = manager.state.Spawn();
 		unit.Add(unitData);
-		unit.Add(hex);
+		unit.Add(new Location { hex = hex });
 
 		var sprite = new Sprite();
 		sprite.Centered = false;

@@ -206,6 +206,7 @@ size_flags_horizontal = 3
 [node name="PlayButton" type="Button" parent="GameHeader/MarginContainer/HBoxContainer/Left"]
 margin_right = 38.0
 margin_bottom = 20.0
+focus_mode = 0
 text = "Play"
 
 [node name="DateDisplay" type="Label" parent="GameHeader/MarginContainer/HBoxContainer/Left"]

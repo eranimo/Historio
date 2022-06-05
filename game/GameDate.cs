@@ -1,6 +1,6 @@
 using System;
 
-public struct GameDate {
+public class GameDate {
 	public int dayTicks;
 	private DateTime dateTime;
 

@@ -22,14 +22,14 @@ public class Pathfinder {
 		aStar.Clear();
 
 		foreach (var tile in manager.world.tiles) {
-			var hex = tile.Get<Hex>();
+			var hex = tile.Get<Location>().hex;
 			var id = idToTile.Count + 1;
 			aStar.AddPoint(id, hex.ToVector());
 			idToTile.Add(id, tile);
 			tileToID.Add(tile, id);
 		}
 		foreach (var tile in manager.world.tiles) {
-			var hex = tile.Get<Hex>();
+			var hex = tile.Get<Location>().hex;
 			foreach (var neighborHex in hex.Neighbors()) {
 				if (manager.world.IsValidTile(neighborHex)) {
 					var neighborTile = manager.world.GetTile(neighborHex);

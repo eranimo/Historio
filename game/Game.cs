@@ -44,7 +44,7 @@ public class GameGenerator {
 - contains GameManager
 */
 public class Game {
-	public readonly int TICKS_PER_DAY = 1;
+	public readonly int TICKS_PER_DAY = 10;
 	private BehaviorSubject<bool> playState = new BehaviorSubject<bool>(false);
 	private BehaviorSubject<GameSpeed> speed = new BehaviorSubject<GameSpeed>(GameSpeed.Normal);
 
@@ -54,7 +54,7 @@ public class Game {
 	private int ticksInDay = 0;
 
 	public Game() {
-		this.date = new GameDate();
+		this.date = new GameDate(0);
 		this.manager = new GameManager();
 	}
 
@@ -89,7 +89,7 @@ public class Game {
 	private void ProcessDay() {
 		date.NextDay();
 		gameDateChanged.OnNext(date);
-		manager.Process(date);
+		manager.Process();
 	}
 
 	private int SpeedTicks {
@@ -104,7 +104,7 @@ public class Game {
 	}
 
 	public void Start() {
-		manager.Start();
+		manager.Start(this.date);
 	}
 
 }

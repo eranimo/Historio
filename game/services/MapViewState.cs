@@ -57,7 +57,7 @@ public class PolityViewState {
 
 		// mark all tiles within range of nodes as observed
 		foreach(var nodeEntity in nodeEntities) {
-			var hex = nodeEntity.Get<Hex>();
+			var hex = nodeEntity.Get<Location>().hex;
 			var viewStateNode = nodeEntity.Get<ViewStateNode>();
 			var tile = manager.world.GetTile(hex);
 
