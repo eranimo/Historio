@@ -6,7 +6,7 @@ public class GameController : Control {
 
 	public override void _Ready() {
 		GD.PrintS("(GameController) start game");
-		var gameMap = GetNode<GameMap>("ViewportContainer/Viewport/GameMap");
+		var gameMap = GetNode<GameMap>("GameViewport/Viewport/GameMap");
 		game.manager.state.AddElement<GameMap>(gameMap);
 		gameMap.RenderMap(game);
 		game.Start();

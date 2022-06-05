@@ -20,6 +20,10 @@ public class Camera : Camera2D {
 	public override void _Input(InputEvent @event) {
 		base._Input(@event);
 
+		if (!gameView.mapInputEnabled.Value) {
+			return;
+		}
+
 		if (@event.IsActionPressed("view_zoom_in")) {
 			zoomCamera(-ZOOM_SPEED, ((InputEventMouseButton) @event).Position);
 		} else if (@event.IsActionReleased("view_zoom_out")) {
@@ -39,6 +43,9 @@ public class Camera : Camera2D {
 	}
 
 	public override void _PhysicsProcess(float delta) {
+		if (!gameView.mapInputEnabled.Value) {
+			return;
+		}
 		moveDirection.x = 0;
 		moveDirection.y = 0;
 		var moveAmount = BASE_MOVE_AMOUNT;

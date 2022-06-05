@@ -10,6 +10,7 @@ public class GameView : Control {
 
 	public Game game;
 	public BehaviorSubject<float> zoom = new BehaviorSubject<float>(1);
+	public BehaviorSubject<bool> mapInputEnabled = new BehaviorSubject<bool>(false);
 	public IObservable<float> OnZoom { get => zoom; }
 
 	public override void _Ready() {
