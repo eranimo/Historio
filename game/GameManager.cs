@@ -74,12 +74,16 @@ public class GameManager {
 			renderSystems.Run(state);
 			state.Tick();
 		} catch (Exception err) {
-			GD.PrintErr("Error processing tick: ", err);
+			GD.PrintErr("Error processing day: ", err);
 		}
 	}
 
 	public void Process(float delta) {
-		physicsDelta.delta = delta;
-		tickSystems.Run(state);
+		try {
+			physicsDelta.delta = delta;
+			tickSystems.Run(state);
+		} catch (Exception err) {
+			GD.PrintErr("Error processing tick: ", err);
+		}
 	}
 }

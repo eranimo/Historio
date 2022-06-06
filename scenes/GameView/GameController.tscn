@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://assets/terrain.tres" type="TileSet" id=1]
 [ext_resource path="res://assets/features.tres" type="TileSet" id=2]
@@ -12,6 +12,7 @@
 [ext_resource path="res://scenes/GameView/MapBordersShader.tres" type="Shader" id=10]
 [ext_resource path="res://assets/viewstate.png" type="Texture" id=11]
 [ext_resource path="res://scenes/GameView/GameViewport.cs" type="Script" id=12]
+[ext_resource path="res://scenes/GameView/MapLabels.cs" type="Script" id=13]
 
 [sub_resource type="TileSet" id=1]
 0/name = "grid-ui.png 0"
@@ -142,6 +143,7 @@ script = ExtResource( 9 )
 [node name="SpriteContainer" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 
 [node name="MapLabels" type="Node2D" parent="GameViewport/Viewport/GameMap"]
+script = ExtResource( 13 )
 
 [node name="ViewState" type="TileMap" parent="GameViewport/Viewport/GameMap"]
 tile_set = SubResource( 4 )
@@ -227,12 +229,10 @@ margin_bottom = 20.0
 text = "Menu"
 
 [node name="PolityPanel" type="PanelContainer" parent="."]
+visible = false
 margin_top = 40.0
 margin_right = 383.0
 margin_bottom = 69.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="MarginContainer" type="MarginContainer" parent="PolityPanel"]
 margin_left = 7.0
@@ -254,9 +254,9 @@ scroll_active = false
 
 [node name="TabContainer" type="TabContainer" parent="PolityPanel/MarginContainer/VBoxContainer"]
 visible = false
-margin_top = 18.0
+margin_top = 19.0
 margin_right = 369.0
-margin_bottom = 263.0
+margin_bottom = 55.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 tab_align = 0
@@ -284,3 +284,105 @@ margin_top = 13.0
 margin_right = 78.0
 margin_bottom = 27.0
 text = "Polity Name"
+
+[node name="Control" type="Control" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -40.0
+margin_right = 113.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -9.0
+margin_right = 238.0
+
+[node name="GridContainer" type="GridContainer" parent="Control/ScrollContainer"]
+margin_right = 176.0
+margin_bottom = 60.0
+columns = 4
+
+[node name="PanelContainer" type="PanelContainer" parent="Control/ScrollContainer/GridContainer"]
+margin_right = 41.0
+margin_bottom = 28.0
+
+[node name="Label" type="Label" parent="Control/ScrollContainer/GridContainer/PanelContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 34.0
+margin_bottom = 21.0
+text = "Unit"
+
+[node name="PanelContainer2" type="PanelContainer" parent="Control/ScrollContainer/GridContainer"]
+margin_left = 45.0
+margin_right = 86.0
+margin_bottom = 28.0
+
+[node name="Label" type="Label" parent="Control/ScrollContainer/GridContainer/PanelContainer2"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 34.0
+margin_bottom = 21.0
+text = "Unit"
+
+[node name="PanelContainer3" type="PanelContainer" parent="Control/ScrollContainer/GridContainer"]
+margin_left = 90.0
+margin_right = 131.0
+margin_bottom = 28.0
+
+[node name="Label" type="Label" parent="Control/ScrollContainer/GridContainer/PanelContainer3"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 34.0
+margin_bottom = 21.0
+text = "Unit"
+
+[node name="PanelContainer4" type="PanelContainer" parent="Control/ScrollContainer/GridContainer"]
+margin_left = 135.0
+margin_right = 176.0
+margin_bottom = 28.0
+
+[node name="Label" type="Label" parent="Control/ScrollContainer/GridContainer/PanelContainer4"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 34.0
+margin_bottom = 21.0
+text = "Unit"
+
+[node name="PanelContainer5" type="PanelContainer" parent="Control/ScrollContainer/GridContainer"]
+margin_top = 32.0
+margin_right = 41.0
+margin_bottom = 60.0
+
+[node name="Label" type="Label" parent="Control/ScrollContainer/GridContainer/PanelContainer5"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 34.0
+margin_bottom = 21.0
+text = "Unit"
+
+[node name="PanelContainer6" type="PanelContainer" parent="Control/ScrollContainer/GridContainer"]
+margin_left = 45.0
+margin_top = 32.0
+margin_right = 86.0
+margin_bottom = 60.0
+
+[node name="Label" type="Label" parent="Control/ScrollContainer/GridContainer/PanelContainer6"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 34.0
+margin_bottom = 21.0
+text = "Unit"
+
+[node name="PanelContainer7" type="PanelContainer" parent="Control/ScrollContainer/GridContainer"]
+margin_left = 90.0
+margin_top = 32.0
+margin_right = 131.0
+margin_bottom = 60.0
+
+[node name="Label" type="Label" parent="Control/ScrollContainer/GridContainer/PanelContainer7"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 34.0
+margin_bottom = 21.0
+text = "Unit"

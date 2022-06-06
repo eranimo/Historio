@@ -10,6 +10,7 @@ public class GameMap : Node2D {
 	public Game game;
 	public Layout layout;
 
+	private Camera camera;
 	private TileMap terrain;
 	private TileMap features;
 	private TileMap grid;
@@ -28,11 +29,12 @@ public class GameMap : Node2D {
 
 	public MapBorders mapBorders;
 	public Node2D spriteContainer;
-	public Node2D mapLabels;
+	public MapLabels mapLabels;
 	public TileMap viewState;
 
 	public override void _Ready() {
 		GD.PrintS("(GameMap) ready");
+		camera = (Camera) GetNode<Camera>("Camera");
 		terrain = (TileMap) GetNode<TileMap>("Terrain");
 		features = (TileMap) GetNode<TileMap>("Features");
 		grid = (TileMap) GetNode<TileMap>("Grid");
@@ -40,7 +42,7 @@ public class GameMap : Node2D {
 		hoverHex = (Sprite) GetNode<Sprite>("HoverHex");
 		spriteContainer = (Node2D) GetNode<Node2D>("SpriteContainer");
 		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
-		mapLabels = (Node2D) GetNode<Node2D>("MapLabels");
+		mapLabels = (MapLabels) GetNode<MapLabels>("MapLabels");
 		viewState = (TileMap) GetNode<TileMap>("ViewState");
 	}
 
@@ -84,6 +86,10 @@ public class GameMap : Node2D {
 
 		drawWorld();
 		tileUpdates.Subscribe((Entity tile) => this.drawTile(tile));
+	}
+
+	public void CenterTile(Entity tile) {
+		var hex = tile.Get<Location>().hex;
 	}
 
 	private void drawWorld() {

@@ -38,8 +38,7 @@ public class TerritoryRenderSystem : ISystem {
 			foreach (var territory in territoryUpdates) {
 				var label = territory.Get<MapLabel>();
 				var territoryHexes = hexUpdates.Where(item => item.Item2 == territory).Select(item => item.Item1).ToHashSet();
-				gameMap.mapLabels.RemoveChild(label);
-				gameMap.mapLabels.AddChild(label);
+				gameMap.mapLabels.AddLabel(label);
 				label.SetPosition(gameMap.layout.Centroid(territoryHexes).ToVector());
 
 				var territoryData = territory.Get<TerritoryData>();
@@ -53,8 +52,7 @@ public class TerritoryRenderSystem : ISystem {
 			foreach (var polity in polityUpdates) {
 				var label = polity.Get<MapLabel>();
 				var polityHexes = territoryUpdatesPerPolity[polity];
-				gameMap.mapLabels.RemoveChild(label);
-				gameMap.mapLabels.AddChild(label);
+				gameMap.mapLabels.AddLabel(label);
 				label.SetPosition(gameMap.layout.Centroid(polityHexes).ToVector() - new Godot.Vector2(0, 23));
 			}
 		}
