@@ -134,12 +134,12 @@ cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
 cell_half_offset = 1
 format = 1
 
-[node name="SpriteContainer" type="Node2D" parent="GameViewport/Viewport/GameMap"]
-
 [node name="MapBorders" type="Polygon2D" parent="GameViewport/Viewport/GameMap"]
 material = SubResource( 2 )
 texture = SubResource( 3 )
 script = ExtResource( 9 )
+
+[node name="SpriteContainer" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 
 [node name="MapLabels" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 

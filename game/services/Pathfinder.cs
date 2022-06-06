@@ -56,4 +56,8 @@ public class Pathfinder {
 
 		return path.Select(vec => Hex.FromVector(vec));
 	}
+
+	public float getMovementCost(Hex hex) {
+		return manager.world.GetTile(hex).Get<TileData>().movementCost;
+	}
 }

@@ -10,6 +10,17 @@ public class GameController : Control {
 		game.manager.state.AddElement<GameMap>(gameMap);
 		gameMap.RenderMap(game);
 		game.Start();
+
+
+		var console = GetTree().Root.GetNode<Console>("CSharpConsole");
+
+		console.AddCommand("next_day", this, nameof(CommandNextDay))
+			.SetDescription("Processes the next day in the game")
+			.Register();
+	}
+
+	private void CommandNextDay() {
+		game.ProcessDay();
 	}
 
 	public override void _Process(float delta) {

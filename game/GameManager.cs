@@ -1,12 +1,10 @@
 using System.Collections.Generic;
 using RelEcs;
+using System;
+using Godot;
 
-
-public class ViewSystem : ISystem {
-	void ISystem.Run(Commands commands) {
-		Process(commands);
-	}
-	public virtual void Process(Commands commands) {}
+public class PhysicsDelta {
+	public float delta;
 }
 
 public class GameManager {
@@ -16,7 +14,10 @@ public class GameManager {
 	SystemGroup startSystems = new SystemGroup();
 
 	// runs every day (game)
-    SystemGroup runSystems = new SystemGroup();
+    SystemGroup daySystems = new SystemGroup();
+
+	// runs every 60 FPS, before run systems
+	SystemGroup tickSystems = new SystemGroup();
 
 	// runs after game ends or player exists
     SystemGroup stopSystems = new SystemGroup();
@@ -25,6 +26,7 @@ public class GameManager {
    	SystemGroup renderSystems = new SystemGroup();
 
 	public World world;
+	private PhysicsDelta physicsDelta;
 
 	public GameManager() {
 		world = new World(this);
@@ -33,10 +35,15 @@ public class GameManager {
 		state.AddElement(new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5)));
 		state.AddElement(new MapViewState(this));
 		state.AddElement(new Pathfinder(this));
+		physicsDelta = new PhysicsDelta();
+		state.AddElement(physicsDelta);
 
-		runSystems
+		daySystems
 			.Add(new PathfindingSystem())
 			.Add(new MovementSystem());
+		
+		tickSystems
+			.Add(new MovementTweenSystem());
 		
 		startSystems
 			.Add(new ViewStateStartupSystem());
@@ -60,9 +67,18 @@ public class GameManager {
 		stopSystems.Run(state);
 	}
 
-	public void Process() {
-		runSystems.Run(state);
-		renderSystems.Run(state);
-		state.Tick();
+	public void ProcessDay() {
+		try {
+			daySystems.Run(state);
+			renderSystems.Run(state);
+			state.Tick();
+		} catch (Exception err) {
+			GD.PrintErr("Error processing tick: ", err);
+		}
+	}
+
+	public void Process(float delta) {
+		physicsDelta.delta = delta;
+		tickSystems.Run(state);
 	}
 }

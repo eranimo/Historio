@@ -57,6 +57,12 @@ public class TileData {
 			return biome != Tile.BiomeType.Ocean && biome != Tile.BiomeType.Coast;
 		}
 	}
+
+	public float movementCost {
+		get {
+			return 5.0f;
+		}
+	}
 }
 
 public class TileViewState {

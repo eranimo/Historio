@@ -44,18 +44,19 @@ public class GameGenerator {
 - contains GameManager
 */
 public class Game {
-	public readonly int TICKS_PER_DAY = 10;
+	public static readonly int TICKS_PER_DAY = 10;
 	private BehaviorSubject<bool> playState = new BehaviorSubject<bool>(false);
 	private BehaviorSubject<GameSpeed> speed = new BehaviorSubject<GameSpeed>(GameSpeed.Normal);
 
 	private Subject<GameDate> gameDateChanged = new Subject<GameDate>();
 	public GameDate date;
 	public readonly GameManager manager;
-	private int ticksInDay = 0;
+	public int ticksLeftInDay = 0;
 
 	public Game() {
 		this.date = new GameDate(0);
 		this.manager = new GameManager();
+		manager.state.AddElement<Game>(this);
 	}
 
 	public IObservable<bool> PlayState { get => playState; }
@@ -77,30 +78,50 @@ public class Game {
 			return;
 		}
 
-		if (this.ticksInDay == 0) {
-			int ticksLeft = this.SpeedTicks;
+		manager.Process(delta);
+
+		if (this.ticksLeftInDay == 0) {
+			int ticksLeft = this.speedTicks;
 			this.ProcessDay();
-			this.ticksInDay = ticksLeft;
+			this.ticksLeftInDay = ticksLeft;
 		} else {
-			this.ticksInDay--;
+			this.ticksLeftInDay--;
 		}
 	}
 
-	private void ProcessDay() {
+	public void ProcessDay() {
 		date.NextDay();
 		gameDateChanged.OnNext(date);
-		manager.Process();
+		manager.ProcessDay();
 	}
 
-	private int SpeedTicks {
+	private int speedTicks {
 		get {
 			switch (this.speed.Value) {
-				case GameSpeed.Slow: return 4 * this.TICKS_PER_DAY;
-				case GameSpeed.Normal: return 2 * this.TICKS_PER_DAY;
-				case GameSpeed.Fast: return 1 * this.TICKS_PER_DAY;
+				case GameSpeed.Slow: return 4 * Game.TICKS_PER_DAY;
+				case GameSpeed.Normal: return 2 * Game.TICKS_PER_DAY;
+				case GameSpeed.Fast: return 1 * Game.TICKS_PER_DAY;
 				default: throw new Exception("Unknown Speed");
 			}
 		}
+	}
+
+	public bool isLastDayTick {
+		get {
+			return dayTicks == (speedTicks - 1);
+		}
+	}
+
+	public bool isFirstDayTick {
+		get { return dayTicks == 1; }
+	}
+
+	public float dayTicks {
+		get { return ((float) speedTicks - this.ticksLeftInDay); }
+	}
+
+	public float percentInDay {
+		get { return this.dayTicks / ((float) speedTicks); }
 	}
 
 	public void Start() {
