@@ -20,7 +20,9 @@ public class GameController : Control {
 	}
 
 	private void CommandNextDay() {
-		game.ProcessDay();
+		for (int i = 0; i <= game.speedTicks; i++) {
+			game.Process(1f, true);
+		}
 	}
 
 	public override void _Process(float delta) {

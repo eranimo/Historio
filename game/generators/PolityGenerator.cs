@@ -128,7 +128,7 @@ public class PolityGenerator : IGeneratorStep {
 		manager.state.Send(new SpriteAdded { entity = unit });
 
 		var movement = new Movement();
-		movement.currentTarget = hex.Neighbor(Direction.South, 5).Neighbor(Direction.SouthWest, 15);
+		movement.currentTarget = hex.Neighbor(Direction.South, 5); // .Neighbor(Direction.SouthWest, 15);
 		unit.Add(movement);
 		unit.Add(new ViewStateNode { polity = polity, range = 2 });
 		manager.state.Send(new ViewStateNodeUpdated { entity = unit } );

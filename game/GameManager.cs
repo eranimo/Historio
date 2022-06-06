@@ -43,15 +43,16 @@ public class GameManager {
 			.Add(new MovementSystem());
 		
 		tickSystems
-			.Add(new MovementTweenSystem());
+			.Add(new MovementTweenSystem())
+			.Add(new ViewStateSystem());
 		
 		startSystems
-			.Add(new ViewStateStartupSystem());
+			.Add(new ViewStateStartupSystem())
+			.Add(new ViewStateSystem());
 
 		renderSystems
 			.Add(new SpriteRenderSystem())
-			.Add(new TerritoryRenderSystem())
-			.Add(new ViewStateSystem());
+			.Add(new TerritoryRenderSystem());
 	}
 
 	// called when game starts

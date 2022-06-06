@@ -35,6 +35,10 @@ public struct Point {
 		return new Vector2((float) x, (float) y);
 	}
 
+	public static Point FromVector(Vector2 vec) {
+		return new Point(vec.x, vec.y);
+	}
+
 	public override string ToString() {
 		return base.ToString() + string.Format("({0}, {1})", this.x, this.y);
 	}

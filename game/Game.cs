@@ -44,9 +44,9 @@ public class GameGenerator {
 - contains GameManager
 */
 public class Game {
-	public static readonly int TICKS_PER_DAY = 10;
+	public static readonly int TICKS_PER_DAY = 5;
 	private BehaviorSubject<bool> playState = new BehaviorSubject<bool>(false);
-	private BehaviorSubject<GameSpeed> speed = new BehaviorSubject<GameSpeed>(GameSpeed.Normal);
+	private BehaviorSubject<GameSpeed> speed = new BehaviorSubject<GameSpeed>(GameSpeed.Slow);
 
 	private Subject<GameDate> gameDateChanged = new Subject<GameDate>();
 	public GameDate date;
@@ -73,8 +73,8 @@ public class Game {
 	public IObservable<GameDate> GameDateChanged { get => gameDateChanged; }
 	public IObservable<GameSpeed> Speed { get => speed; }
 
-	public void Process(float delta) {
-		if (!IsPlaying) {
+	public void Process(float delta, bool force = false) {
+		if (!force && !IsPlaying) {
 			return;
 		}
 
@@ -95,7 +95,7 @@ public class Game {
 		manager.ProcessDay();
 	}
 
-	private int speedTicks {
+	public int speedTicks {
 		get {
 			switch (this.speed.Value) {
 				case GameSpeed.Slow: return 4 * Game.TICKS_PER_DAY;

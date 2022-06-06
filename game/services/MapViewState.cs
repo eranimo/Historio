@@ -47,6 +47,19 @@ public class PolityViewState {
 		tile.Get<TileViewState>().politiesToViewStates[polity] = viewState;
 	}
 
+	public void exploreAt(Entity tile, int range) {
+		var hex = tile.Get<Location>().hex;
+		set(tile, ViewState.Observed);
+		activeTiles.Add(tile);
+		foreach (var surroundingHex in hex.Bubble(range)) {
+			if (manager.world.IsValidTile(surroundingHex)) {
+				var surroundingTile = manager.world.GetTile(surroundingHex);
+				activeTiles.Add(surroundingTile);
+				set(surroundingTile, ViewState.Observed);
+			}
+		}
+	}
+
 	public void calculate() {
 		var layout = manager.state.GetElement<Layout>();
 
@@ -60,15 +73,7 @@ public class PolityViewState {
 			var hex = nodeEntity.Get<Location>().hex;
 			var viewStateNode = nodeEntity.Get<ViewStateNode>();
 			var tile = manager.world.GetTile(hex);
-
-			set(tile, ViewState.Observed);
-			foreach (var surroundingHex in hex.Bubble(viewStateNode.range)) {
-				if (manager.world.IsValidTile(surroundingHex)) {
-					var surroundingTile = manager.world.GetTile(surroundingHex);
-					activeTiles.Add(surroundingTile);
-					set(surroundingTile, ViewState.Observed);
-				}
-			}
+			exploreAt(tile, viewStateNode.range);
 		}
 	}
 }

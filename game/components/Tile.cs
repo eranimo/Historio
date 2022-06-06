@@ -60,7 +60,7 @@ public class TileData {
 
 	public float movementCost {
 		get {
-			return 5.0f;
+			return 5f;
 		}
 	}
 }
