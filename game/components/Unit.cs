@@ -9,6 +9,10 @@ public static class Unit {
 	public static Dictionary<UnitType, string> unitTypeSpritePath = new Dictionary<UnitType, string> () {
 		{ UnitType.Scout, "res://assets/sprites/units/scout.tres" },
 	};
+
+	public static Dictionary<UnitType, string> unitNames = new Dictionary<UnitType, string>() {
+		{ UnitType.Scout, "Scout" },
+	};
 }
 
 public class UnitData {

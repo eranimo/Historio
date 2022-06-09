@@ -76,26 +76,20 @@ public class PolityGenerator : IGeneratorStep {
 		// add territory entities
 		foreach (var (polity, territoryHexes) in polityTerritory) {
 			var polityColor = polityColors[polity];
+			polity.Get<PolityData>().color = polityColor;
 			// capital territory
 			var capitalName = nameFactory.GetName();
-			var capitalTerritoryData = new TerritoryData {
+			var capitalData = new SettlementData {
 				name = capitalName,
-				color = polityColor,
 				ownerPolity = polity,
 			};
-			var capitalTerritory = manager.state.Spawn();
-			capitalTerritory.Add<TerritoryData>(capitalTerritoryData);
-
-			// add label
-			var label = new MapLabel();
-			label.LabelType = MapLabel.MapLabelType.Region;
-			label.Text = capitalName;
-			capitalTerritory.Add(label);
+			var capital = manager.state.Spawn();
+			capital.Add<SettlementData>(capitalData);
 
 			foreach (var tile in territoryHexes) {
-				tile.Add(new TerritoryTile { territory = capitalTerritory });
+				tile.Add(new SettlementTile { settlement = capital });
 				tile.Add(new ViewStateNode { polity = polity, range = 3 });
-				manager.state.Send(new TerritoryTileUpdate { territory = capitalTerritory, tile = tile });
+				manager.state.Send(new TileBorderUpdate { settlement = capital, tile = tile });
 				manager.state.Send(new ViewStateNodeUpdated { entity = tile });
 			}
 		}

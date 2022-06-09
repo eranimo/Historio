@@ -30,9 +30,12 @@ public class GameMap : Node2D {
 	public MapBorders mapBorders;
 	public Node2D spriteContainer;
 	public MapLabels mapLabels;
+	public SettlementLabels settlementLabels;
 	public TileMap viewState;
+	private GameView gameView;
 
 	public override void _Ready() {
+		gameView = (GameView) GetTree().Root.GetNode("GameView");
 		GD.PrintS("(GameMap) ready");
 		camera = (Camera) GetNode<Camera>("Camera");
 		terrain = (TileMap) GetNode<TileMap>("Terrain");
@@ -43,6 +46,7 @@ public class GameMap : Node2D {
 		spriteContainer = (Node2D) GetNode<Node2D>("SpriteContainer");
 		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
 		mapLabels = (MapLabels) GetNode<MapLabels>("MapLabels");
+		settlementLabels = (SettlementLabels) GetNode<SettlementLabels>("SettlementLabels");
 		viewState = (TileMap) GetNode<TileMap>("ViewState");
 	}
 
@@ -86,6 +90,10 @@ public class GameMap : Node2D {
 
 		drawWorld();
 		tileUpdates.Subscribe((Entity tile) => this.drawTile(tile));
+
+		gameView.mapInputEnabled.Subscribe((bool isEnabled) => {
+			hoveredTile.OnNext(null);
+		});
 	}
 
 	public void CenterTile(Entity tile) {
@@ -111,6 +119,9 @@ public class GameMap : Node2D {
 
 	public override void _Input(InputEvent @event) {
 		if (this.game == null) {
+			return;
+		}
+		if (!gameView.mapInputEnabled.Value) {
 			return;
 		}
 		base._Input(@event);
@@ -142,6 +153,10 @@ public class GameMap : Node2D {
 
 	public override void _PhysicsProcess(float delta) {
 		base._PhysicsProcess(delta);
+
+		if (!gameView.mapInputEnabled.Value) {
+			return;
+		}
 
 		if (is_placing) {
 			var coord = getCoordAtCursor();

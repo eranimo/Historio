@@ -45,14 +45,14 @@ public class GameManager {
 		tickSystems
 			.Add(new MovementTweenSystem())
 			.Add(new ViewStateSystem());
-		
+	
 		startSystems
 			.Add(new ViewStateStartupSystem())
 			.Add(new ViewStateSystem());
 
 		renderSystems
 			.Add(new SpriteRenderSystem())
-			.Add(new TerritoryRenderSystem());
+			.Add(new BorderRenderSystem());
 	}
 
 	// called when game starts
