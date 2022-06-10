@@ -1,0 +1,127 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://assets/ui.png" type="Texture" id=2]
+[ext_resource path="res://view/UnitPanel/UnitPanel.cs" type="Script" id=3]
+
+[sub_resource type="DynamicFont" id=6]
+font_data = ExtResource( 1 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 16, 16 )
+
+[sub_resource type="DynamicFont" id=7]
+size = 12
+font_data = ExtResource( 1 )
+
+[node name="UnitPanel" type="PanelContainer"]
+margin_top = 452.0
+margin_right = 303.0
+margin_bottom = 595.0
+script = ExtResource( 3 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 296.0
+margin_bottom = 136.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_right = 289.0
+margin_bottom = 24.0
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+margin_top = 2.0
+margin_right = 257.0
+margin_bottom = 21.0
+size_flags_horizontal = 3
+custom_fonts/font = SubResource( 6 )
+text = "Unit Name"
+
+[node name="ToolButton" type="ToolButton" parent="VBoxContainer/HBoxContainer"]
+margin_left = 261.0
+margin_right = 289.0
+margin_bottom = 24.0
+icon = SubResource( 5 )
+
+[node name="Details" type="VBoxContainer" parent="VBoxContainer"]
+margin_top = 28.0
+margin_right = 289.0
+margin_bottom = 105.0
+size_flags_vertical = 3
+
+[node name="DetailRow" type="HBoxContainer" parent="VBoxContainer/Details"]
+margin_right = 289.0
+margin_bottom = 15.0
+
+[node name="Label" type="Label" parent="VBoxContainer/Details/DetailRow"]
+margin_right = 142.0
+margin_bottom = 15.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.862745, 0.862745, 0.862745, 1 )
+custom_fonts/font = SubResource( 7 )
+text = "Position"
+
+[node name="UnitPosition" type="Label" parent="VBoxContainer/Details/DetailRow"]
+margin_left = 146.0
+margin_right = 289.0
+margin_bottom = 15.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 7 )
+text = "(0, 0)"
+
+[node name="DetailRow2" type="HBoxContainer" parent="VBoxContainer/Details"]
+margin_top = 19.0
+margin_right = 289.0
+margin_bottom = 34.0
+
+[node name="Label" type="Label" parent="VBoxContainer/Details/DetailRow2"]
+margin_right = 142.0
+margin_bottom = 15.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.862745, 0.862745, 0.862745, 1 )
+custom_fonts/font = SubResource( 7 )
+text = "Move target"
+
+[node name="UnitPosition" type="Label" parent="VBoxContainer/Details/DetailRow2"]
+margin_left = 146.0
+margin_right = 289.0
+margin_bottom = 15.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 7 )
+text = "(10, 10)"
+
+[node name="DetailRow3" type="HBoxContainer" parent="VBoxContainer/Details"]
+margin_top = 38.0
+margin_right = 289.0
+margin_bottom = 53.0
+
+[node name="Label" type="Label" parent="VBoxContainer/Details/DetailRow3"]
+margin_right = 142.0
+margin_bottom = 15.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 0.862745, 0.862745, 0.862745, 1 )
+custom_fonts/font = SubResource( 7 )
+text = "Next move tile"
+
+[node name="UnitPosition" type="Label" parent="VBoxContainer/Details/DetailRow3"]
+margin_left = 146.0
+margin_right = 289.0
+margin_bottom = 15.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 7 )
+text = "(10, 10)"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 109.0
+margin_right = 289.0
+margin_bottom = 129.0
+
+[node name="Button" type="Button" parent="VBoxContainer/HBoxContainer3"]
+margin_right = 47.0
+margin_bottom = 20.0
+text = "Move"
