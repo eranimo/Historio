@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reactive;
 using System.Reactive.Subjects;
 using System.Reactive.Linq;
+using System.Linq;
 
 public class GameMap : Node2D {
 	public Game game;
@@ -58,6 +59,28 @@ public class GameMap : Node2D {
 		layout = game.manager.state.GetElement<Layout>();
 
 		clickedTile.Subscribe((Entity tile) => {
+			// select unit
+			var coord = tile.Get<Location>().hex;
+			var units = game.manager.world.entitiesAtTile(coord)
+				.Where(entity => entity.Has<UnitData>());
+			GD.PrintS(String.Join(", ", units));
+
+			if (units.Count() > 0) {
+				var unit = units.First();
+				if (selectedUnit.Value is not null) {
+					GD.PrintS("already selected", selectedUnit.Value);
+					selectedUnit.Value.Get<UnitIcon>().Selected = false;
+				}
+
+				if (selectedUnit.Value == unit) {
+					unit.Get<UnitIcon>().Selected = false;
+					selectedUnit.OnNext(null);
+				} else {
+					unit.Get<UnitIcon>().Selected = true;
+					selectedUnit.OnNext(unit);
+				}
+			}
+
 			if (selectedHex.Value == tile) {
 				selectedHex.OnNext(null);
 			} else {
@@ -72,6 +95,8 @@ public class GameMap : Node2D {
 				selectionHex.Show();
 				var coord = tile.Get<Location>().hex;
 				selectionHex.Position = layout.HexToPixel(coord).ToVector();
+
+				
 			}
 		});
 

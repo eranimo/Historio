@@ -53,6 +53,7 @@ public class GameManager {
 
 		renderSystems
 			.Add(new SpriteRenderSystem())
+			.Add(new UnitRenderSystem())
 			.Add(new BorderRenderSystem());
 	}
 

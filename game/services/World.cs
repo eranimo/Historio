@@ -8,6 +8,7 @@ public class World {
 	private Dictionary<Hex, Entity> tileByHex;
 	private Point size;
 	private Dictionary<Entity, Entity[]> neighbors = new Dictionary<Entity, Entity[]>();
+	private Dictionary<Entity, HashSet<Entity>> entitiesByTile = new Dictionary<Entity, HashSet<Entity>>();
 
 	public World(GameManager manager) {
 		this.manager = manager;
@@ -29,6 +30,33 @@ public class World {
 
 	public Entity GetTile(Hex coord) {
 		return tileByHex[coord];
+	}
+
+	public HashSet<Entity> entitiesAtTile(Hex coord) {
+		var tile = GetTile(coord);
+		if (!entitiesByTile.ContainsKey(tile)) {
+			entitiesByTile.Add(tile, new HashSet<Entity>());
+		}
+		return entitiesByTile[GetTile(coord)];
+	}
+
+	public void moveEntity(Entity entity, Hex nextHex) {
+		var loc = entity.Get<Location>();
+		var hex = loc.hex;
+		var currentTile = GetTile(hex);
+		var nextTile = GetTile(nextHex);
+		if (!entitiesByTile.ContainsKey(currentTile)) {
+			entitiesByTile.Add(currentTile, new HashSet<Entity>());
+		}
+		if (!entitiesByTile.ContainsKey(nextTile)) {
+			entitiesByTile.Add(nextTile, new HashSet<Entity>());
+		}
+		var entityList = entitiesByTile[currentTile];
+		if (entityList.Contains(entity)) {
+			entityList.Remove(entity);
+		}
+		loc.hex = nextHex;
+		entitiesByTile[nextTile].Add(entity);
 	}
 
 	public Entity[] GetNeighbors(Entity tile) {

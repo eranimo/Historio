@@ -116,17 +116,18 @@ public class PolityGenerator : IGeneratorStep {
 		unit.Add(unitData);
 		unit.Add(new Location { hex = hex });
 
-		var sprite = new Sprite();
-		sprite.Centered = false;
-		sprite.Texture = ResourceLoader.Load<Texture>(Unit.unitTypeSpritePath[unitType]);
-		unit.Add(sprite);
-		manager.state.Send(new SpriteAdded { entity = unit });
+		// var sprite = new Sprite();
+		// sprite.Centered = false;
+		// sprite.Texture = ResourceLoader.Load<Texture>(Unit.unitTypeSpritePath[unitType]);
+		// unit.Add(sprite);
+		manager.state.Send(new UnitAdded { unit = unit });
 
 		var movement = new Movement();
 		movement.currentTarget = hex.Neighbor(Direction.South, 5); // .Neighbor(Direction.SouthWest, 15);
 		unit.Add(movement);
 		unit.Add(new ViewStateNode { polity = polity, range = 2 });
 		manager.state.Send(new ViewStateNodeUpdated { entity = unit } );
+		manager.world.moveEntity(unit, hex);
 		return unit;
 	}
 

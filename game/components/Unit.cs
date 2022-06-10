@@ -21,3 +21,12 @@ public class UnitData {
 }
 
 public class UnitPolityOwner {}
+
+
+public class UnitAdded {
+	public RelEcs.Entity unit;
+}
+
+public class UnitRemoved {
+	public RelEcs.Entity unit;
+}

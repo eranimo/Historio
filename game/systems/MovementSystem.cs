@@ -5,10 +5,11 @@ using System.Linq;
 public class MovementSystem : ISystem {
 	public void Run(Commands commands) {
 		var layout = commands.GetElement<Layout>();
+		var world = commands.GetElement<World>();
 		var pathfinder = commands.GetElement<Pathfinder>();
-		var sprites = commands.Query<Entity, Location, Sprite, Movement>();
+		var sprites = commands.Query<Entity, Location, Movement>();
 
-		foreach (var (entity, location, sprite, movement) in sprites) {
+		foreach (var (entity, location, movement) in sprites) {
 			if (movement.currentTarget != null) {
 				
 				// calculate hex in path to go to
@@ -34,7 +35,7 @@ public class MovementSystem : ISystem {
 				movement.currentPathIndex = pathIndex;
 
 				if (next != null) {
-					location.hex = next;
+					world.moveEntity(entity, next);
 					if (movement.currentTarget == location.hex) {
 						movement.path.Clear();
 						GD.PrintS("Movement ended");
@@ -50,12 +51,12 @@ public class MovementTweenSystem : ISystem {
 	public void Run(Commands commands) {
 		var layout = commands.GetElement<Layout>();
 		var world = commands.GetElement<World>();
-		var sprites = commands.Query<Entity, Location, Sprite, Movement>();
+		var sprites = commands.Query<Entity, Location, UnitIcon, Movement>();
 		var delta = commands.GetElement<PhysicsDelta>().delta;
 		var game = commands.GetElement<Game>();
 		
 		try {
-			foreach (var (entity, location, sprite, movement) in sprites) {
+			foreach (var (entity, location, unitIcon, movement) in sprites) {
 				if (movement.tweenHexes.Count == 0) {
 					continue;
 				}
@@ -72,17 +73,17 @@ public class MovementTweenSystem : ISystem {
 				var tweenToHex = movement.tweenHexes[tweenToIndex];
 				var tweenFromVec = layout.HexToPixel(tweenFromHex).ToVector();
 				var tweenToVec = layout.HexToPixel(tweenToHex).ToVector();
-				sprite.Position = tweenFromVec.LinearInterpolate(tweenToVec, tweenSegmentPercent);
+				unitIcon.Position = tweenFromVec.LinearInterpolate(tweenToVec, tweenSegmentPercent);
 
 				if (game.isLastDayTick && movement.currentTarget == null) {
-					sprite.Position = layout.HexToPixel(movement.tweenHexes.Last()).ToVector();
+					unitIcon.Position = layout.HexToPixel(movement.tweenHexes.Last()).ToVector();
 					movement.tweenHexes.Clear();
 				}
 
 				if (entity.Has<ViewStateNode>()) {
 					var viewStateNode = entity.Get<ViewStateNode>();
-					var nearestHex = layout.PixelToHex(Point.FromVector(sprite.Position + layout.HexSize.ToVector() / 2f));
-					location.hex = nearestHex;
+					var nearestHex = layout.PixelToHex(Point.FromVector(unitIcon.Position + layout.HexSize.ToVector() / 2f));
+					world.moveEntity(entity, nearestHex);
 					commands.Send(new ViewStateNodeUpdated { entity = entity });
 				}
 			}
