@@ -24,6 +24,7 @@ public class GameMap : Node2D {
 	private Subject<Entity> hoveredTile = new Subject<Entity>();
 
 	public BehaviorSubject<Entity> selectedHex = new BehaviorSubject<Entity>(null);
+	public BehaviorSubject<Entity> selectedUnit = new BehaviorSubject<Entity>(null);
 
 	private bool is_placing = false;
 
@@ -96,8 +97,13 @@ public class GameMap : Node2D {
 		});
 	}
 
-	public void CenterTile(Entity tile) {
+	public void centerCamera(Vector2 vec) {
+		camera.Offset = vec;
+	}
+
+	public void centerCameraOnTile(Entity tile) {
 		var hex = tile.Get<Location>().hex;
+		centerCamera(layout.HexToPixel(hex).ToVector());
 	}
 
 	private void drawWorld() {

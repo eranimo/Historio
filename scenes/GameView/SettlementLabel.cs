@@ -67,7 +67,6 @@ public class SettlementLabel : PanelContainer {
 			_text = value;
 			if (IsInsideTree()) {
 				label.Text = value;
-				RectPivotOffset = RectSize / 2;
 				resize();
 			}
 		}
@@ -89,7 +88,7 @@ public class SettlementLabel : PanelContainer {
 		if (hovered && @event is InputEventMouseButton) {
 			var mouseEventButton = (InputEventMouseButton) @event;
 			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex == 1) {
-				GD.PrintS("Clicked on unit label");
+				GD.PrintS("Clicked on settlement label");
 				GetTree().SetInputAsHandled();
 			}
 		}

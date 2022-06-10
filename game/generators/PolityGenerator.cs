@@ -73,7 +73,7 @@ public class PolityGenerator : IGeneratorStep {
 			}
 		}
 
-		// add territory entities
+		// add settlement entities
 		foreach (var (polity, territoryHexes) in polityTerritory) {
 			var polityColor = polityColors[polity];
 			polity.Get<PolityData>().color = polityColor;
@@ -85,9 +85,10 @@ public class PolityGenerator : IGeneratorStep {
 			};
 			var capital = manager.state.Spawn();
 			capital.Add<SettlementData>(capitalData);
+			capital.Add<CapitalSettlement>(new CapitalSettlement(), polity);
 
 			foreach (var tile in territoryHexes) {
-				tile.Add(new SettlementTile { settlement = capital });
+				tile.Add(new SettlementTile(), capital);
 				tile.Add(new ViewStateNode { polity = polity, range = 3 });
 				manager.state.Send(new TileBorderUpdate { settlement = capital, tile = tile });
 				manager.state.Send(new ViewStateNodeUpdated { entity = tile });

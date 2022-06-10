@@ -5,13 +5,14 @@ public class SettlementData {
 	public RelEcs.Entity ownerPolity;
 }
 
-// component on Tile defining relationship to owner Settlement
-public class SettlementTile {
-	public RelEcs.Entity settlement;
-}
+// relationship on Tile to owner Settlement
+public class SettlementTile {}
 
 // action sent when Settlement tiles update
 public class TileBorderUpdate {
 	public RelEcs.Entity tile;
 	public RelEcs.Entity settlement;
 }
+
+// relation to polity on settlement
+public class CapitalSettlement {}

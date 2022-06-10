@@ -48,7 +48,8 @@ public class GameManager {
 	
 		startSystems
 			.Add(new ViewStateStartupSystem())
-			.Add(new ViewStateSystem());
+			.Add(new ViewStateSystem())
+			.Add(new PlayerStartSystem());
 
 		renderSystems
 			.Add(new SpriteRenderSystem())
