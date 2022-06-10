@@ -3,6 +3,7 @@ using System;
 
 public class GameViewport : ViewportContainer {
 	private GameView gameView;
+	private bool hovered;
 
 	public override void _Ready() {
 		Connect("mouse_entered", this, nameof(onMouseEnter));
@@ -13,6 +14,11 @@ public class GameViewport : ViewportContainer {
 	}
 
 	private void onMouseEnter() {
+		hovered = true;
+		grabFocusAndEnable();
+	}
+
+	private void grabFocusAndEnable() {
 		var focusOwner = GetFocusOwner();
 		if (focusOwner == null) {
 			GrabFocus();
@@ -22,6 +28,7 @@ public class GameViewport : ViewportContainer {
 	}
 
 	private void onMouseExited() {
+		hovered = false;
 		gameView.mapInputEnabled.OnNext(false);
 	}
 
@@ -31,5 +38,16 @@ public class GameViewport : ViewportContainer {
 
 	private void onFocusExited() {
 		gameView.mapInputEnabled.OnNext(false);
+	}
+
+	public override void _Input(InputEvent @event) {
+		base._Input(@event);
+
+		if (hovered && @event is InputEventMouseButton) {
+			var mouseEventButton = (InputEventMouseButton) @event;
+			if (mouseEventButton.IsPressed()) {
+				GrabFocus();
+			}
+		}
 	}
 }

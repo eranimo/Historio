@@ -5,6 +5,7 @@ public class Camera : Camera2D {
 	private bool isMousePanning = false;
 	const float ZOOM_SPEED = 0.25f;
 	const float MIN_ZOOM = 0.25f;
+	const float START_ZOOM = 0.5f;
 	const float MAX_ZOOM = 600;
 
 	private bool isKeyboardPanning = false;
@@ -14,7 +15,9 @@ public class Camera : Camera2D {
 
 	public override void _Ready() {
 		base._Ready();
+		Zoom = new Vector2(START_ZOOM, START_ZOOM);
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
+		gameView.zoom.OnNext(Zoom.x);
 	}
 
 	public override void _Input(InputEvent @event) {
