@@ -31,7 +31,7 @@ margin_bottom = 136.0
 margin_right = 289.0
 margin_bottom = 24.0
 
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+[node name="UnitNameLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
 margin_top = 2.0
 margin_right = 257.0
 margin_bottom = 21.0
@@ -39,7 +39,7 @@ size_flags_horizontal = 3
 custom_fonts/font = SubResource( 6 )
 text = "Unit Name"
 
-[node name="ToolButton" type="ToolButton" parent="VBoxContainer/HBoxContainer"]
+[node name="CloseButton" type="ToolButton" parent="VBoxContainer/HBoxContainer"]
 margin_left = 261.0
 margin_right = 289.0
 margin_bottom = 24.0
@@ -72,12 +72,12 @@ custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 7 )
 text = "(0, 0)"
 
-[node name="DetailRow2" type="HBoxContainer" parent="VBoxContainer/Details"]
+[node name="MovementRow" type="HBoxContainer" parent="VBoxContainer/Details"]
 margin_top = 19.0
 margin_right = 289.0
 margin_bottom = 34.0
 
-[node name="Label" type="Label" parent="VBoxContainer/Details/DetailRow2"]
+[node name="Label" type="Label" parent="VBoxContainer/Details/MovementRow"]
 margin_right = 142.0
 margin_bottom = 15.0
 size_flags_horizontal = 3
@@ -85,29 +85,7 @@ custom_colors/font_color = Color( 0.862745, 0.862745, 0.862745, 1 )
 custom_fonts/font = SubResource( 7 )
 text = "Move target"
 
-[node name="MoveTarget" type="Label" parent="VBoxContainer/Details/DetailRow2"]
-margin_left = 146.0
-margin_right = 289.0
-margin_bottom = 15.0
-size_flags_horizontal = 3
-custom_colors/font_color = Color( 1, 1, 1, 1 )
-custom_fonts/font = SubResource( 7 )
-text = "(10, 10)"
-
-[node name="DetailRow3" type="HBoxContainer" parent="VBoxContainer/Details"]
-margin_top = 38.0
-margin_right = 289.0
-margin_bottom = 53.0
-
-[node name="Label" type="Label" parent="VBoxContainer/Details/DetailRow3"]
-margin_right = 142.0
-margin_bottom = 15.0
-size_flags_horizontal = 3
-custom_colors/font_color = Color( 0.862745, 0.862745, 0.862745, 1 )
-custom_fonts/font = SubResource( 7 )
-text = "Next move tile"
-
-[node name="NextMoveTile" type="Label" parent="VBoxContainer/Details/DetailRow3"]
+[node name="MoveTarget" type="Label" parent="VBoxContainer/Details/MovementRow"]
 margin_left = 146.0
 margin_right = 289.0
 margin_bottom = 15.0

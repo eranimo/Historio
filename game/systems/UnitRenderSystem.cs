@@ -15,6 +15,7 @@ public class UnitRenderSystem : ISystem {
 			var location = e.unit.Get<Location>();
 			var unitData = e.unit.Get<UnitData>();
 			var unitIcon = unitIconScene.Instance<UnitIcon>();
+			unitIcon.entity = e.unit;
 			unitIcon.UnitType = unitData.type;
 			e.unit.Add(unitIcon);
 			unitIcon.Position = gameMap.layout.HexToPixel(location.hex).ToVector();

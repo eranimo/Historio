@@ -25,6 +25,9 @@ public class GameManager {
 	// runs every day and at game start
    	SystemGroup renderSystems = new SystemGroup();
 
+	// runs every tick and at game start
+	SystemGroup uiSystems = new SystemGroup();
+
 	public World world;
 	private PhysicsDelta physicsDelta;
 
@@ -37,6 +40,7 @@ public class GameManager {
 		state.AddElement(new Pathfinder(this));
 		physicsDelta = new PhysicsDelta();
 		state.AddElement(physicsDelta);
+		state.AddElement(new SelectedUnit());
 
 		daySystems
 			.Add(new PathfindingSystem())
@@ -55,6 +59,10 @@ public class GameManager {
 			.Add(new SpriteRenderSystem())
 			.Add(new UnitRenderSystem())
 			.Add(new BorderRenderSystem());
+		
+		uiSystems
+			.Add(new UnitSelectionSystem())
+			.Add(new UnitPanelUISystem());
 	}
 
 	// called when game starts
@@ -63,6 +71,7 @@ public class GameManager {
 		Godot.GD.PrintS("(GameManager) start");
 		startSystems.Run(state);
 		renderSystems.Run(state);
+		uiSystems.Run(state);
 	}
 
 	// called when game stops
@@ -87,5 +96,9 @@ public class GameManager {
 		} catch (Exception err) {
 			GD.PrintErr("Error processing tick: ", err);
 		}
+	}
+
+	public void UIProcess(float delta) {
+		uiSystems.Run(state);
 	}
 }

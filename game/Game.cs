@@ -74,6 +74,7 @@ public class Game {
 	public IObservable<GameSpeed> Speed { get => speed; }
 
 	public void Process(float delta, bool force = false) {
+		manager.UIProcess(delta);
 		if (!force && !IsPlaying) {
 			return;
 		}

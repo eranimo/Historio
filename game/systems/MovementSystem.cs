@@ -36,6 +36,7 @@ public class MovementSystem : ISystem {
 
 				if (next != null) {
 					world.moveEntity(entity, next);
+					commands.Send(new UnitMoved { unit = entity });
 					if (movement.currentTarget == location.hex) {
 						movement.path.Clear();
 						GD.PrintS("Movement ended");
@@ -84,6 +85,7 @@ public class MovementTweenSystem : ISystem {
 					var viewStateNode = entity.Get<ViewStateNode>();
 					var nearestHex = layout.PixelToHex(Point.FromVector(unitIcon.Position + layout.HexSize.ToVector() / 2f));
 					world.moveEntity(entity, nearestHex);
+					commands.Send(new UnitMoved { unit = entity });
 					commands.Send(new ViewStateNodeUpdated { entity = entity });
 				}
 			}

@@ -20,6 +20,7 @@ public class UnitData {
 	public Entity ownerPolity;
 }
 
+// Relation on entity to Polity
 public class UnitPolityOwner {}
 
 
@@ -29,4 +30,19 @@ public class UnitAdded {
 
 public class UnitRemoved {
 	public RelEcs.Entity unit;
+}
+
+/*
+UNIT SELECTION
+*/
+
+// element
+public class SelectedUnit {
+	public Entity unit = null;
+}
+
+// triggers:
+
+public class SelectedUnitUpdate {
+	public Entity unit;
 }

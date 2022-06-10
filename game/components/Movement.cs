@@ -19,3 +19,7 @@ public class Movement {
 
 	public float movementPointsLeft;
 }
+
+public class UnitMoved {
+	public RelEcs.Entity unit;
+}

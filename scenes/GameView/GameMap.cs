@@ -24,8 +24,7 @@ public class GameMap : Node2D {
 	private Subject<Entity> clickedTile = new Subject<Entity>();
 	private Subject<Entity> hoveredTile = new Subject<Entity>();
 
-	public BehaviorSubject<Entity> selectedHex = new BehaviorSubject<Entity>(null);
-	public BehaviorSubject<Entity> selectedUnit = new BehaviorSubject<Entity>(null);
+	// public BehaviorSubject<Entity> selectedHex = new BehaviorSubject<Entity>(null);
 
 	private bool is_placing = false;
 
@@ -56,49 +55,33 @@ public class GameMap : Node2D {
 		GD.PrintS("(GameMap) render map");
 		this.game = game;
 		
-		layout = game.manager.state.GetElement<Layout>();
+		var state = game.manager.state;
+		layout = state.GetElement<Layout>();
 
 		clickedTile.Subscribe((Entity tile) => {
-			// select unit
-			var coord = tile.Get<Location>().hex;
-			var units = game.manager.world.entitiesAtTile(coord)
-				.Where(entity => entity.Has<UnitData>());
-			GD.PrintS(String.Join(", ", units));
-
-			if (units.Count() > 0) {
-				var unit = units.First();
-				if (selectedUnit.Value is not null) {
-					GD.PrintS("already selected", selectedUnit.Value);
-					selectedUnit.Value.Get<UnitIcon>().Selected = false;
-				}
-
-				if (selectedUnit.Value == unit) {
-					unit.Get<UnitIcon>().Selected = false;
-					selectedUnit.OnNext(null);
-				} else {
-					unit.Get<UnitIcon>().Selected = true;
-					selectedUnit.OnNext(unit);
-				}
+			var selectedUnit = state.GetElement<SelectedUnit>().unit;
+			if (selectedUnit is not null) {
+				state.Send(new SelectedUnitUpdate { unit = null });
 			}
 
-			if (selectedHex.Value == tile) {
-				selectedHex.OnNext(null);
-			} else {
-				selectedHex.OnNext(tile);
-			}
+			// if (selectedHex.Value == tile) {
+			// 	selectedHex.OnNext(null);
+			// } else {
+			// 	selectedHex.OnNext(tile);
+			// }
 		});
 
-		selectedHex.Subscribe((Entity tile) => {
-			if (tile is null) {
-				selectionHex.Hide();
-			} else {
-				selectionHex.Show();
-				var coord = tile.Get<Location>().hex;
-				selectionHex.Position = layout.HexToPixel(coord).ToVector();
+		// selectedHex.Subscribe((Entity tile) => {
+		// 	if (tile is null) {
+		// 		selectionHex.Hide();
+		// 	} else {
+		// 		selectionHex.Show();
+		// 		var coord = tile.Get<Location>().hex;
+		// 		selectionHex.Position = layout.HexToPixel(coord).ToVector();
 
 				
-			}
-		});
+		// 	}
+		// });
 
 		hoveredTile.Subscribe((Entity tile) => {
 			if (tile is null) {

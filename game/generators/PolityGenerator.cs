@@ -59,6 +59,7 @@ public class PolityGenerator : IGeneratorStep {
 
 				// give the player a scout
 				AddUnit(polity, hex, Unit.UnitType.Scout);
+				AddUnit(polity, hex.Neighbor(Direction.NorthEast, 3), Unit.UnitType.Scout);
 			}
 		}
 
@@ -110,7 +111,11 @@ public class PolityGenerator : IGeneratorStep {
 		return building;
 	}
 
-	private Entity AddUnit(Entity polity, Hex hex, Unit.UnitType unitType) {
+	private Entity AddUnit(
+		Entity polity,
+		Hex hex,
+		Unit.UnitType unitType
+	) {
 		var unitData = new UnitData { type = unitType, ownerPolity = polity };
 		var unit = manager.state.Spawn();
 		unit.Add(unitData);
