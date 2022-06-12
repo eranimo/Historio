@@ -1,6 +1,7 @@
+global using RelEcs;
+global using System.Collections.Generic;
 using System;
 using System.Reactive.Subjects;
-using RelEcs;
 
 public enum GameSpeed {
 	Slow,

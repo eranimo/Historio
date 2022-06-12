@@ -41,6 +41,7 @@ public class MovementSystem : ISystem {
 						movement.path.Clear();
 						GD.PrintS("Movement ended");
 						movement.currentTarget = null;
+						movement.movementAction.status = ActionStatus.Finished;
 					}
 				}
 			}

@@ -43,6 +43,7 @@ public class GameManager {
 		state.AddElement(new SelectedUnit());
 
 		daySystems
+			.Add(new ActionSystem())
 			.Add(new PathfindingSystem())
 			.Add(new MovementSystem());
 		

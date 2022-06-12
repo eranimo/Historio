@@ -21,9 +21,15 @@ public class UnitPanelUISystem : ISystem {
 		});
 
 		var selectedUnit = commands.GetElement<SelectedUnit>().unit;
-		commands.Receive((UnitMoved e) => {
-			if (e.unit == selectedUnit) {
-				unitPanel.update(e.unit);
+		commands.Receive((CurrentActionChanged e) => {
+			if (e.entity == selectedUnit) {
+				unitPanel.update(e.entity);
+			}
+		});
+
+		commands.Receive((ActionQueueChanged e) => {
+			if (e.entity == selectedUnit) {
+				unitPanel.update(e.entity);
 			}
 		});
 	}
@@ -33,20 +39,25 @@ public class UnitPanel : PanelContainer {
 	private GameView gameView;
 	private Label unitNameLabel;
 	private Label unitPositionLabel;
+	private Label currentActionLabel;
+	private Control queueItemList;
 	private Control movementRow;
 	private Label movementTarget;
 	private RelEcs.World state;
+	private PackedScene queueItemScene;
 
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
 		gameView.game.manager.state.AddElement(this);
 		state = gameView.game.manager.state;
 
-		var closeButton = GetNode<ToolButton>("VBoxContainer/HBoxContainer/CloseButton");
-		unitNameLabel = GetNode<Label>("VBoxContainer/HBoxContainer/UnitNameLabel");
-		unitPositionLabel = GetNode<Label>("VBoxContainer/Details/DetailRow/UnitPosition");
-		movementRow = GetNode<Control>("VBoxContainer/Details/MovementRow");
-		movementTarget = GetNode<Label>("VBoxContainer/Details/MovementRow/MoveTarget");
+		var closeButton = GetNode<ToolButton>("UnitInfo/Header/CloseButton");
+		unitNameLabel = GetNode<Label>("UnitInfo/Header/UnitNameLabel");
+		unitPositionLabel = GetNode<Label>("UnitInfo/Content/Details/DetailRow/UnitPosition");
+		currentActionLabel = GetNode<Label>("UnitInfo/Content/Actions/CurrentActionRow/CurrentActionLabel");
+
+		queueItemList = GetNode<Control>("UnitInfo/Content/Actions/ActionQueue/MarginContainer/QueueItemList");
+		queueItemScene = ResourceLoader.Load<PackedScene>("res://view/UnitPanel/QueueItem.tscn");
 
 		closeButton.Connect("pressed", this, nameof(closeButtonPressed));
 		Hide();
@@ -63,13 +74,29 @@ public class UnitPanel : PanelContainer {
 		var location = unit.Get<Location>();
 		unitNameLabel.Text = Unit.unitNames[unitData.type];
 		unitPositionLabel.Text = $"({location.hex.col}, {location.hex.row})";
-
-		var movement = unit.Get<Movement>();
-		if (movement.currentTarget is not null) {
-			movementRow.Show();
-			movementTarget.Text = $"({movement.currentTarget.col}, {movement.currentTarget.row})";
+		
+		var actionQueue = unit.Get<ActionQueue>();
+		if (actionQueue.currentAction is null) {
+			currentActionLabel.Text = "Idle";
 		} else {
-			movementRow.Hide();
+			currentActionLabel.Text = actionQueue.currentAction.GetLabel();
+		}
+
+		foreach (var item in queueItemList.GetChildren()) {
+			queueItemList.RemoveChild((Node) item);
+		}
+
+		int num = 1;
+		foreach (var action in actionQueue.actions) {
+			var queueItem = queueItemScene.Instance<QueueItem>();
+			queueItemList.AddChild(queueItem);
+			queueItem.handleRemove = () => {
+				actionQueue.removeAction(action);
+				state.Send(new ActionQueueChanged { entity = unit });
+			};
+			queueItem.QueueNumber = num.ToString();
+			queueItem.ActionLabel = action.GetLabel();
+			num++;
 		}
 	}
 }

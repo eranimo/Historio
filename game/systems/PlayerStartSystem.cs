@@ -1,8 +1,3 @@
-using Godot;
-using RelEcs;
-using System.Collections.Generic;
-using System.Linq;
-
 public class PlayerStartSystem : ISystem {
 	public void Run(Commands commands) {
 		var gameMap = commands.GetElement<GameMap>();

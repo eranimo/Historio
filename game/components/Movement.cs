@@ -18,6 +18,7 @@ public class Movement {
 	public List<Hex> tweenHexes = new List<Hex>();
 
 	public float movementPointsLeft;
+	public Action movementAction;
 }
 
 public class UnitMoved {
