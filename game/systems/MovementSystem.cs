@@ -27,11 +27,9 @@ public class MovementSystem : ISystem {
 					}
 				}
 				movement.movementPointsLeft = mpLeft;
-				GD.PrintS("MP left", mpLeft);
 				var next = movement.path[pathIndex];
 				movement.tweenHexes.Add(next);
-				GD.PrintS("Set tween:", System.String.Join(", ", movement.tweenHexes));
-				GD.PrintS("Move to", next);
+				GD.PrintS("(MovementSystem) Move to", next);
 				movement.currentPathIndex = pathIndex;
 
 				if (next != null) {
@@ -39,7 +37,7 @@ public class MovementSystem : ISystem {
 					commands.Send(new UnitMoved { unit = entity });
 					if (movement.currentTarget == location.hex) {
 						movement.path.Clear();
-						GD.PrintS("Movement ended");
+						GD.PrintS("(MovementSystem) Movement ended");
 						movement.currentTarget = null;
 						movement.movementAction.status = ActionStatus.Finished;
 					}
@@ -82,11 +80,11 @@ public class MovementTweenSystem : ISystem {
 					movement.tweenHexes.Clear();
 				}
 
+				var nearestHex = layout.PixelToHex(Point.FromVector(unitIcon.Position + layout.HexSize.ToVector() / 2f));
+				world.moveEntity(entity, nearestHex);
+				commands.Send(new UnitMoved { unit = entity });
+
 				if (entity.Has<ViewStateNode>()) {
-					var viewStateNode = entity.Get<ViewStateNode>();
-					var nearestHex = layout.PixelToHex(Point.FromVector(unitIcon.Position + layout.HexSize.ToVector() / 2f));
-					world.moveEntity(entity, nearestHex);
-					commands.Send(new UnitMoved { unit = entity });
 					commands.Send(new ViewStateNodeUpdated { entity = entity });
 				}
 			}

@@ -130,4 +130,30 @@ public class Game {
 		manager.Start(this.date);
 	}
 
+	public void Slower() {
+		if (speed.Value == GameSpeed.Normal) {
+			speed.OnNext(GameSpeed.Slow);
+		} else if (speed.Value == GameSpeed.Fast) {
+			speed.OnNext(GameSpeed.Normal);
+		}
+	}
+
+	public void Faster() {
+		if (speed.Value == GameSpeed.Slow) {
+			speed.OnNext(GameSpeed.Normal);
+		} else if (speed.Value == GameSpeed.Normal) {
+			speed.OnNext(GameSpeed.Fast);
+		}
+	}
+
+	public void ToggleSpeed() {
+		if (speed.Value == GameSpeed.Slow) {
+			speed.OnNext(GameSpeed.Normal);
+		} else if (speed.Value == GameSpeed.Normal) {
+			speed.OnNext(GameSpeed.Fast);
+		} else if (speed.Value == GameSpeed.Fast) {
+			speed.OnNext(GameSpeed.Slow);
+		}
+	}
+
 }

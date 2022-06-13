@@ -27,6 +27,12 @@ public class UnitPanelUISystem : ISystem {
 			}
 		});
 
+		commands.Receive((UnitMoved e) => {
+			if (e.unit == selectedUnit) {
+				unitPanel.update(e.unit);
+			}
+		});
+
 		commands.Receive((ActionQueueChanged e) => {
 			if (e.entity == selectedUnit) {
 				unitPanel.update(e.entity);

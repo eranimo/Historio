@@ -4,7 +4,7 @@ public class ActionTickSystem :ISystem {
 	public void Run(Commands commands) {
 		commands.Receive((ActionQueueAdd e) => {
 			if (e.owner.Has<ActionQueue>()) {
-				GD.PrintS("Action added", e.action);
+				GD.PrintS("9ActionTickSystem) Action added", e.action);
 				e.owner.Get<ActionQueue>().actions.Enqueue(e.action);
 				commands.Send(new ActionQueueChanged { entity = e.owner });
 			}
@@ -13,7 +13,7 @@ public class ActionTickSystem :ISystem {
 		commands.Receive((ActionQueueClear e) => {
 			if (e.owner.Has<ActionQueue>()) {
 				var actionQueue = e.owner.Get<ActionQueue>();
-				GD.PrintS("Action cancelled", actionQueue.currentAction);
+				GD.PrintS("(ActionTickSystem) Action cancelled", actionQueue.currentAction);
 				if (actionQueue.currentAction is not null) {
 					actionQueue.currentAction.OnCancelled();
 				}
@@ -32,11 +32,11 @@ public class ActionSystem : ISystem {
 		foreach(var (entity, actionQueue) in entities) {
 			if (actionQueue.currentAction is not null) {
 				if (actionQueue.currentAction.status == ActionStatus.Finished) {
-					GD.PrintS("Action finished", actionQueue.currentAction);
+					GD.PrintS("(ActionSystem) Action finished", actionQueue.currentAction);
 					actionQueue.currentAction = null;
 					commands.Send(new CurrentActionChanged { entity = entity });
 				} else if (actionQueue.currentAction.status == ActionStatus.Cancelled) {
-					GD.PrintS("Action cancelled", actionQueue.currentAction);
+					GD.PrintS("(ActionSystem) Action cancelled", actionQueue.currentAction);
 					actionQueue.currentAction = null;
 					commands.Send(new CurrentActionChanged { entity = entity });
 				}

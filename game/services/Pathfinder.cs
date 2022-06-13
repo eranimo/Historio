@@ -29,11 +29,18 @@ public class Pathfinder {
 			tileToID.Add(tile, id);
 		}
 		foreach (var tile in manager.world.tiles) {
+			var tileData = tile.Get<TileData>();
 			var hex = tile.Get<Location>().hex;
 			foreach (var neighborHex in hex.Neighbors()) {
 				if (manager.world.IsValidTile(neighborHex)) {
 					var neighborTile = manager.world.GetTile(neighborHex);
-					aStar.ConnectPoints(tileToID[tile], tileToID[neighborTile]);
+					var neighborTileData = neighborTile.Get<TileData>();
+					if (
+						tileData.IsLand == neighborTileData.IsLand
+						|| !tileData.IsLand == !neighborTileData.IsLand
+					) {
+						aStar.ConnectPoints(tileToID[tile], tileToID[neighborTile]);
+					}
 				}
 			}
 		}
