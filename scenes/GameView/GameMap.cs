@@ -140,6 +140,21 @@ public class GameMap : Node2D {
 		}
 		base._Input(@event);
 
+		if (@event is InputEventMouseButton) {
+			var mouseEventButton = (InputEventMouseButton) @event;
+			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex == (int) ButtonList.MaskRight) {
+				var clickedHex = getCoordAtCursor();
+				var selectedUnit = game.manager.state.GetElement<SelectedUnit>().unit;
+				GD.PrintS("Right clicked on", clickedHex);
+				if (game.manager.world.IsValidTile(clickedHex) && selectedUnit is not null) {
+					game.manager.state.Send(new ActionQueueAdd {
+						owner = selectedUnit,
+						action = new MovementAction(selectedUnit, clickedHex)
+					});
+				}
+			}
+		}
+
 		if (@event.IsActionPressed("view_select")) {
 			is_placing = true;
 			var coord = getCoordAtCursor();

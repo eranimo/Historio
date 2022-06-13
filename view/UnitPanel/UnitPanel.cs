@@ -45,6 +45,8 @@ public class UnitPanel : PanelContainer {
 	private Label movementTarget;
 	private RelEcs.World state;
 	private PackedScene queueItemScene;
+	private Button stopButton;
+	private Button moveButton;
 
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
@@ -59,15 +61,19 @@ public class UnitPanel : PanelContainer {
 		queueItemList = GetNode<Control>("UnitInfo/Content/Actions/ActionQueue/MarginContainer/QueueItemList");
 		queueItemScene = ResourceLoader.Load<PackedScene>("res://view/UnitPanel/QueueItem.tscn");
 
+		// action buttons
+		stopButton = GetNode<Button>("UnitInfo/Footer/StopButton");
+		moveButton = GetNode<Button>("UnitInfo/Footer/MoveButton");
+		stopButton.Connect("pressed", this, nameof(stopButtonPressed));
+
 		closeButton.Connect("pressed", this, nameof(closeButtonPressed));
 		Hide();
 	}
 
 	public Entity currentUnit => gameView.game.manager.state.GetElement<SelectedUnit>().unit;
 
-	private void closeButtonPressed() {
-		state.Send(new SelectedUnitUpdate { unit = null });
-	}
+	private void closeButtonPressed() => state.Send(new SelectedUnitUpdate { unit = null });
+	private void stopButtonPressed() => state.Send(new ActionQueueClear { owner = currentUnit });
 
 	public void update(Entity unit) {
 		var unitData = unit.Get<UnitData>();

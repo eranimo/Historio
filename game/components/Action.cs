@@ -26,6 +26,11 @@ public class ActionQueueAdd {
 	public Action action;
 }
 
+// trigger to clear action queue
+public class ActionQueueClear {
+	public Entity owner;
+}
+
 public enum ActionType {
 	Movement,
 }
@@ -57,6 +62,8 @@ public abstract class Action {
 	// called on each day tick after started
 	public abstract void OnDayTick(GameDate date);
 
+	public abstract void OnCancelled();
+
 	public abstract string GetLabel();
 
 	public static Dictionary<ActionType, string> actionTypeNames = new Dictionary<ActionType, string>() {
@@ -87,6 +94,11 @@ public class MovementAction : Action {
 		var movement = owner.Get<Movement>();
 		movement.currentTarget = target;
 		movement.movementAction = this;
+	}
+
+	public override void OnCancelled() {
+		var movement = owner.Get<Movement>();
+		movement.Reset();
 	}
 
 	public override void OnDayTick(GameDate date) {

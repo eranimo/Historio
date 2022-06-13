@@ -19,6 +19,11 @@ public class Movement {
 
 	public float movementPointsLeft;
 	public Action movementAction;
+
+	public void Reset() {
+		currentTarget = null;
+		path.Clear();
+	}
 }
 
 public class UnitMoved {

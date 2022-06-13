@@ -58,8 +58,9 @@ public class PolityGenerator : IGeneratorStep {
 				manager.state.AddElement(player);
 
 				// give the player a scout
-				AddUnit(polity, hex, Unit.UnitType.Scout);
-				AddUnit(polity, hex.Neighbor(Direction.NorthEast, 3), Unit.UnitType.Scout);
+				var unitFactory = manager.state.GetElement<UnitFactory>();
+				unitFactory.NewUnit(polity, hex, Unit.UnitType.Scout);
+				unitFactory.NewUnit(polity, hex.Neighbor(Direction.NorthEast, 3), Unit.UnitType.Scout);
 			}
 		}
 
@@ -109,38 +110,6 @@ public class PolityGenerator : IGeneratorStep {
 		building.Add(sprite);
 		manager.state.Send(new SpriteAdded { entity = building });
 		return building;
-	}
-
-	private Entity AddUnit(
-		Entity polity,
-		Hex hex,
-		Unit.UnitType unitType
-	) {
-		var unitData = new UnitData { type = unitType, ownerPolity = polity };
-		var unit = manager.state.Spawn();
-		unit.Add(unitData);
-		unit.Add(new Location { hex = hex });
-
-		manager.state.Send(new UnitAdded { unit = unit });
-
-		var actionQueue = new ActionQueue();
-		unit.Add(actionQueue);
-		manager.state.Send(new ActionQueueAdd {
-			owner = unit,
-			action = new MovementAction(unit, hex.Neighbor(Direction.South, 5))
-		});
-		manager.state.Send(new ActionQueueAdd {
-			owner = unit,
-			action = new MovementAction(unit, hex.Neighbor(Direction.NorthEast, 5))
-		});
-
-		var movement = new Movement();
-		// movement.currentTarget = hex.Neighbor(Direction.South, 5); // .Neighbor(Direction.SouthWest, 15);
-		unit.Add(movement);
-		unit.Add(new ViewStateNode { polity = polity, range = 2 });
-		manager.state.Send(new ViewStateNodeUpdated { entity = unit } );
-		manager.world.moveEntity(unit, hex);
-		return unit;
 	}
 
 	private Entity findAvailableTile() {

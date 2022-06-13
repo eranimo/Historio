@@ -16,7 +16,7 @@ public class GameManager {
 	// runs every day (game)
     SystemGroup daySystems = new SystemGroup();
 
-	// runs every 60 FPS, before run systems
+	// runs every 60 FPS, before day systems
 	SystemGroup tickSystems = new SystemGroup();
 
 	// runs after game ends or player exists
@@ -26,7 +26,7 @@ public class GameManager {
    	SystemGroup renderSystems = new SystemGroup();
 
 	// runs every tick and at game start
-	SystemGroup uiSystems = new SystemGroup();
+	SystemGroup frameSystems = new SystemGroup();
 
 	public World world;
 	private PhysicsDelta physicsDelta;
@@ -34,13 +34,19 @@ public class GameManager {
 	public GameManager() {
 		world = new World(this);
 		state = new RelEcs.World();
-		state.AddElement(world);
 		state.AddElement(new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5)));
 		state.AddElement(new MapViewState(this));
-		state.AddElement(new Pathfinder(this));
 		physicsDelta = new PhysicsDelta();
 		state.AddElement(physicsDelta);
 		state.AddElement(new SelectedUnit());
+
+		// services
+		state.AddElement(world);
+		state.AddElement(new Pathfinder(this));
+
+		// factories
+		state.AddElement(new UnitFactory(this));
+
 
 		daySystems
 			.Add(new ActionSystem())
@@ -61,9 +67,10 @@ public class GameManager {
 			.Add(new UnitRenderSystem())
 			.Add(new BorderRenderSystem());
 		
-		uiSystems
+		frameSystems
 			.Add(new UnitSelectionSystem())
-			.Add(new UnitPanelUISystem());
+			.Add(new UnitPanelUISystem())
+			.Add(new ActionTickSystem());
 	}
 
 	// called when game starts
@@ -72,7 +79,7 @@ public class GameManager {
 		Godot.GD.PrintS("(GameManager) start");
 		startSystems.Run(state);
 		renderSystems.Run(state);
-		uiSystems.Run(state);
+		frameSystems.Run(state);
 	}
 
 	// called when game stops
@@ -100,6 +107,6 @@ public class GameManager {
 	}
 
 	public void UIProcess(float delta) {
-		uiSystems.Run(state);
+		frameSystems.Run(state);
 	}
 }

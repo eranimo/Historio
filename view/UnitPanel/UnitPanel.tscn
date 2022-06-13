@@ -141,7 +141,7 @@ margin_right = 40.0
 margin_bottom = 20.0
 text = "Stop"
 
-[node name="MoveButton2" type="Button" parent="UnitInfo/Footer"]
+[node name="MoveButton" type="Button" parent="UnitInfo/Footer"]
 margin_left = 44.0
 margin_right = 91.0
 margin_bottom = 20.0

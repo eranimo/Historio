@@ -1,14 +1,33 @@
 using Godot;
 
+public class ActionTickSystem :ISystem {
+	public void Run(Commands commands) {
+		commands.Receive((ActionQueueAdd e) => {
+			if (e.owner.Has<ActionQueue>()) {
+				GD.PrintS("Action added", e.action);
+				e.owner.Get<ActionQueue>().actions.Enqueue(e.action);
+				commands.Send(new ActionQueueChanged { entity = e.owner });
+			}
+		});
+
+		commands.Receive((ActionQueueClear e) => {
+			if (e.owner.Has<ActionQueue>()) {
+				var actionQueue = e.owner.Get<ActionQueue>();
+				GD.PrintS("Action cancelled", actionQueue.currentAction);
+				if (actionQueue.currentAction is not null) {
+					actionQueue.currentAction.OnCancelled();
+				}
+				actionQueue.currentAction = null;
+				commands.Send(new CurrentActionChanged { entity = e.owner });
+				e.owner.Get<ActionQueue>().actions.Clear();
+			}
+		});
+	}
+}
+
 public class ActionSystem : ISystem {
 	public void Run(Commands commands) {
 		var entities = commands.Query<Entity, ActionQueue>();
-
-		commands.Receive((ActionQueueAdd e) => {
-			if (e.owner.Has<ActionQueue>()) {
-				e.owner.Get<ActionQueue>().actions.Enqueue(e.action);
-			}
-		});
 
 		foreach(var (entity, actionQueue) in entities) {
 			if (actionQueue.currentAction is not null) {
