@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://assets/ui.png" type="Texture" id=2]
 [ext_resource path="res://view/UnitPanel/QueueItem.cs" type="Script" id=3]
+[ext_resource path="res://assets/theme.tres" type="Theme" id=4]
 
 [sub_resource type="DynamicFont" id=11]
 size = 12
@@ -19,13 +20,14 @@ region = Rect2( 0, 15, 15, 15 )
 [node name="QueueItem" type="PanelContainer"]
 margin_right = 206.0
 margin_bottom = 29.0
+theme = ExtResource( 4 )
 script = ExtResource( 3 )
 
 [node name="Columns" type="HBoxContainer" parent="."]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 199.0
-margin_bottom = 30.0
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 203.0
+margin_bottom = 26.0
 
 [node name="QueueNumber" type="Label" parent="Columns"]
 margin_top = 4.0
@@ -38,7 +40,7 @@ text = "1."
 [node name="ActionLabel" type="Label" parent="Columns"]
 margin_left = 14.0
 margin_top = 4.0
-margin_right = 161.0
+margin_right = 181.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.862745, 0.862745, 0.862745, 1 )
@@ -46,7 +48,7 @@ custom_fonts/font = SubResource( 7 )
 text = "Moving to (0, 0)"
 
 [node name="RemoveActionButton" type="ToolButton" parent="Columns"]
-margin_left = 165.0
-margin_right = 192.0
+margin_left = 185.0
+margin_right = 200.0
 margin_bottom = 23.0
 icon = SubResource( 10 )

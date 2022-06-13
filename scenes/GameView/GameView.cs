@@ -46,4 +46,20 @@ public class GameView : Control {
 		CallDeferred("add_child", gameController);
 		GD.PrintS($"GameController init: {watch.ElapsedMilliseconds}ms");
 	}
+
+	public override void _Input(InputEvent @event) {
+		base._Input(@event);
+
+		if (@event.IsActionPressed("game_toggle_play")) {
+			if (game.IsPlaying) {
+				game.Pause();
+			} else {
+				game.Play();
+			}
+		} else if (@event.IsActionPressed("game_speed_down")) {
+			game.Slower();
+		} else if (@event.IsActionPressed("game_speed_up")) {
+			game.Faster();
+		}
+	}
 }
