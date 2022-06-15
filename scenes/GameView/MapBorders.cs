@@ -29,7 +29,7 @@ public class MapBorders : Polygon2D {
 
 	public override void _Ready() {}
 
-	private Hex worldSize => gameMap.game.GameState.GetElement<WorldData>().worldSize;
+	private Hex worldSize => gameMap.game.state.GetElement<WorldData>().worldSize;
 
 	public void RenderMap(GameMap gameMap) {
 		this.gameMap = gameMap;

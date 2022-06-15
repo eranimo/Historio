@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://assets/ui.png" type="Texture" id=2]
 [ext_resource path="res://view/UnitPanel/UnitPanel.cs" type="Script" id=3]
+[ext_resource path="res://assets/theme.tres" type="Theme" id=4]
 
 [sub_resource type="DynamicFont" id=6]
 font_data = ExtResource( 1 )
@@ -22,50 +23,50 @@ bg_color = Color( 0.219608, 0.219608, 0.219608, 1 )
 margin_top = 392.0
 margin_right = 445.0
 margin_bottom = 595.0
+theme = ExtResource( 4 )
 script = ExtResource( 3 )
 
 [node name="UnitInfo" type="VBoxContainer" parent="."]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 438.0
-margin_bottom = 196.0
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 442.0
+margin_bottom = 200.0
 
 [node name="Header" type="HBoxContainer" parent="UnitInfo"]
-margin_right = 431.0
-margin_bottom = 24.0
+margin_right = 439.0
+margin_bottom = 19.0
 
 [node name="UnitNameLabel" type="Label" parent="UnitInfo/Header"]
-margin_top = 2.0
-margin_right = 399.0
-margin_bottom = 21.0
+margin_right = 419.0
+margin_bottom = 19.0
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 6 )
 text = "Unit Name"
 
 [node name="CloseButton" type="ToolButton" parent="UnitInfo/Header"]
-margin_left = 403.0
-margin_right = 431.0
-margin_bottom = 24.0
+margin_left = 423.0
+margin_right = 439.0
+margin_bottom = 19.0
 icon = SubResource( 5 )
 
 [node name="Content" type="HBoxContainer" parent="UnitInfo"]
-margin_top = 28.0
-margin_right = 431.0
-margin_bottom = 165.0
+margin_top = 23.0
+margin_right = 439.0
+margin_bottom = 175.0
 size_flags_vertical = 3
 
 [node name="Details" type="VBoxContainer" parent="UnitInfo/Content"]
-margin_right = 213.0
-margin_bottom = 137.0
+margin_right = 217.0
+margin_bottom = 152.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="DetailRow" type="HBoxContainer" parent="UnitInfo/Content/Details"]
-margin_right = 213.0
+margin_right = 217.0
 margin_bottom = 15.0
 
 [node name="Label" type="Label" parent="UnitInfo/Content/Details/DetailRow"]
-margin_right = 104.0
+margin_right = 106.0
 margin_bottom = 15.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.862745, 0.862745, 0.862745, 1 )
@@ -73,8 +74,8 @@ custom_fonts/font = SubResource( 7 )
 text = "Position"
 
 [node name="UnitPosition" type="Label" parent="UnitInfo/Content/Details/DetailRow"]
-margin_left = 108.0
-margin_right = 213.0
+margin_left = 110.0
+margin_right = 217.0
 margin_bottom = 15.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 1, 1, 1, 1 )
@@ -82,17 +83,17 @@ custom_fonts/font = SubResource( 7 )
 text = "(0, 0)"
 
 [node name="Actions" type="VBoxContainer" parent="UnitInfo/Content"]
-margin_left = 217.0
-margin_right = 431.0
-margin_bottom = 137.0
+margin_left = 221.0
+margin_right = 439.0
+margin_bottom = 152.0
 size_flags_horizontal = 3
 
 [node name="CurrentActionRow" type="HBoxContainer" parent="UnitInfo/Content/Actions"]
-margin_right = 214.0
+margin_right = 218.0
 margin_bottom = 15.0
 
 [node name="CurrentActionLabel" type="Label" parent="UnitInfo/Content/Actions/CurrentActionRow"]
-margin_right = 214.0
+margin_right = 218.0
 margin_bottom = 15.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 1, 1, 1, 1 )
@@ -101,36 +102,36 @@ text = "Moving to (10, 10)"
 
 [node name="ActionQueue" type="ScrollContainer" parent="UnitInfo/Content/Actions"]
 margin_top = 19.0
-margin_right = 214.0
-margin_bottom = 137.0
+margin_right = 218.0
+margin_bottom = 152.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_styles/bg = SubResource( 8 )
 
 [node name="MarginContainer" type="PanelContainer" parent="UnitInfo/Content/Actions/ActionQueue"]
-margin_right = 214.0
-margin_bottom = 118.0
+margin_right = 218.0
+margin_bottom = 133.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="QueueItemList" type="VBoxContainer" parent="UnitInfo/Content/Actions/ActionQueue/MarginContainer"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 207.0
-margin_bottom = 111.0
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 215.0
+margin_bottom = 130.0
 
 [node name="Footer" type="HBoxContainer" parent="UnitInfo"]
-margin_top = 169.0
-margin_right = 431.0
-margin_bottom = 189.0
+margin_top = 179.0
+margin_right = 439.0
+margin_bottom = 197.0
 
 [node name="StopButton" type="Button" parent="UnitInfo/Footer"]
-margin_right = 40.0
-margin_bottom = 20.0
+margin_right = 32.0
+margin_bottom = 18.0
 text = "Stop"
 
 [node name="MoveButton" type="Button" parent="UnitInfo/Footer"]
-margin_left = 44.0
-margin_right = 91.0
-margin_bottom = 20.0
+margin_left = 36.0
+margin_right = 75.0
+margin_bottom = 18.0
 text = "Move"

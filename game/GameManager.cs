@@ -70,7 +70,8 @@ public class GameManager {
 		frameSystems
 			.Add(new UnitSelectionSystem())
 			.Add(new UnitPanelUISystem())
-			.Add(new ActionTickSystem());
+			.Add(new ActionTickSystem())
+			.Add(new UnitPathSystem());
 	}
 
 	// called when game starts
@@ -107,6 +108,10 @@ public class GameManager {
 	}
 
 	public void UIProcess(float delta) {
-		frameSystems.Run(state);
+		try {
+			frameSystems.Run(state);
+		} catch (Exception err) {
+			GD.PrintErr("Error processing frame: ", err);
+		}
 	}
 }

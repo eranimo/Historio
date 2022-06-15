@@ -69,7 +69,7 @@ public class Game {
 		playState.OnNext(false);
 	}
 
-	public RelEcs.World GameState => manager.state;
+	public RelEcs.World state => manager.state;
 
 	public IObservable<GameDate> GameDateChanged { get => gameDateChanged; }
 	public IObservable<GameSpeed> Speed { get => speed; }

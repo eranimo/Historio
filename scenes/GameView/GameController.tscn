@@ -14,7 +14,7 @@
 [ext_resource path="res://scenes/GameView/GameViewport.cs" type="Script" id=12]
 [ext_resource path="res://scenes/GameView/MapLabels.cs" type="Script" id=13]
 [ext_resource path="res://scenes/GameView/SettlementLabels.cs" type="Script" id=14]
-[ext_resource path="res://scenes/GameView/UnitPaths.cs" type="Script" id=15]
+[ext_resource path="res://scenes/GameView/SelectedUnitPath.cs" type="Script" id=15]
 [ext_resource path="res://view/UnitPanel/UnitPanel.tscn" type="PackedScene" id=16]
 [ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=17]
 [ext_resource path="res://assets/ui.png" type="Texture" id=18]
@@ -145,6 +145,15 @@ material = SubResource( 2 )
 texture = SubResource( 3 )
 script = ExtResource( 9 )
 
+[node name="SelectedUnitPath" type="TileMap" parent="GameViewport/Viewport/GameMap"]
+tile_set = ExtResource( 7 )
+cell_size = Vector2( 25, 28 )
+cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
+cell_half_offset = 1
+cell_tile_origin = 1
+format = 1
+script = ExtResource( 15 )
+
 [node name="MapLabels" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 script = ExtResource( 13 )
 
@@ -170,15 +179,6 @@ centered = false
 modulate = Color( 1, 1, 1, 0.207843 )
 texture = ExtResource( 6 )
 centered = false
-
-[node name="UnitPaths" type="TileMap" parent="GameViewport/Viewport/GameMap"]
-tile_set = ExtResource( 7 )
-cell_size = Vector2( 25, 28 )
-cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
-cell_half_offset = 1
-cell_tile_origin = 1
-format = 1
-script = ExtResource( 15 )
 
 [node name="Label" type="Label" parent="."]
 margin_right = 43.0
