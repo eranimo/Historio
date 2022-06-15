@@ -2,14 +2,6 @@ using Godot;
 
 public class ActionTickSystem :ISystem {
 	public void Run(Commands commands) {
-		commands.Receive((ActionQueueAdd e) => {
-			if (e.owner.Has<ActionQueue>()) {
-				GD.PrintS("9ActionTickSystem) Action added", e.action);
-				e.owner.Get<ActionQueue>().actions.Enqueue(e.action);
-				commands.Send(new ActionQueueChanged { entity = e.owner });
-			}
-		});
-
 		commands.Receive((ActionQueueClear e) => {
 			if (e.owner.Has<ActionQueue>()) {
 				var actionQueue = e.owner.Get<ActionQueue>();
@@ -20,6 +12,14 @@ public class ActionTickSystem :ISystem {
 				actionQueue.currentAction = null;
 				commands.Send(new CurrentActionChanged { entity = e.owner });
 				e.owner.Get<ActionQueue>().actions.Clear();
+			}
+		});
+
+		commands.Receive((ActionQueueAdd e) => {
+			if (e.owner.Has<ActionQueue>()) {
+				GD.PrintS("(ActionTickSystem) Action added", e.action);
+				e.owner.Get<ActionQueue>().actions.Enqueue(e.action);
+				commands.Send(new ActionQueueChanged { entity = e.owner });
 			}
 		});
 	}
