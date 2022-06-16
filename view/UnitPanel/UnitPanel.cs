@@ -111,4 +111,11 @@ public class UnitPanel : PanelContainer {
 			num++;
 		}
 	}
+
+	public override void _Input(InputEvent @event) {
+		if (@event.IsActionPressed("ui_cancel")) {
+			state.Send(new SelectedUnitUpdate { unit = null });
+			GetTree().SetInputAsHandled();
+		}
+	}
 }
