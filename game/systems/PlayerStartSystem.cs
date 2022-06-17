@@ -3,7 +3,7 @@ public class PlayerStartSystem : ISystem {
 		var gameMap = commands.GetElement<GameMap>();
 		// center the game map on the player's capital settlement
 		var player = commands.GetElement<Player>();
-		var capitals = commands.Query<Entity, SettlementData>().Has<CapitalSettlement>(player.playerPolity);
+		var capitals = commands.Query<Entity, SettlementData>().Has<CapitalSettlement>(player.playerCountry);
 		foreach (var (capital, settlementData) in capitals) {
 			var tilesInSettlement = commands.Query<Location>().Has<SettlementTile>(capital);
 			var hexes = new List<Hex>();

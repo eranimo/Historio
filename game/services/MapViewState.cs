@@ -24,15 +24,15 @@ Handles a world map of view states
 Values refer to how many neighboring tiles view state propagates to
 
 */
-public class PolityViewState {
+public class CountryViewState {
 	private readonly GameManager manager;
-	private readonly Entity polity;
+	private readonly Entity country;
 	private HashSet<Entity> nodeEntities = new HashSet<Entity>();
 	public HashSet<Entity> activeTiles = new HashSet<Entity>();
 
-	public PolityViewState(GameManager manager, Entity polity) {
+	public CountryViewState(GameManager manager, Entity country) {
 		this.manager = manager;
-		this.polity = polity;
+		this.country = country;
 	}
 
 	public void addNodeEntity(Entity entityWithNode) {
@@ -40,11 +40,11 @@ public class PolityViewState {
 	}
 
 	public ViewState get(Entity tile) {
-		return tile.Get<TileViewState>().politiesToViewStates[polity];
+		return tile.Get<TileViewState>().countriesToViewStates[country];
 	}
 
 	public void set(Entity tile, ViewState viewState) {
-		tile.Get<TileViewState>().politiesToViewStates[polity] = viewState;
+		tile.Get<TileViewState>().countriesToViewStates[country] = viewState;
 	}
 
 	public void exploreAt(Entity tile, int range) {
@@ -79,28 +79,28 @@ public class PolityViewState {
 }
 
 /*
-Handles fog of war state for each polity
+Handles fog of war state for each country
 */
 public class MapViewState {
 	private readonly GameManager manager;
-	private Dictionary<Entity, PolityViewState> polityViewState = new Dictionary<Entity, PolityViewState>();
+	private Dictionary<Entity, CountryViewState> countryViewState = new Dictionary<Entity, CountryViewState>();
 
 	public MapViewState(GameManager manager) {
 		this.manager = manager;
 	}
 
-	public void add(Entity polity) {
-		polityViewState.Add(polity, new PolityViewState(manager, polity));
+	public void add(Entity country) {
+		countryViewState.Add(country, new CountryViewState(manager, country));
 	}
 
-	public void remove(Entity polity) {
-		polityViewState.Remove(polity);
+	public void remove(Entity country) {
+		countryViewState.Remove(country);
 	}
 
-	public PolityViewState getViewState(Entity entity) {
-		if (!polityViewState.ContainsKey(entity)) {
-			Godot.GD.PushError("Polity not added to MapViewState");
+	public CountryViewState getViewState(Entity entity) {
+		if (!countryViewState.ContainsKey(entity)) {
+			Godot.GD.PushError("Country not added to MapViewState");
 		}
-		return polityViewState[entity];
+		return countryViewState[entity];
 	}
 }

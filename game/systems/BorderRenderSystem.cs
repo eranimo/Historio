@@ -6,13 +6,13 @@ using Godot;
 public class BorderRenderSystem : ISystem {
 	private List<(Hex, Entity)> hexUpdates;
 	private HashSet<Entity> settlementUpdates;
-	private HashSet<Entity> polityUpdates;
+	private HashSet<Entity> countryUpdates;
 	private PackedScene settlementLabelScene;
 
 	public BorderRenderSystem() {
 		hexUpdates = new List<(Hex, RelEcs.Entity)>();
 		settlementUpdates = new HashSet<Entity>();
-		polityUpdates = new HashSet<Entity>();
+		countryUpdates = new HashSet<Entity>();
 
 		settlementLabelScene = ResourceLoader.Load<PackedScene>("res://scenes/GameView/SettlementLabel.tscn");
 	}
@@ -23,43 +23,43 @@ public class BorderRenderSystem : ISystem {
 
 		hexUpdates.Clear();
 		settlementUpdates.Clear();
-		polityUpdates.Clear();
+		countryUpdates.Clear();
 		
 		commands.Receive((TileBorderUpdate e) => {
 			var location = e.tile.Get<Location>();
 			var territoryData = e.settlement.Get<SettlementData>();
 			hexUpdates.Add((location.hex, e.settlement));
 			settlementUpdates.Add(e.settlement);
-			polityUpdates.Add(territoryData.ownerPolity);
+			countryUpdates.Add(territoryData.ownerCountry);
 		});
 
 		if (hexUpdates.Count > 0) {
 			gameMap.mapBorders.updateTerritoryMap(hexUpdates);
 			gameMap.mapBorders.updateAreaMap(hexUpdates);
 
-			var settlementUpdatesPerPolity = new Dictionary<Entity, HashSet<Hex>>();
+			var settlementUpdatesPerCountry = new Dictionary<Entity, HashSet<Hex>>();
 
 			foreach (var settlement in settlementUpdates) {
 				var settlementLabel = settlementLabelScene.Instance<SettlementLabel>();
 				var territoryHexes = hexUpdates.Where(item => item.Item2 == settlement).Select(item => item.Item1).ToHashSet();
 				gameMap.settlementLabels.Add(settlementLabel);
 				var settlementData = settlement.Get<SettlementData>();
-				var polityData = settlementData.ownerPolity.Get<PolityData>();
+				var countryData = settlementData.ownerCountry.Get<CountryData>();
 				settlementLabel.text = settlementData.name;
-				settlementLabel.color = polityData.color;
+				settlementLabel.color = countryData.color;
 				settlementLabel.position = gameMap.layout.Centroid(territoryHexes).ToVector();
-				if (settlementUpdatesPerPolity.ContainsKey(settlementData.ownerPolity)) {
-					settlementUpdatesPerPolity[settlementData.ownerPolity].UnionWith(territoryHexes);
+				if (settlementUpdatesPerCountry.ContainsKey(settlementData.ownerCountry)) {
+					settlementUpdatesPerCountry[settlementData.ownerCountry].UnionWith(territoryHexes);
 				} else {
-					settlementUpdatesPerPolity.Add(settlementData.ownerPolity, territoryHexes);
+					settlementUpdatesPerCountry.Add(settlementData.ownerCountry, territoryHexes);
 				}
 			}
 
-			foreach (var polity in polityUpdates) {
-				var label = polity.Get<MapLabel>();
-				var polityHexes = settlementUpdatesPerPolity[polity];
+			foreach (var country in countryUpdates) {
+				var label = country.Get<MapLabel>();
+				var countryHexes = settlementUpdatesPerCountry[country];
 				gameMap.mapLabels.AddLabel(label);
-				label.SetPosition(gameMap.layout.Centroid(polityHexes).ToVector() - new Godot.Vector2(0, 23));
+				label.SetPosition(gameMap.layout.Centroid(countryHexes).ToVector() - new Godot.Vector2(0, 23));
 			}
 		}
 	}

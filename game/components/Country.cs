@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using Godot;
 
-public class PolityData {
+public class CountryData {
 	public string name;
 	public Color color;
 }
 
-public class PolityAdded {
-	public RelEcs.Entity polity;
+public class CountryAdded {
+	public RelEcs.Entity country;
 }

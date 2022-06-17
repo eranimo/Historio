@@ -61,7 +61,7 @@ public class MapBorders : Polygon2D {
 		hexTerritoryColorImage.Lock();
 		
 		foreach (var (hex, territory) in updates) {
-			var color = territory.Get<SettlementData>().ownerPolity.Get<PolityData>().color;
+			var color = territory.Get<SettlementData>().ownerCountry.Get<CountryData>().color;
 			int id;
 			if (activeTerritoryEntities.ContainsKey(territory)) {
 				id = activeTerritoryEntities[territory];
@@ -84,7 +84,7 @@ public class MapBorders : Polygon2D {
 		hexAreaColorImage.Lock();
 
 		foreach (var (hex, territory) in updates) {
-			var color = territory.Get<SettlementData>().ownerPolity.Get<PolityData>().color;
+			var color = territory.Get<SettlementData>().ownerCountry.Get<CountryData>().color;
 			int id;
 			if (activeTerritoryEntities.ContainsKey(territory)) {
 				id = activeTerritoryEntities[territory];

@@ -1,6 +1,6 @@
 // Element
 public class Player {
-	public RelEcs.Entity playerPolity;
+	public RelEcs.Entity playerCountry;
 }
 
 // trigger

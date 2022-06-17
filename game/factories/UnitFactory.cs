@@ -6,11 +6,11 @@ public class UnitFactory {
 	}
 
 	public void NewUnit(
-		Entity ownerPolity,
+		Entity ownerCountry,
 		Hex hex,
 		Unit.UnitType unitType
 	) {
-		var unitData = new UnitData { type = unitType, ownerPolity = ownerPolity };
+		var unitData = new UnitData { type = unitType, ownerCountry = ownerCountry };
 		var unit = manager.state.Spawn();
 		unit.Add(unitData);
 		unit.Add(new Location { hex = hex });
@@ -31,7 +31,7 @@ public class UnitFactory {
 		var movement = new Movement();
 		// movement.currentTarget = hex.Neighbor(Direction.South, 5); // .Neighbor(Direction.SouthWest, 15);
 		unit.Add(movement);
-		unit.Add(new ViewStateNode { polity = ownerPolity, range = 2 });
+		unit.Add(new ViewStateNode { country = ownerCountry, range = 2 });
 		manager.state.Send(new ViewStateNodeUpdated { entity = unit });
 		manager.world.moveEntity(unit, hex);
 	}

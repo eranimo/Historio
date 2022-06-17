@@ -17,11 +17,11 @@ public static class Unit {
 
 public class UnitData {
 	public Unit.UnitType type;
-	public Entity ownerPolity;
+	public Entity ownerCountry;
 }
 
-// Relation on entity to Polity
-public class UnitPolityOwner {}
+// Relation on entity to Country
+public class UnitCountryOwner {}
 
 
 public class UnitAdded {

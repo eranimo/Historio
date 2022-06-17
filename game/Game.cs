@@ -34,8 +34,8 @@ public class GameGenerator {
 	public void Generate() {
 		progress.OnNext(("Generating world", 0));
 		new WorldGenerator().Generate(options, manager);
-		progress.OnNext(("Generating polities", 50));
-		new PolityGenerator().Generate(options, manager);
+		progress.OnNext(("Generating countries", 50));
+		new CountryGenerator().Generate(options, manager);
 		progress.OnNext(("Finished world generation", 100));
 	}
 }

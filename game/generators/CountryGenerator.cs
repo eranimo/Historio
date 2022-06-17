@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-public class PolityGenerator : IGeneratorStep {
+public class CountryGenerator : IGeneratorStep {
 	private HashSet<Entity> availableLandTiles;
 	private Random rng;
 	private GameManager manager;
@@ -24,49 +24,49 @@ public class PolityGenerator : IGeneratorStep {
 			throw new Exception("No available tiles to generate polities");
 		}
 
-		var polityTerritory = new Dictionary<Entity, HashSet<Entity>>();
-		var polityColors = new Dictionary<Entity, Color>();
+		var countryTerritory = new Dictionary<Entity, HashSet<Entity>>();
+		var countryColors = new Dictionary<Entity, Color>();
 
 		// create polities and capital buildings
 		for (int i = 0; i < numPolities; i++) {
-			var polityName = nameFactory.GetName();
-			var polityData = new PolityData{ name = polityName };
-			var polity = manager.state.Spawn();
-			var polityColor = Color.FromHsv((float) rng.NextDouble(), 0.5f, 1.0f);
-			polity.Add<PolityData>();
+			var countryName = nameFactory.GetName();
+			var countryData = new CountryData{ name = countryName };
+			var country = manager.state.Spawn();
+			var countryColor = Color.FromHsv((float) rng.NextDouble(), 0.5f, 1.0f);
+			country.Add<CountryData>();
 			var sourceTile = findAvailableTile();
 			availableLandTiles.Remove(sourceTile);
 			var territoryHexes = new HashSet<Entity>();
 			territoryHexes.Add(sourceTile);
-			polityColors.Add(polity, polityColor);
-			polityTerritory.Add(polity, territoryHexes);
+			countryColors.Add(country, countryColor);
+			countryTerritory.Add(country, territoryHexes);
 
-			manager.state.Send(new PolityAdded { polity = polity });
+			manager.state.Send(new CountryAdded { country = country });
 
 			// add label
 			var label = new MapLabel();
 			label.LabelType = MapLabel.MapLabelType.Territory;
-			label.Text = polityName;
-			polity.Add(label);
+			label.Text = countryName;
+			country.Add(label);
 
 			var hex = sourceTile.Get<Location>().hex;
 			// add capital building
 			AddBuilding(hex, Building.BuildingType.Village);
 
 			if (i == 0) {
-				var player = new Player { playerPolity = polity };
+				var player = new Player { playerCountry = country };
 				manager.state.AddElement(player);
 
 				// give the player a scout
 				var unitFactory = manager.state.GetElement<UnitFactory>();
-				unitFactory.NewUnit(polity, hex, Unit.UnitType.Scout);
-				unitFactory.NewUnit(polity, hex.Neighbor(Direction.NorthEast, 3), Unit.UnitType.Scout);
+				unitFactory.NewUnit(country, hex, Unit.UnitType.Scout);
+				unitFactory.NewUnit(country, hex.Neighbor(Direction.NorthEast, 3), Unit.UnitType.Scout);
 			}
 		}
 
 		// grow each polities territory
 		for(var j = 0; j < maxTilesPerTerritory; j++) {
-			foreach (var (polity, territoryHexes) in polityTerritory) {
+			foreach (var (country, territoryHexes) in countryTerritory) {
 				var newTile = findAvailableTileBorderingSet(territoryHexes);
 				if (newTile is not null) {
 					availableLandTiles.Remove(newTile);
@@ -76,22 +76,22 @@ public class PolityGenerator : IGeneratorStep {
 		}
 
 		// add settlement entities
-		foreach (var (polity, territoryHexes) in polityTerritory) {
-			var polityColor = polityColors[polity];
-			polity.Get<PolityData>().color = polityColor;
+		foreach (var (country, territoryHexes) in countryTerritory) {
+			var countryColor = countryColors[country];
+			country.Get<CountryData>().color = countryColor;
 			// capital territory
 			var capitalName = nameFactory.GetName();
 			var capitalData = new SettlementData {
 				name = capitalName,
-				ownerPolity = polity,
+				ownerCountry = country,
 			};
 			var capital = manager.state.Spawn();
 			capital.Add<SettlementData>(capitalData);
-			capital.Add<CapitalSettlement>(new CapitalSettlement(), polity);
+			capital.Add<CapitalSettlement>(new CapitalSettlement(), country);
 
 			foreach (var tile in territoryHexes) {
 				tile.Add(new SettlementTile(), capital);
-				tile.Add(new ViewStateNode { polity = polity, range = 3 });
+				tile.Add(new ViewStateNode { country = country, range = 3 });
 				manager.state.Send(new TileBorderUpdate { settlement = capital, tile = tile });
 				manager.state.Send(new ViewStateNodeUpdated { entity = tile });
 			}

@@ -66,16 +66,16 @@ public class TileData {
 }
 
 public class TileViewState {
-	public Dictionary<Entity, ViewState> politiesToViewStates = new Dictionary<Entity, ViewState>();
+	public Dictionary<Entity, ViewState> countriesToViewStates = new Dictionary<Entity, ViewState>();
 }
 
-// Added to entities with Hex components to propagate areas where that polity is "observing" a tile
+// Added to entities with Hex components to propagate areas where that country is "observing" a tile
 public class ViewStateNode {
-	public Entity polity;
+	public Entity country;
 	public int range;
 }
 
-// Trigger when view state nodes for a polity updates
+// Trigger when view state nodes for a country updates
 public class ViewStateNodeUpdated {
 	public Entity entity;
 }

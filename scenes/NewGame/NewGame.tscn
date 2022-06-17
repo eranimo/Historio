@@ -154,7 +154,7 @@ text = "Small"
 items = [ "Small", null, false, 0, null, "Medium", null, false, 1, null, "Large", null, false, 2, null ]
 selected = 0
 
-[node name="Polities" type="VBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel"]
+[node name="countries" type="VBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -163,24 +163,24 @@ margin_top = 32.0
 margin_right = -4.0
 margin_bottom = -4.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel/Polities"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel/countries"]
 margin_right = 492.0
 margin_bottom = 20.0
 
-[node name="Label" type="Label" parent="VBoxContainer/MainPanel/SettingsPanel/Polities/HBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/MainPanel/SettingsPanel/countries/HBoxContainer"]
 margin_top = 3.0
 margin_right = 411.0
 margin_bottom = 17.0
 size_flags_horizontal = 3
-text = "Polities"
+text = "countries"
 
-[node name="Button" type="Button" parent="VBoxContainer/MainPanel/SettingsPanel/Polities/HBoxContainer"]
+[node name="Button" type="Button" parent="VBoxContainer/MainPanel/SettingsPanel/countries/HBoxContainer"]
 margin_left = 415.0
 margin_right = 492.0
 margin_bottom = 20.0
-text = "Add Polity"
+text = "Add Country"
 
-[node name="PolitiesList" type="Tree" parent="VBoxContainer/MainPanel/SettingsPanel/Polities"]
+[node name="countriesList" type="Tree" parent="VBoxContainer/MainPanel/SettingsPanel/countries"]
 margin_top = 24.0
 margin_right = 492.0
 margin_bottom = 221.0
@@ -190,36 +190,36 @@ columns = 2
 hide_folding = true
 hide_root = true
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/MainPanel/SettingsPanel/Polities"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/MainPanel/SettingsPanel/countries"]
 margin_top = 225.0
 margin_right = 492.0
 margin_bottom = 422.0
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel/Polities/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel/countries/ScrollContainer"]
 margin_right = 492.0
 margin_bottom = 47.0
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="VBoxContainer/MainPanel/SettingsPanel/Polities/ScrollContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/MainPanel/SettingsPanel/countries/ScrollContainer/VBoxContainer"]
 margin_right = 492.0
 margin_bottom = 19.0
 custom_fonts/font = SubResource( 3 )
-text = "Editing \"Polity 0\""
+text = "Editing \"Country 0\""
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel/Polities/ScrollContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel/countries/ScrollContainer/VBoxContainer"]
 margin_top = 23.0
 margin_right = 492.0
 margin_bottom = 47.0
 
-[node name="Label" type="Label" parent="VBoxContainer/MainPanel/SettingsPanel/Polities/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/MainPanel/SettingsPanel/countries/ScrollContainer/VBoxContainer/HBoxContainer"]
 margin_top = 5.0
 margin_right = 244.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "Name"
 
-[node name="LineEdit" type="LineEdit" parent="VBoxContainer/MainPanel/SettingsPanel/Polities/ScrollContainer/VBoxContainer/HBoxContainer"]
+[node name="LineEdit" type="LineEdit" parent="VBoxContainer/MainPanel/SettingsPanel/countries/ScrollContainer/VBoxContainer/HBoxContainer"]
 margin_left = 248.0
 margin_right = 492.0
 margin_bottom = 24.0

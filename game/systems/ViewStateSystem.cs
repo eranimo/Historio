@@ -8,26 +8,26 @@ public class ViewStateSystem : ISystem {
 		var mapViewState = commands.GetElement<MapViewState>();
 		var player = commands.GetElement<Player>();
 
-		commands.Receive((PolityAdded e) => {
-			mapViewState.add(e.polity);
+		commands.Receive((CountryAdded e) => {
+			mapViewState.add(e.country);
 		});
 
-		// TODO: remove view state when polity removed
+		// TODO: remove view state when country removed
 
-		var changedPolities = new HashSet<Entity>();
+		var changedcountries = new HashSet<Entity>();
 		commands.Receive((ViewStateNodeUpdated e) => {
 			var viewStateNode = e.entity.Get<ViewStateNode>();
-			mapViewState.getViewState(viewStateNode.polity).addNodeEntity(e.entity);
-			changedPolities.Add(viewStateNode.polity);
+			mapViewState.getViewState(viewStateNode.country).addNodeEntity(e.entity);
+			changedcountries.Add(viewStateNode.country);
 		});
 
-		foreach (var polity in changedPolities) {
-			var polityViewState = mapViewState.getViewState(polity);
-			polityViewState.calculate();
-			if (player.playerPolity == polity) {
-				foreach (var tile in polityViewState.activeTiles) {
+		foreach (var country in changedcountries) {
+			var countryViewState = mapViewState.getViewState(country);
+			countryViewState.calculate();
+			if (player.playerCountry == country) {
+				foreach (var tile in countryViewState.activeTiles) {
 					var location = tile.Get<Location>();
-					var tileViewState = polityViewState.get(tile);
+					var tileViewState = countryViewState.get(tile);
 					gameMap.viewState.SetCell(location.hex.col, location.hex.row, tileViewState.GetTileMapTile());
 				}
 			}

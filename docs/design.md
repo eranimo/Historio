@@ -1,12 +1,12 @@
 # Design
 
 ## Entities
-Polity
+Country
 - name
 - settlements
 
 Settlement
-- owner Polity
+- owner Country
 - name
 - Tiles
 
