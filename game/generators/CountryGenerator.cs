@@ -17,18 +17,18 @@ public class CountryGenerator : IGeneratorStep {
 		availableLandTiles = landTiles.ToHashSet();
 
 		// TODO: make setting
-		var numPolities = 200; 
+		var numCountries = 200; 
 		var maxTilesPerTerritory = 25;
 
 		if (availableLandTiles.Count == 0) {
-			throw new Exception("No available tiles to generate polities");
+			throw new Exception("No available tiles to generate countries");
 		}
 
 		var countryTerritory = new Dictionary<Entity, HashSet<Entity>>();
 		var countryColors = new Dictionary<Entity, Color>();
 
-		// create polities and capital buildings
-		for (int i = 0; i < numPolities; i++) {
+		// create countries and capital buildings
+		for (int i = 0; i < numCountries; i++) {
 			var countryName = nameFactory.GetName();
 			var countryData = new CountryData{ name = countryName };
 			var country = manager.state.Spawn();
@@ -64,7 +64,7 @@ public class CountryGenerator : IGeneratorStep {
 			}
 		}
 
-		// grow each polities territory
+		// grow each countries territory
 		for(var j = 0; j < maxTilesPerTerritory; j++) {
 			foreach (var (country, territoryHexes) in countryTerritory) {
 				var newTile = findAvailableTileBorderingSet(territoryHexes);
