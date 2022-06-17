@@ -24,7 +24,7 @@ public class CountryGenerator : IGeneratorStep {
 			throw new Exception("No available tiles to generate countries");
 		}
 
-		var countryTerritory = new Dictionary<Entity, HashSet<Entity>>();
+		var countrySettlementTiles = new Dictionary<Entity, HashSet<Entity>>();
 		var countryColors = new Dictionary<Entity, Color>();
 
 		// create countries and capital buildings
@@ -39,7 +39,7 @@ public class CountryGenerator : IGeneratorStep {
 			var territoryHexes = new HashSet<Entity>();
 			territoryHexes.Add(sourceTile);
 			countryColors.Add(country, countryColor);
-			countryTerritory.Add(country, territoryHexes);
+			countrySettlementTiles.Add(country, territoryHexes);
 
 			manager.state.Send(new CountryAdded { country = country });
 
@@ -66,7 +66,7 @@ public class CountryGenerator : IGeneratorStep {
 
 		// grow each countries territory
 		for(var j = 0; j < maxTilesPerTerritory; j++) {
-			foreach (var (country, territoryHexes) in countryTerritory) {
+			foreach (var (country, territoryHexes) in countrySettlementTiles) {
 				var newTile = findAvailableTileBorderingSet(territoryHexes);
 				if (newTile is not null) {
 					availableLandTiles.Remove(newTile);
@@ -76,7 +76,7 @@ public class CountryGenerator : IGeneratorStep {
 		}
 
 		// add settlement entities
-		foreach (var (country, territoryHexes) in countryTerritory) {
+		foreach (var (country, territoryHexes) in countrySettlementTiles) {
 			var countryColor = countryColors[country];
 			country.Get<CountryData>().color = countryColor;
 			// capital territory
@@ -90,6 +90,7 @@ public class CountryGenerator : IGeneratorStep {
 			capital.Add<CapitalSettlement>(new CapitalSettlement(), country);
 
 			foreach (var tile in territoryHexes) {
+				tile.Add(new CountryTile(), country);
 				tile.Add(new SettlementTile(), capital);
 				tile.Add(new ViewStateNode { country = country, range = 3 });
 				manager.state.Send(new TileBorderUpdate { settlement = capital, tile = tile });

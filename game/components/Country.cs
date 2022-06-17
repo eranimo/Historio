@@ -9,3 +9,6 @@ public class CountryData {
 public class CountryAdded {
 	public RelEcs.Entity country;
 }
+
+// relationship on Tile to owner Polity
+public class CountryTile { }
