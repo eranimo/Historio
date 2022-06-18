@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://scenes/MapView/TerrainChunk.cs" type="Script" id=1]
+[ext_resource path="res://scenes/MapView/MapCamera.cs" type="Script" id=3]
+
+[sub_resource type="SpatialMaterial" id=2]
+albedo_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="PlaneMesh" id=3]
+material = SubResource( 2 )
+size = Vector2( 10, 10 )
+
+[sub_resource type="PlaneMesh" id=4]
+size = Vector2( 1, 1 )
+
+[node name="MapView" type="Spatial"]
+
+[node name="MapCamera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.173648, 0.984808, 0, -0.984808, 0.173648, 0, 50, 0 )
+far = 8192.0
+script = ExtResource( 3 )
+
+[node name="Floor" type="MeshInstance" parent="."]
+transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 10, 0, -5.65993, 0 )
+visible = false
+mesh = SubResource( 3 )
+
+[node name="TerrainChunk" type="MeshInstance" parent="."]
+mesh = SubResource( 4 )
+script = ExtResource( 1 )
