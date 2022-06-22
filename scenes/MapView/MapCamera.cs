@@ -3,7 +3,7 @@ using System;
 
 public class MapCamera : Godot.Camera {
 	const float PanningSpeed = 1.0f;
-	const float ZoomSpeed = 15.0f;
+	const float ZoomSpeed = 5.0f;
 	const float MoveSpeed = 25.0f;
 
 	bool panning = false;
