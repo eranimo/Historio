@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://scenes/MapView/TerrainChunk.cs" type="Script" id=1]
-[ext_resource path="res://scenes/MapView/TerrainMaterial.tres" type="Material" id=2]
 [ext_resource path="res://scenes/MapView/MapCamera.cs" type="Script" id=3]
 
 [sub_resource type="SpatialMaterial" id=2]
@@ -23,13 +22,15 @@ far = 8192.0
 script = ExtResource( 3 )
 
 [node name="Floor" type="MeshInstance" parent="."]
-transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 10, 0, 25, 0 )
-visible = false
+transform = Transform( 10, 0, 0, 0, 10, 0, 0, 0, 10, 0, -1, 0 )
 mesh = SubResource( 3 )
 
-[node name="TerrainChunk" type="MultiMeshInstance" parent="."]
-material_override = ExtResource( 2 )
+[node name="TerrainChunk" type="MeshInstance" parent="."]
 script = ExtResource( 1 )
+
+[node name="Heightmap" type="TextureRect" parent="TerrainChunk"]
+margin_right = 40.0
+margin_bottom = 40.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 4 )

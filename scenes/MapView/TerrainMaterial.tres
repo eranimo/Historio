@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=4 format=2]
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
 
 [sub_resource type="Shader" id=4]
 code = "shader_type spatial;
@@ -7,11 +7,16 @@ render_mode diffuse_oren_nayar;
 uniform float height_scale = 1.0f;
 uniform sampler2D displacement;
 
+
 void vertex() {
-	vec2 tex_position = VERTEX.xz / 2.0 + 0.5;
-	vec2 hex_position = vec2(INSTANCE_CUSTOM.x, INSTANCE_CUSTOM.y);
-	float height = texture(displacement, (hex_position + tex_position) / 1000.0f).x;
-	VERTEX.y += height * height_scale;
+	ivec2 size = textureSize(displacement, 1);
+	vec2 p = vec2(VERTEX.x / float(size.x), VERTEX.y / float(size.y));
+	float height = texture(displacement, UV).x;
+	if (height == 0.0f) {
+		VERTEX.y = -1.0f;
+	} else {
+		VERTEX.y += height * height_scale;
+	}
 }
 
 void fragment() {
@@ -19,15 +24,7 @@ void fragment() {
 	ALBEDO = vec3(COLOR[0], COLOR[1], COLOR[2]);
 }"
 
-[sub_resource type="OpenSimplexNoise" id=3]
-
-[sub_resource type="NoiseTexture" id=2]
-width = 5000
-height = 5000
-noise = SubResource( 3 )
-
 [resource]
 resource_local_to_scene = true
 shader = SubResource( 4 )
-shader_param/height_scale = 30.0
-shader_param/displacement = SubResource( 2 )
+shader_param/height_scale = 10.0

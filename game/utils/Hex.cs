@@ -29,7 +29,9 @@ public struct Point {
 	public static Point operator -(Point a, Point b) => new Point(a.x - b.x, a.y - b.y);
 	public static Point operator +(Point a, Point b) => new Point(a.x + b.x, a.y + b.y);
 	public static Point operator /(Point a, Point b) => new Point(a.x / b.x, a.y / b.y);
+	public static Point operator /(Point a, float b) => new Point(a.x / b, a.y / b);
 	public static Point operator *(Point a, Point b) => new Point(a.x * b.x, a.y * b.y);
+	public static Point operator *(Point a, float b) => new Point(a.x * b, a.y * b);
 
 	public Vector2 ToVector() {
 		return new Vector2((float) x, (float) y);

@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public class HexMesh : ArrayMesh {
@@ -8,11 +9,16 @@ public class HexMesh : ArrayMesh {
 		meshBuilder = new MeshBuilder();
 		var withHeight = (Vector2 vec, float height) => new Vector3(vec.x, height, vec.y);
 
-		var center = new Vector3((float) layout.HexSize.x / 2, 0, (float) layout.HexSize.y / 2);
-		for (int i = 0; i < 6; i++) {
-			var c0 = center + withHeight(layout.HexCornerOffset(i).ToVector(), 0);
-			var c1 = center + withHeight(layout.HexCornerOffset(i + 1).ToVector(), 0);
-			subdivide(subdivisions, c1, c0, center);
+		for (int x = 0; x < 10; x++) {
+			for (int y = 0; y < 10; y++) {
+				var origin = layout.HexToPixel(new Hex(x, y)).ToVector();
+				var center = new Vector3(origin.x, 0, origin.y) + new Vector3((float) layout.HexSize.x / 2, 0, (float) layout.HexSize.y / 2);
+				for (int i = 0; i < 6; i++) {
+					var c0 = center + withHeight(layout.HexCornerOffset(i).ToVector(), 0);
+					var c1 = center + withHeight(layout.HexCornerOffset(i + 1).ToVector(), 0);
+					subdivide(subdivisions, c1, c0, center);
+				}
+			}
 		}
 		meshBuilder.CreateSurface();
 		AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, meshBuilder.surface);
