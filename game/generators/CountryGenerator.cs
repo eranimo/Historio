@@ -51,7 +51,7 @@ public class CountryGenerator : IGeneratorStep {
 
 			var hex = sourceTile.Get<Location>().hex;
 			// add capital building
-			AddBuilding(hex, Building.BuildingType.Village);
+			AddDistrict(hex, District.DistrictType.Village);
 
 			if (i == 0) {
 				var player = new Player { playerCountry = country };
@@ -99,18 +99,18 @@ public class CountryGenerator : IGeneratorStep {
 		}
 	}
 
-	private Entity AddBuilding(Hex hex, Building.BuildingType buildingType) {
-		var buildingData = new BuildingData { type = buildingType };
-		var building = manager.state.Spawn();
-		building.Add(buildingData);
-		building.Add(new Location { hex = hex });
+	private Entity AddDistrict(Hex hex, District.DistrictType buildingType) {
+		var districtData = new DistrictData { type = buildingType };
+		var district = manager.state.Spawn();
+		district.Add(districtData);
+		district.Add(new Location { hex = hex });
 
 		var sprite = new Sprite();
 		sprite.Centered = false;
-		sprite.Texture = ResourceLoader.Load<Texture>(Building.buildingTypeSpritePath[buildingData.type]);
-		building.Add(sprite);
-		manager.state.Send(new SpriteAdded { entity = building });
-		return building;
+		sprite.Texture = ResourceLoader.Load<Texture>(District.spritePath[districtData.type]);
+		district.Add(sprite);
+		manager.state.Send(new SpriteAdded { entity = district });
+		return district;
 	}
 
 	private Entity findAvailableTile() {
