@@ -1,15 +1,6 @@
-public static class ResourceConstants {
-	public static Dictionary<ResourceType, string> title = new Dictionary<ResourceType, string>() {
-		{ ResourceType.Wood, "Wood" },
-	};
-}
-
-public enum ResourceType {
-	Wood,
-	Stone,
-	Wheat,
-	IronOre,
-	Water,
+public class ResourceType : Def {
+	public string name { get; set; }
+	public string spritePath { get; set; }
 }
 
 public struct ResourceRecord {

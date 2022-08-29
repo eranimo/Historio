@@ -1,9 +1,28 @@
+using System;
+using System.Reflection;
 using Godot;
 using Newtonsoft.Json;
 
 public class Def : Resource {
 	public string type { get; set; }
 	public string id { get; set; }
+}
+
+public class DefRef<T> where T : Def {
+	public string def { get; set; }
+	public string id { get; set; }
+
+	public T Get() {
+		var storeInfo = typeof(Defs).GetField(def, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+		if (storeInfo == null) {
+			throw new Exception($"DefRef '{def}' not found");
+		}
+		var store = (DefStore<T>) storeInfo.GetValue(null);
+		if (!store.Has(id)) {
+			throw new Exception($"DefRef '{def}' of ID '{id}' not found");
+		}
+		return store.Get(id);
+	}
 }
 
 public class DefStore<T> where T : Def {

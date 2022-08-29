@@ -2,36 +2,48 @@
 	{
 		"id": "camp",
 		"name": "Camp",
-		"spritePath": "res://assets/sprites/districts/camp.tres"
+		"spritePath": "res://assets/sprites/districts/camp.tres",
+		"buildRequirements": [
+			{
+				"resource": { "def": "Resource", "id": "wood" },
+				"amount": 100
+			}
+		]
 	},
 	{
 		"id": "village",
 		"name": "Village",
-		"spritePath": "res://assets/sprites/districts/village.tres"
+		"spritePath": "res://assets/sprites/districts/village.tres",
+		"buildRequirements": []
 	},
 	{
 		"id": "town",
 		"name": "Town",
-		"spritePath": "res://assets/sprites/districts/town.tres"
+		"spritePath": "res://assets/sprites/districts/town.tres",
+		"buildRequirements": []
 	},
 	{
 		"id": "cityCenter",
 		"name": "City Center",
-		"spritePath": "res://assets/sprites/districts/citycenter.tres"
+		"spritePath": "res://assets/sprites/districts/citycenter.tres",
+		"buildRequirements": []
 	},
 	{
 		"id": "neighborhood",
 		"name": "Neighborhood",
-		"spritePath": "res://assets/sprites/districts/neighborhood.tres"
+		"spritePath": "res://assets/sprites/districts/neighborhood.tres",
+		"buildRequirements": []
 	},
 	{
 		"id": "castle",
 		"name": "Castle",
-		"spritePath": "res://assets/sprites/districts/castle.tres"
+		"spritePath": "res://assets/sprites/districts/castle.tres",
+		"buildRequirements": []
 	},
 	{
 		"id": "harbor",
 		"name": "Harbor",
-		"spritePath": "res://assets/sprites/districts/harbor.tres"
+		"spritePath": "res://assets/sprites/districts/harbor.tres",
+		"buildRequirements": []
 	}
 ]

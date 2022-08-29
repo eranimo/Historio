@@ -7,10 +7,11 @@ public class PhysicsDelta {
 	public float delta;
 }
 
-public class Defs {
-	public DefStore<DistrictType> Districts = new DefStore<DistrictType>("District", "districts");
-	public DefStore<ImprovementType> Improvements = new DefStore<ImprovementType>("Improvement", "improvements");
-	public DefStore<UnitType> Units = new DefStore<UnitType>("Unit", "units");
+public static class Defs {
+	public static DefStore<DistrictType> District = new DefStore<DistrictType>("District", "districts");
+	public static DefStore<ImprovementType> Improvement = new DefStore<ImprovementType>("Improvement", "improvements");
+	public static DefStore<UnitType> Unit = new DefStore<UnitType>("Unit", "units");
+	public static DefStore<ResourceType> Resource = new DefStore<ResourceType>("Resource", "resources");
 }
 
 public class GameManager {
@@ -47,7 +48,6 @@ public class GameManager {
 		state.AddElement(new SelectedUnit());
 
 		// services
-		state.AddElement(new Defs());
 		state.AddElement(world);
 		state.AddElement(new Pathfinder(this));
 		state.AddElement(new Factories(this));

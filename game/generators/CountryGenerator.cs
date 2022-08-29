@@ -11,7 +11,6 @@ public class CountryGenerator : IGeneratorStep {
 
 	public void Generate(GameOptions options, GameManager manager) {
 		var factories = manager.state.GetElement<Factories>();
-		var defs = manager.state.GetElement<Defs>();
 		var nameFactory = new NameFactory("greek");
 		rng = new Random(options.Seed);
 		this.manager = manager;
@@ -53,19 +52,19 @@ public class CountryGenerator : IGeneratorStep {
 
 			var hex = sourceTile.Get<Location>().hex;
 			// add capital building
-			factories.districtFactory.AddDistrict(hex, defs.Districts.Get("village"));
+			factories.districtFactory.AddDistrict(hex, Defs.District.Get("village"));
 
 			if (i == 0) {
 				var player = new Player { playerCountry = country };
 				manager.state.AddElement(player);
 
 				// give the player a scout
-				var scout = defs.Units.Get("scout");
+				var scout = Defs.Unit.Get("scout");
 				factories.unitFactory.NewUnit(country, hex, scout);
 				factories.unitFactory.NewUnit(country, hex.Neighbor(Direction.NorthEast, 3), scout);
 
 				var testFarm = hex.Neighbor(Direction.North);
-				factories.improvementFactory.AddImprovement(testFarm, defs.Improvements.Get("farm"));
+				factories.improvementFactory.AddImprovement(testFarm, Defs.Improvement.Get("farm"));
 			}
 		}
 
