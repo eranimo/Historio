@@ -7,6 +7,10 @@ public class PhysicsDelta {
 	public float delta;
 }
 
+public class Defs {
+	public DefStore<DistrictType> Districts = new DefStore<DistrictType>("District", "districts");
+}
+
 public class GameManager {
 	public RelEcs.World state;
 
@@ -41,12 +45,10 @@ public class GameManager {
 		state.AddElement(new SelectedUnit());
 
 		// services
+		state.AddElement(new Defs());
 		state.AddElement(world);
 		state.AddElement(new Pathfinder(this));
-
-		// factories
-		state.AddElement(new UnitFactory(this));
-
+		state.AddElement(new Factories(this));
 
 		daySystems
 			.Add(new ActionSystem())

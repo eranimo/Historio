@@ -10,6 +10,8 @@ public class CountryGenerator : IGeneratorStep {
 	private GameManager manager;
 
 	public void Generate(GameOptions options, GameManager manager) {
+		var factories = manager.state.GetElement<Factories>();
+		var defs = manager.state.GetElement<Defs>();
 		var nameFactory = new NameFactory("greek");
 		rng = new Random(options.Seed);
 		this.manager = manager;
@@ -51,16 +53,18 @@ public class CountryGenerator : IGeneratorStep {
 
 			var hex = sourceTile.Get<Location>().hex;
 			// add capital building
-			AddDistrict(hex, District.DistrictType.Village);
+			factories.districtFactory.AddDistrict(hex, defs.Districts.Get("village"));
 
 			if (i == 0) {
 				var player = new Player { playerCountry = country };
 				manager.state.AddElement(player);
 
 				// give the player a scout
-				var unitFactory = manager.state.GetElement<UnitFactory>();
-				unitFactory.NewUnit(country, hex, Unit.UnitType.Scout);
-				unitFactory.NewUnit(country, hex.Neighbor(Direction.NorthEast, 3), Unit.UnitType.Scout);
+				factories.unitFactory.NewUnit(country, hex, Unit.UnitType.Scout);
+				factories.unitFactory.NewUnit(country, hex.Neighbor(Direction.NorthEast, 3), Unit.UnitType.Scout);
+
+				var testFarm = hex.Neighbor(Direction.North);
+				factories.improvementFactory.AddImprovement(testFarm, ImprovementType.Farm);
 			}
 		}
 
@@ -99,18 +103,18 @@ public class CountryGenerator : IGeneratorStep {
 		}
 	}
 
-	private Entity AddDistrict(Hex hex, District.DistrictType buildingType) {
-		var districtData = new DistrictData { type = buildingType };
-		var district = manager.state.Spawn();
-		district.Add(districtData);
-		district.Add(new Location { hex = hex });
-
-		var sprite = new Sprite();
-		sprite.Centered = false;
-		sprite.Texture = ResourceLoader.Load<Texture>(District.spritePath[districtData.type]);
-		district.Add(sprite);
-		manager.state.Send(new SpriteAdded { entity = district });
-		return district;
+	private Entity AddPop(
+		Entity tile,
+		PopProfession profession,
+		int size
+	) {
+		var pop = manager.state.Spawn();
+		pop.Add(new PopData {
+			size = size,
+			profession = profession
+		});
+		pop.Add<PopTile>(tile);
+		return pop;
 	}
 
 	private Entity findAvailableTile() {

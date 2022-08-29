@@ -1,0 +1,37 @@
+[
+	{
+		"id": "camp",
+		"name": "Camp",
+		"spritePath": "res://assets/sprites/districts/camp.tres"
+	},
+	{
+		"id": "village",
+		"name": "Village",
+		"spritePath": "res://assets/sprites/districts/village.tres"
+	},
+	{
+		"id": "town",
+		"name": "Town",
+		"spritePath": "res://assets/sprites/districts/town.tres"
+	},
+	{
+		"id": "cityCenter",
+		"name": "City Center",
+		"spritePath": "res://assets/sprites/districts/citycenter.tres"
+	},
+	{
+		"id": "",
+		"name": "Neighborhood",
+		"spritePath": "res://assets/sprites/districts/neighborhood.tres"
+	},
+	{
+		"id": "",
+		"name": "Castle",
+		"spritePath": "res://assets/sprites/districts/castle.tres"
+	},
+	{
+		"id": "",
+		"name": "Harbor",
+		"spritePath": "res://assets/sprites/districts/harbor.tres"
+	}
+]

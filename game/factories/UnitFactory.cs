@@ -1,9 +1,5 @@
-public class UnitFactory {
-	private readonly GameManager manager;
-
-	public UnitFactory(GameManager manager) {
-		this.manager = manager;
-	}
+public class UnitFactory : Factory {
+	public UnitFactory(GameManager manager) : base(manager) {}
 
 	public void NewUnit(
 		Entity ownerCountry,

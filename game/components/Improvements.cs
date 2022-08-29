@@ -1,12 +1,19 @@
 using System.Collections.Generic;
 
-public static class Improvement {
-	public enum ImprovementType {
-		Farm,
-		LoggingCamp,
-		Mine,
-		Pasture,
-	}
+public enum ImprovementType {
+	Farm,
+	LoggingCamp,
+	Mine,
+	Pasture,
+}
+
+public static class ImprovementConstants {
+	public static Dictionary<ImprovementType, string> title = new Dictionary<ImprovementType, string>() {
+		{ ImprovementType.Farm, "Farm" },
+		{ ImprovementType.LoggingCamp, "Logging Camp" },
+		{ ImprovementType.Mine, "Mine" },
+		{ ImprovementType.Pasture, "Pasture" },
+	};
 
 	public static Dictionary<ImprovementType, string> spritePath = new Dictionary<ImprovementType, string>() {
 		{ ImprovementType.Farm, "res://assets/sprites/improvements/farm.tres" },
@@ -16,8 +23,13 @@ public static class Improvement {
 	};
 }
 
+public static class ImprovementTypeExtensions {
+	public static string getSpritePath(this ImprovementType type) => ImprovementConstants.spritePath[type];
+	public static string getTitle(this ImprovementType type) => ImprovementConstants.title[type];
+}
+
 public class ImprovementData {
-	public Improvement.ImprovementType type;
+	public ImprovementType type;
 }
 // relation to Country
 public class ImprovementOwner { }
