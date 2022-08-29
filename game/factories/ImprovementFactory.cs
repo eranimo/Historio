@@ -12,7 +12,7 @@ public class ImprovementFactory : Factory {
 
 		var sprite = new Sprite();
 		sprite.Centered = false;
-		sprite.Texture = ResourceLoader.Load<Texture>(improvementType.getSpritePath());
+		sprite.Texture = ResourceLoader.Load<Texture>(improvementType.spritePath);
 		improvement.Add(sprite);
 
 		manager.state.Send(new SpriteAdded { entity = improvement });

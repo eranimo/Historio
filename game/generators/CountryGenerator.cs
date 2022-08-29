@@ -64,7 +64,7 @@ public class CountryGenerator : IGeneratorStep {
 				factories.unitFactory.NewUnit(country, hex.Neighbor(Direction.NorthEast, 3), Unit.UnitType.Scout);
 
 				var testFarm = hex.Neighbor(Direction.North);
-				factories.improvementFactory.AddImprovement(testFarm, ImprovementType.Farm);
+				factories.improvementFactory.AddImprovement(testFarm, defs.Improvements.Get("farm"));
 			}
 		}
 

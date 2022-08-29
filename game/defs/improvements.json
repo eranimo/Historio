@@ -1,0 +1,23 @@
+
+[
+	{
+		"id": "farm",
+		"name": "Farm",
+		"spritePath": "res://assets/sprites/improvements/farm.tres"
+	},
+	{
+		"id": "loggingCamp",
+		"name": "Logging Camp",
+		"spritePath": "res://assets/sprites/improvements/loggingcamp.tres"
+	},
+	{
+		"id": "mine",
+		"name": "Mine",
+		"spritePath": "res://assets/sprites/improvements/mine.tres"
+	},
+	{
+		"id": "pasture",
+		"name": "Pasture",
+		"spritePath": "res://assets/sprites/improvements/pasture.tres"
+	}
+]
