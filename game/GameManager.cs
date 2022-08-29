@@ -10,6 +10,7 @@ public class PhysicsDelta {
 public class Defs {
 	public DefStore<DistrictType> Districts = new DefStore<DistrictType>("District", "districts");
 	public DefStore<ImprovementType> Improvements = new DefStore<ImprovementType>("Improvement", "improvements");
+	public DefStore<UnitType> Units = new DefStore<UnitType>("Unit", "units");
 }
 
 public class GameManager {

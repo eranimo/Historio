@@ -1,22 +1,14 @@
 using System.Collections.Generic;
 using RelEcs;
 
-public static class Unit {
-	public enum UnitType {
-		Scout,
-	}
 
-	public static Dictionary<UnitType, string> unitTypeSpritePath = new Dictionary<UnitType, string> () {
-		{ UnitType.Scout, "res://assets/sprites/units/scout.tres" },
-	};
-
-	public static Dictionary<UnitType, string> unitNames = new Dictionary<UnitType, string>() {
-		{ UnitType.Scout, "Scout" },
-	};
+public class UnitType : Def {
+	public string name { get; set; }
+	public string spritePath { get; set; }
 }
 
 public class UnitData {
-	public Unit.UnitType type;
+	public UnitType type;
 	public Entity ownerCountry;
 }
 

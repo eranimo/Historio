@@ -1,0 +1,7 @@
+[
+	{
+		"id": "scout",
+		"name": "Scout",
+		"spritePath": "res://assets/sprites/units/scout.tres"
+	}
+]

@@ -8,7 +8,7 @@ public class UnitIcon : Node2D {
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
 		sprite = GetNode<TextureRect>("Sprite");
-		sprite.Texture = ResourceLoader.Load<Texture>(Unit.unitTypeSpritePath[unitType]);
+		sprite.Texture = ResourceLoader.Load<Texture>(unitType.spritePath);
 
 		sprite.Connect("mouse_entered", this, nameof(onMouseEntered));
 		sprite.Connect("mouse_exited", this, nameof(onMouseExited));
@@ -24,7 +24,7 @@ public class UnitIcon : Node2D {
 
 	public RelEcs.Entity entity;
 
-	private Unit.UnitType unitType;
+	private UnitType unitType;
 	private bool selected = false;
 	private bool hovered;
 
@@ -40,12 +40,12 @@ public class UnitIcon : Node2D {
 		}
 	}
 
-	public Unit.UnitType UnitType {
+	public UnitType UnitType {
 		get => unitType;
 		set {
 			unitType = value;
 			if (IsInsideTree()) {
-				sprite.Texture = ResourceLoader.Load<Texture>(Unit.unitTypeSpritePath[unitType]);
+				sprite.Texture = ResourceLoader.Load<Texture>(unitType.spritePath);
 			}
 		}
 	}

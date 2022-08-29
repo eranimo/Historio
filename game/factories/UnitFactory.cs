@@ -4,7 +4,7 @@ public class UnitFactory : Factory {
 	public void NewUnit(
 		Entity ownerCountry,
 		Hex hex,
-		Unit.UnitType unitType
+		UnitType unitType
 	) {
 		var unitData = new UnitData { type = unitType, ownerCountry = ownerCountry };
 		var unit = manager.state.Spawn();

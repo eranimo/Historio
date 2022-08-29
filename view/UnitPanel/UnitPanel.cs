@@ -84,7 +84,7 @@ public class UnitPanel : PanelContainer {
 	public void update(Entity unit) {
 		var unitData = unit.Get<UnitData>();
 		var location = unit.Get<Location>();
-		unitNameLabel.Text = Unit.unitNames[unitData.type];
+		unitNameLabel.Text = unitData.type.name;
 		unitPositionLabel.Text = $"({location.hex.col}, {location.hex.row})";
 		
 		var actionQueue = unit.Get<ActionQueue>();
