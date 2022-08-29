@@ -20,17 +20,17 @@
 		"spritePath": "res://assets/sprites/districts/citycenter.tres"
 	},
 	{
-		"id": "",
+		"id": "neighborhood",
 		"name": "Neighborhood",
 		"spritePath": "res://assets/sprites/districts/neighborhood.tres"
 	},
 	{
-		"id": "",
+		"id": "castle",
 		"name": "Castle",
 		"spritePath": "res://assets/sprites/districts/castle.tres"
 	},
 	{
-		"id": "",
+		"id": "harbor",
 		"name": "Harbor",
 		"spritePath": "res://assets/sprites/districts/harbor.tres"
 	}
