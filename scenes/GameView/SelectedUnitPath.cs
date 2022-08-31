@@ -71,7 +71,7 @@ public class SelectedUnitPath : TileMap {
 				var fromTile = world.GetTile(currentHex);
 				var toTile = world.GetTile(movementAction.target);
 				var path = pathfinder.getPath(fromTile, toTile);
-				if (path is not null) {
+				if (path is not null && path.Count() > 1) {
 					var pathpart = path.ToArray()[1..^1];
 					foreach (var loc in pathpart) {
 						SetCellv(loc.ToVector(), (int) TileMapIndex.HexInterval);
