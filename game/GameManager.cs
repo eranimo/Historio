@@ -54,7 +54,6 @@ public class GameManager {
 
 		daySystems
 			.Add(new ActionSystem())
-			.Add(new PathfindingSystem())
 			.Add(new MovementSystem());
 		
 		tickSystems

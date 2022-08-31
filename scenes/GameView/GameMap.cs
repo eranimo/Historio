@@ -145,7 +145,7 @@ public class GameMap : Node2D {
 			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex == (int) ButtonList.MaskRight) {
 				var clickedHex = getCoordAtCursor();
 				var selectedUnit = game.manager.state.GetElement<SelectedUnit>().unit;
-				if (game.manager.world.IsValidTile(clickedHex) && selectedUnit is not null) {
+				if (selectedUnit is not null) {
 					if (mouseEventButton.Shift) {
 						GD.PrintS("Queued movement to", clickedHex);
 						game.manager.state.Send(new ActionQueueAdd {

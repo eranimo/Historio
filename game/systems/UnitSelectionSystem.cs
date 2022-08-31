@@ -1,11 +1,11 @@
-using RelEcs;
+using Godot;
 
 public class UnitSelectionSystem : ISystem {
 	public void Run(Commands commands) {
 		var selectedUnit = commands.GetElement<SelectedUnit>();
 
 		commands.Receive((SelectedUnitUpdate e) => {
-			Godot.GD.PrintS(e.unit, selectedUnit.unit);
+			GD.PrintS($"(UnitSelectionSystem) unit: {e.unit}");
 			if (selectedUnit.unit is not null) {
 				selectedUnit.unit.Get<UnitIcon>().Selected = false;
 			}

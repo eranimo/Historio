@@ -26,6 +26,10 @@ public class Movement {
 	}
 }
 
+public class UnitMovementPathUpdated {
+	public Entity unit;
+}
+
 public class UnitMoved {
 	public RelEcs.Entity unit;
 }
