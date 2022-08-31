@@ -13,6 +13,7 @@ public class ActionTickSystem :ISystem {
 				}
 				actionQueue.currentAction = null;
 				commands.Send(new CurrentActionChanged { entity = e.owner });
+				commands.Send(new ActionQueueChanged { entity = e.owner });
 				e.owner.Get<ActionQueue>().actions.Clear();
 			}
 		});

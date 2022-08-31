@@ -71,8 +71,8 @@ public class UnitPanel : PanelContainer {
 		// action buttons
 		stopButton = GetNode<Button>("UnitInfo/Footer/StopButton");
 		moveButton = GetNode<Button>("UnitInfo/Footer/MoveButton");
-		stopButton.Connect("pressed", this, nameof(stopButtonPressed));
 
+		stopButton.Connect("pressed", this, nameof(stopButtonPressed));
 		closeButton.Connect("pressed", this, nameof(closeButtonPressed));
 		Hide();
 	}
