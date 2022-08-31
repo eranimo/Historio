@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 public class ActionTickSystem :ISystem {
@@ -8,7 +9,7 @@ public class ActionTickSystem :ISystem {
 				GD.PrintS("(ActionTickSystem) Action cancelled", actionQueue.currentAction);
 				if (actionQueue.currentAction is not null) {
 					actionQueue.currentAction.status = ActionStatus.Cancelled;
-					actionQueue.currentAction.OnCancelled();
+					actionQueue.currentAction.OnCancelled(commands);
 				}
 				actionQueue.currentAction = null;
 				commands.Send(new CurrentActionChanged { entity = e.owner });
@@ -25,8 +26,17 @@ public class ActionTickSystem :ISystem {
 					e.action.OnQueued(commands);
 				} else {
 					e.action.status = ActionStatus.Cancelled;
-					e.action.OnCancelled();
+					e.action.OnCancelled(commands);
 				}
+			}
+		});
+
+		commands.Receive((ActionQueueRemove e) => {
+			if (e.owner.Has<ActionQueue>()) {
+				var actionQueue = e.owner.Get<ActionQueue>();
+				e.action.OnCancelled(commands);
+				actionQueue.actions = new Queue<Action>(actionQueue.actions.Where(a => a != e.action));
+				commands.Send(new ActionQueueChanged { entity = e.owner });
 			}
 		});
 	}

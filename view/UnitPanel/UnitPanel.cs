@@ -1,4 +1,5 @@
 using Godot;
+using Godot;
 using RelEcs;
 using System;
 using System.Collections.Generic;
@@ -103,8 +104,7 @@ public class UnitPanel : PanelContainer {
 			var queueItem = queueItemScene.Instance<QueueItem>();
 			queueItemList.AddChild(queueItem);
 			queueItem.handleRemove = () => {
-				actionQueue.removeAction(action);
-				state.Send(new ActionQueueChanged { entity = unit });
+				state.Send(new ActionQueueRemove { owner = unit, action = action });
 			};
 			queueItem.QueueNumber = num.ToString();
 			queueItem.ActionLabel = action.GetLabel();

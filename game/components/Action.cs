@@ -5,10 +5,6 @@ using Godot;
 public class ActionQueue {
 	public Action currentAction;
 	public Queue<Action> actions = new Queue<Action>();
-
-	public void removeAction(Action action) {
-		actions = new Queue<Action>(actions.Where(a => a != action));
-	}
 }
 
 // trigger when action queue has changed
@@ -28,6 +24,12 @@ public class ActionStarted {
 
 // trigger to add an action to an entity
 public class ActionQueueAdd {
+	public Entity owner;
+	public Action action;
+}
+
+// trigger when action is removed from queue
+public class ActionQueueRemove {
 	public Entity owner;
 	public Action action;
 }
@@ -63,7 +65,7 @@ public abstract class Action {
 	// called on each day tick after started
 	public abstract void OnDayTick(GameDate date);
 
-	public abstract void OnCancelled();
+	public abstract void OnCancelled(Commands commands);
 
 	public abstract void OnQueued(Commands commands);
 
@@ -124,8 +126,9 @@ public class MovementAction : Action {
 		commands.Send(new UnitMovementPathUpdated { unit = owner });
 	}
 
-	public override void OnCancelled() {
+	public override void OnCancelled(Commands commands) {
 		var movement = owner.Get<Movement>();
+		commands.Send(new UnitMovementPathUpdated { unit = owner });
 		movement.Reset();
 	}
 
