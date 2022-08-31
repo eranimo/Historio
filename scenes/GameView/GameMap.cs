@@ -63,25 +63,7 @@ public class GameMap : Node2D {
 			if (selectedUnit is not null) {
 				state.Send(new SelectedUnitUpdate { unit = null });
 			}
-
-			// if (selectedHex.Value == tile) {
-			// 	selectedHex.OnNext(null);
-			// } else {
-			// 	selectedHex.OnNext(tile);
-			// }
 		});
-
-		// selectedHex.Subscribe((Entity tile) => {
-		// 	if (tile is null) {
-		// 		selectionHex.Hide();
-		// 	} else {
-		// 		selectionHex.Show();
-		// 		var coord = tile.Get<Location>().hex;
-		// 		selectionHex.Position = layout.HexToPixel(coord).ToVector();
-
-				
-		// 	}
-		// });
 
 		hoveredTile.Subscribe((Entity tile) => {
 			if (tile is null) {

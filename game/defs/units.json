@@ -3,5 +3,10 @@
 		"id": "scout",
 		"name": "Scout",
 		"spritePath": "res://assets/sprites/units/scout.tres"
+	},
+	{
+		"id": "builder",
+		"name": "Builder",
+		"spritePath": "res://assets/sprites/units/builder.tres"
 	}
 ]

@@ -59,9 +59,8 @@ public class CountryGenerator : IGeneratorStep {
 				manager.state.AddElement(player);
 
 				// give the player a scout
-				var scout = Defs.Unit.Get("scout");
-				factories.unitFactory.NewUnit(country, hex, scout);
-				factories.unitFactory.NewUnit(country, hex.Neighbor(Direction.NorthEast, 3), scout);
+				factories.unitFactory.NewUnit(country, hex, Defs.Unit.Get("scout"));
+				factories.unitFactory.NewUnit(country, hex.Neighbor(Direction.NorthEast, 3), Defs.Unit.Get("builder"));
 
 				var testFarm = hex.Neighbor(Direction.North);
 				factories.improvementFactory.AddImprovement(testFarm, Defs.Improvement.Get("farm"));

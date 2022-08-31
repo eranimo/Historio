@@ -145,6 +145,8 @@ material = SubResource( 2 )
 texture = SubResource( 3 )
 script = ExtResource( 9 )
 
+[node name="SpriteContainer" type="Node2D" parent="GameViewport/Viewport/GameMap"]
+
 [node name="SelectedUnitPath" type="TileMap" parent="GameViewport/Viewport/GameMap"]
 tile_set = ExtResource( 7 )
 cell_size = Vector2( 25, 28 )
@@ -156,8 +158,6 @@ script = ExtResource( 15 )
 
 [node name="MapLabels" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 script = ExtResource( 13 )
-
-[node name="SpriteContainer" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 
 [node name="SettlementLabels" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 script = ExtResource( 14 )
