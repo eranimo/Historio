@@ -147,15 +147,6 @@ script = ExtResource( 9 )
 
 [node name="SpriteContainer" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 
-[node name="SelectedUnitPath" type="TileMap" parent="GameViewport/Viewport/GameMap"]
-tile_set = ExtResource( 7 )
-cell_size = Vector2( 25, 28 )
-cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
-cell_half_offset = 1
-cell_tile_origin = 1
-format = 1
-script = ExtResource( 15 )
-
 [node name="MapLabels" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 script = ExtResource( 13 )
 
@@ -169,6 +160,15 @@ cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
 cell_half_offset = 1
 cell_clip_uv = true
 format = 1
+
+[node name="SelectedUnitPath" type="TileMap" parent="GameViewport/Viewport/GameMap"]
+tile_set = ExtResource( 7 )
+cell_size = Vector2( 25, 28 )
+cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
+cell_half_offset = 1
+cell_tile_origin = 1
+format = 1
+script = ExtResource( 15 )
 
 [node name="SelectionHex" type="Sprite" parent="GameViewport/Viewport/GameMap"]
 modulate = Color( 1, 1, 1, 0.521569 )
