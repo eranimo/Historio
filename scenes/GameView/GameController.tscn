@@ -195,21 +195,22 @@ margin_left = 3.0
 margin_top = 3.0
 margin_right = 1021.0
 margin_bottom = 22.0
-custom_constants/margin_right = 2
-custom_constants/margin_left = 2
+custom_constants/margin_right = 5
+custom_constants/margin_left = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="GameHeader/MarginContainer"]
-margin_left = 2.0
-margin_right = 1016.0
+margin_left = 5.0
+margin_right = 1013.0
 margin_bottom = 19.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Left" type="HBoxContainer" parent="GameHeader/MarginContainer/HBoxContainer"]
-margin_right = 991.0
+margin_right = 985.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
+custom_constants/separation = 5
 
 [node name="PlayButton" type="ToolButton" parent="GameHeader/MarginContainer/HBoxContainer/Left"]
 margin_right = 15.0
@@ -223,16 +224,16 @@ shortcut_in_tooltip = false
 icon = ExtResource( 20 )
 
 [node name="DateDisplay" type="Label" parent="GameHeader/MarginContainer/HBoxContainer/Left"]
-margin_left = 19.0
+margin_left = 20.0
 margin_top = 2.0
-margin_right = 81.0
+margin_right = 82.0
 margin_bottom = 17.0
 custom_fonts/font = SubResource( 11 )
 text = "01 / 01 / 01"
 
 [node name="SpeedDownButton" type="ToolButton" parent="GameHeader/MarginContainer/HBoxContainer/Left"]
-margin_left = 85.0
-margin_right = 100.0
+margin_left = 87.0
+margin_right = 102.0
 margin_bottom = 19.0
 mouse_default_cursor_shape = 2
 custom_styles/hover = SubResource( 7 )
@@ -244,8 +245,8 @@ icon = ExtResource( 21 )
 
 [node name="SpeedDisplay" type="ToolButton" parent="GameHeader/MarginContainer/HBoxContainer/Left"]
 modulate = Color( 0.839216, 0.839216, 0.839216, 1 )
-margin_left = 104.0
-margin_right = 141.0
+margin_left = 107.0
+margin_right = 144.0
 margin_bottom = 19.0
 mouse_default_cursor_shape = 2
 custom_styles/hover = SubResource( 7 )
@@ -256,8 +257,8 @@ shortcut_in_tooltip = false
 icon = ExtResource( 19 )
 
 [node name="SpeedUpButton" type="ToolButton" parent="GameHeader/MarginContainer/HBoxContainer/Left"]
-margin_left = 145.0
-margin_right = 160.0
+margin_left = 149.0
+margin_right = 164.0
 margin_bottom = 19.0
 mouse_default_cursor_shape = 2
 custom_styles/hover = SubResource( 7 )
@@ -268,8 +269,8 @@ shortcut_in_tooltip = false
 icon = ExtResource( 22 )
 
 [node name="Right" type="HBoxContainer" parent="GameHeader/MarginContainer/HBoxContainer"]
-margin_left = 995.0
-margin_right = 1014.0
+margin_left = 989.0
+margin_right = 1008.0
 margin_bottom = 19.0
 
 [node name="MenuButton" type="Button" parent="GameHeader/MarginContainer/HBoxContainer/Right"]

@@ -10,8 +10,8 @@ public class Minimap : Control {
 	private ImageTexture hexColors;
 
 	public override void _Ready() {
-		MinimapCanvas = (ColorRect) GetNode("MinimapCanvas");
-		MinimapIndicator = (MinimapIndicator) GetNode("MinimapIndicator");
+		MinimapCanvas = (ColorRect) GetNode("VBoxContainer/MinimapViewport/Viewport/MinimapCanvas");
+		MinimapIndicator = (MinimapIndicator) GetNode("VBoxContainer/MinimapViewport/Viewport/MinimapIndicator");
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
 
 		gameView.pan.Subscribe((Vector2 _offset) => updateIndicator());
@@ -25,15 +25,22 @@ public class Minimap : Control {
 		var viewportSize = gameView.camera.GetViewportRect().Size;
 		Viewport viewport = gameView.camera.GetViewport();
 		Transform2D cameraTransform = viewport.CanvasTransform;
-		var topLeft = cameraTransform.AffineInverse() * new Vector2(0, 0);
-		var bottomRight = cameraTransform.AffineInverse() * viewportSize;
+
 		var layout = game.state.GetElement<Layout>();
 		var worldSize = game.state.GetElement<WorldData>().worldSize;
 		var mapSize = layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
-		MinimapIndicator.updateIndicator(new Rect2(
-			(topLeft / mapSize) * RectSize,
-			((bottomRight - topLeft) / mapSize) * RectSize
-		));
+
+		var topLeft = cameraTransform.AffineInverse() * new Vector2(0, 0);
+		var topLeftScreen = ((topLeft / mapSize) * RectSize).Round();
+		topLeftScreen = new Vector2(
+			Math.Clamp(topLeftScreen.x, -1, RectSize.x),
+			Math.Clamp(topLeftScreen.y, -1, RectSize.y)
+		);
+		var bottomRight = cameraTransform.AffineInverse() * viewportSize;
+		var bottomRightScreen = ((bottomRight / mapSize) * RectSize).Round();
+		var size = bottomRightScreen - topLeftScreen;
+		Rect2 indicator = new Rect2(topLeftScreen, size);
+		MinimapIndicator.updateIndicator(indicator);
 		Update();
 	}
 
@@ -44,6 +51,8 @@ public class Minimap : Control {
 	public void RenderMap(Game game) {
 		GD.PrintS("(Minimap) render map");
 		this.game = game;
+		this.updateIndicator();
+
 		var layout = game.state.GetElement<Layout>();
 		var worldSize = game.state.GetElement<WorldData>().worldSize;
 		var mapSize = layout.GridDimensions(worldSize.col, worldSize.row).ToVector();

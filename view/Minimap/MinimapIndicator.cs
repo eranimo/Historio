@@ -10,7 +10,6 @@ public class MinimapIndicator : ColorRect {
 
 	public void updateIndicator(Rect2 rect) {
 		indicatorRect = rect;
-		GD.PrintS("Update indicator", rect);
 		Update();
 	}
 
