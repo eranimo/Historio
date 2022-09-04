@@ -7,6 +7,7 @@ using System.Reactive.Subjects;
 using System.Reactive.Linq;
 using System.Linq;
 
+
 public class GameMap : Node2D {
 	public Game game;
 	public Layout layout;

@@ -11,8 +11,10 @@ public class GameView : Control {
 
 	public Game game;
 	public BehaviorSubject<float> zoom = new BehaviorSubject<float>(1);
+	public BehaviorSubject<Vector2> pan = new BehaviorSubject<Vector2>(new Vector2(0, 0));
 	public BehaviorSubject<bool> mapInputEnabled = new BehaviorSubject<bool>(false);
 	public IObservable<float> OnZoom { get => zoom; }
+	public Camera camera;
 
 	public override void _Ready() {
 		desc = (Label) GetNode("LoadingDisplay/MarginContainer/VBoxContainer/Desc");

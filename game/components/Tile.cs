@@ -2,6 +2,7 @@ using System;
 using RelEcs;
 using System.Reactive.Subjects;
 using System.Collections.Generic;
+using Godot;
 
 public static class Tile {
 	public enum BiomeType {
@@ -62,6 +63,21 @@ public class TileData {
 		get {
 			return 5f;
 		}
+	}
+
+	public Color GetMinimapColor() {
+		if (biome == Tile.BiomeType.Ocean) {
+			return new Color("#006eaa");
+		} else if (biome == Tile.BiomeType.Coast) {
+			return new Color("#0082cc");
+		} else if (biome == Tile.BiomeType.Temperate) {
+			return new Color("#378c31");
+		} else if (biome == Tile.BiomeType.Desert) {
+			return new Color("#d1c075");
+		} else if (biome == Tile.BiomeType.Arctic) {
+			return new Color("#dce0e3");
+		}
+		return new Color("#000000");
 	}
 }
 

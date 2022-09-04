@@ -7,8 +7,11 @@ public class GameController : Control {
 	public override void _Ready() {
 		GD.PrintS("(GameController) start game");
 		var gameMap = GetNode<GameMap>("GameViewport/Viewport/GameMap");
+		var minimap = GetNode<Minimap>("Minimap");
 		game.manager.state.AddElement<GameMap>(gameMap);
+		game.manager.state.AddElement<Minimap>(minimap);
 		gameMap.RenderMap(game);
+		minimap.RenderMap(game);
 		game.Start();
 
 

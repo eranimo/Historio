@@ -17,7 +17,9 @@ public class Camera : Camera2D {
 		base._Ready();
 		Zoom = new Vector2(START_ZOOM, START_ZOOM);
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
+		gameView.camera = this;
 		gameView.zoom.OnNext(Zoom.x);
+		gameView.pan.OnNext(Offset);
 	}
 
 	public override void _Input(InputEvent @event) {
@@ -43,6 +45,7 @@ public class Camera : Camera2D {
 			var motionEvent = (InputEventMouseMotion) @event;
 			Offset -= motionEvent.Relative * Zoom;
 		}
+		gameView.pan.OnNext(Offset);
 	}
 
 	public override void _PhysicsProcess(float delta) {
@@ -84,5 +87,6 @@ public class Camera : Camera2D {
 			(float) Math.Round(Offset.x),
 			(float) Math.Round(Offset.y)
 		);
+		gameView.pan.OnNext(Offset);
 	}
 }
