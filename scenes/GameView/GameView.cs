@@ -7,21 +7,20 @@ public class GameView : Control {
 	private Label desc;
 	private ProgressBar progress;
 	private GameGeneratorThread generatorThread;
-	private GameController gameController;
+	public GameController GameController;
 
 	public Game game;
 	public BehaviorSubject<float> zoom = new BehaviorSubject<float>(1);
 	public BehaviorSubject<Vector2> pan = new BehaviorSubject<Vector2>(new Vector2(0, 0));
-	public BehaviorSubject<bool> mapInputEnabled = new BehaviorSubject<bool>(false);
 	public IObservable<float> OnZoom { get => zoom; }
-	public Camera camera;
+	public GameCamera camera;
 
 	public override void _Ready() {
 		desc = (Label) GetNode("LoadingDisplay/MarginContainer/VBoxContainer/Desc");
 		progress = (ProgressBar) GetNode("LoadingDisplay/MarginContainer/VBoxContainer/ProgressBar");
 
 		var gameControllerScene = (PackedScene) ResourceLoader.Load("res://scenes/GameView/GameController.tscn");
-		gameController = (GameController) gameControllerScene.Instance();
+		GameController = (GameController) gameControllerScene.Instance();
 
 		var options = new GameOptions();
 		generatorThread = new GameGeneratorThread(
@@ -44,8 +43,8 @@ public class GameView : Control {
 		game = generatorThread.game;
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
-		gameController.game = game;
-		CallDeferred("add_child", gameController);
+		GameController.game = game;
+		CallDeferred("add_child", GameController);
 		GD.PrintS($"GameController init: {watch.ElapsedMilliseconds}ms");
 	}
 

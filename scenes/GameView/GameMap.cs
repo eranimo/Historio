@@ -12,7 +12,7 @@ public class GameMap : Node2D {
 	public Game game;
 	public Layout layout;
 
-	private Camera camera;
+	private GameCamera camera;
 	private TileMap terrain;
 	private TileMap features;
 	private TileMap grid;
@@ -39,7 +39,7 @@ public class GameMap : Node2D {
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
 		GD.PrintS("(GameMap) ready");
-		camera = (Camera) GetNode<Camera>("Camera");
+		camera = (GameCamera) GetNode<GameCamera>("GameCamera");
 		terrain = (TileMap) GetNode<TileMap>("Terrain");
 		features = (TileMap) GetNode<TileMap>("Features");
 		grid = (TileMap) GetNode<TileMap>("Grid");
@@ -82,14 +82,10 @@ public class GameMap : Node2D {
 
 		drawWorld();
 		tileUpdates.Subscribe((Entity tile) => this.drawTile(tile));
-
-		gameView.mapInputEnabled.Subscribe((bool isEnabled) => {
-			hoveredTile.OnNext(null);
-		});
 	}
 
 	public void centerCamera(Vector2 vec) {
-		camera.Offset = vec;
+		camera.SetCameraCenter(vec);
 	}
 
 	public void centerCameraOnTile(Entity tile) {
@@ -116,9 +112,6 @@ public class GameMap : Node2D {
 
 	public override void _Input(InputEvent @event) {
 		if (this.game == null) {
-			return;
-		}
-		if (!gameView.mapInputEnabled.Value) {
 			return;
 		}
 		base._Input(@event);
@@ -174,10 +167,6 @@ public class GameMap : Node2D {
 
 	public override void _PhysicsProcess(float delta) {
 		base._PhysicsProcess(delta);
-
-		if (!gameView.mapInputEnabled.Value) {
-			return;
-		}
 
 		if (is_placing) {
 			var coord = getCoordAtCursor();

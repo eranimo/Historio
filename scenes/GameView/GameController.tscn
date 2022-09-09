@@ -4,7 +4,7 @@
 [ext_resource path="res://assets/features.tres" type="TileSet" id=2]
 [ext_resource path="res://scenes/GameView/GameMap.cs" type="Script" id=3]
 [ext_resource path="res://scenes/GameView/GameHeader.cs" type="Script" id=4]
-[ext_resource path="res://scenes/GameView/Camera.cs" type="Script" id=5]
+[ext_resource path="res://scenes/GameView/GameCamera.cs" type="Script" id=5]
 [ext_resource path="res://assets/selection.png" type="Texture" id=6]
 [ext_resource path="res://assets/grid-ui.tres" type="TileSet" id=7]
 [ext_resource path="res://scenes/GameView/GameController.cs" type="Script" id=8]
@@ -94,6 +94,7 @@ script = ExtResource( 8 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 focus_mode = 1
+mouse_filter = 1
 stretch = true
 script = ExtResource( 12 )
 
@@ -105,7 +106,7 @@ render_target_update_mode = 3
 [node name="GameMap" type="Node2D" parent="GameViewport/Viewport"]
 script = ExtResource( 3 )
 
-[node name="Camera" type="Camera2D" parent="GameViewport/Viewport/GameMap"]
+[node name="GameCamera" type="Camera2D" parent="GameViewport/Viewport/GameMap"]
 current = true
 script = ExtResource( 5 )
 
@@ -126,7 +127,6 @@ cell_tile_origin = 1
 format = 1
 
 [node name="Grid" type="TileMap" parent="GameViewport/Viewport/GameMap"]
-visible = false
 modulate = Color( 1, 1, 1, 0.133333 )
 tile_set = ExtResource( 7 )
 cell_size = Vector2( 25, 28 )
@@ -142,11 +142,9 @@ script = ExtResource( 9 )
 [node name="SpriteContainer" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 
 [node name="MapLabels" type="Node2D" parent="GameViewport/Viewport/GameMap"]
-visible = false
 script = ExtResource( 13 )
 
 [node name="SettlementLabels" type="Node2D" parent="GameViewport/Viewport/GameMap"]
-visible = false
 script = ExtResource( 14 )
 
 [node name="ViewState" type="TileMap" parent="GameViewport/Viewport/GameMap"]

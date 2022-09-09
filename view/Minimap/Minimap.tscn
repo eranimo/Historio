@@ -1,10 +1,13 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://view/Minimap/Minimap.cs" type="Script" id=1]
 [ext_resource path="res://view/Minimap/MinimapCanvasShader.tres" type="Material" id=2]
 [ext_resource path="res://view/Minimap/MinimapIndicator.cs" type="Script" id=3]
 [ext_resource path="res://assets/theme.tres" type="Theme" id=4]
 [ext_resource path="res://assets/icons/HomeIcon.tres" type="Texture" id=5]
+[ext_resource path="res://view/Minimap/MinimapCamera.cs" type="Script" id=6]
+[ext_resource path="res://view/Minimap/MinimapWorld.cs" type="Script" id=7]
+[ext_resource path="res://view/Minimap/MinimapViewport.cs" type="Script" id=8]
 
 [sub_resource type="StyleBoxEmpty" id=1]
 
@@ -17,6 +20,8 @@
 [node name="Minimap" type="PanelContainer"]
 margin_right = 250.0
 margin_bottom = 150.0
+focus_mode = 1
+mouse_filter = 1
 theme = ExtResource( 4 )
 script = ExtResource( 1 )
 
@@ -29,6 +34,7 @@ margin_bottom = 147.0
 [node name="Header" type="HBoxContainer" parent="VBoxContainer"]
 margin_right = 244.0
 margin_bottom = 15.0
+mouse_filter = 2
 
 [node name="HomeButton" type="ToolButton" parent="VBoxContainer/Header"]
 margin_right = 15.0
@@ -45,25 +51,39 @@ icon = ExtResource( 5 )
 margin_top = 19.0
 margin_right = 244.0
 margin_bottom = 144.0
+mouse_filter = 1
 size_flags_vertical = 3
 stretch = true
+script = ExtResource( 8 )
 
 [node name="Viewport" type="Viewport" parent="VBoxContainer/MinimapViewport"]
-size = Vector2( 250, 150 )
+size = Vector2( 244, 125 )
 handle_input_locally = false
 disable_3d = true
 render_target_update_mode = 3
 
-[node name="MinimapCanvas" type="ColorRect" parent="VBoxContainer/MinimapViewport/Viewport"]
+[node name="MinimapWorld" type="Control" parent="VBoxContainer/MinimapViewport/Viewport"]
+margin_right = 500.0
+margin_bottom = 250.0
+mouse_filter = 2
+script = ExtResource( 7 )
+
+[node name="MinimapCanvas" type="ColorRect" parent="VBoxContainer/MinimapViewport/Viewport/MinimapWorld"]
 material = ExtResource( 2 )
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 color = Color( 0.643137, 0.262745, 0.262745, 1 )
 
-[node name="MinimapIndicator" type="ColorRect" parent="VBoxContainer/MinimapViewport/Viewport"]
+[node name="MinimapIndicator" type="ColorRect" parent="VBoxContainer/MinimapViewport/Viewport/MinimapWorld"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 color = Color( 0.643137, 0.262745, 0.262745, 0 )
 script = ExtResource( 3 )
 
-[node name="Camera2D" type="Camera2D" parent="VBoxContainer/MinimapViewport/Viewport"]
+[node name="MinimapCamera" type="Camera2D" parent="VBoxContainer/MinimapViewport/Viewport"]
+current = true
+script = ExtResource( 6 )

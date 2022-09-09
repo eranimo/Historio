@@ -4,6 +4,8 @@ using System;
 public class GameController : Control {
 	public Game game;
 
+	public Viewport GameViewport { get; private set; }
+
 	public override void _Ready() {
 		GD.PrintS("(GameController) start game");
 		var gameMap = GetNode<GameMap>("GameViewport/Viewport/GameMap");
@@ -12,6 +14,9 @@ public class GameController : Control {
 		game.manager.state.AddElement<Minimap>(minimap);
 		gameMap.RenderMap(game);
 		minimap.RenderMap(game);
+		
+		GameViewport = (Viewport) GetNode("GameViewport/Viewport");
+
 		game.Start();
 
 
