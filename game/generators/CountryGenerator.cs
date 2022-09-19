@@ -34,7 +34,7 @@ public class CountryGenerator : IGeneratorStep {
 			var countryData = new CountryData{ name = countryName };
 			var country = manager.state.Spawn();
 			var countryColor = Color.FromHsv((float) rng.NextDouble(), 0.5f, 1.0f);
-			country.Add<CountryData>();
+			country.Add(countryData);
 			var sourceTile = findAvailableTile();
 			availableLandTiles.Remove(sourceTile);
 			var territoryHexes = new HashSet<Entity>();

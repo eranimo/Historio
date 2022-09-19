@@ -148,7 +148,6 @@ script = ExtResource( 13 )
 script = ExtResource( 14 )
 
 [node name="ViewState" type="TileMap" parent="GameViewport/Viewport/GameMap"]
-visible = false
 tile_set = SubResource( 4 )
 cell_size = Vector2( 25, 28 )
 cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )

@@ -93,5 +93,10 @@ public class ViewStateNode {
 
 // Trigger when view state nodes for a country updates
 public class ViewStateNodeUpdated {
-	public Entity entity;
+	public Entity entity; // entity with ViewStateNode component
+}
+
+// trigger when Country view state is updated
+public class ViewStateUpdated {
+	public Entity country;
 }

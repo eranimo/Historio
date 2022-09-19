@@ -40,7 +40,15 @@ public class CountryViewState {
 	}
 
 	public ViewState get(Entity tile) {
+		if (!has(tile)) {
+			set(tile, ViewState.Unexplored);
+			return ViewState.Unexplored;
+		}
 		return tile.Get<TileViewState>().countriesToViewStates[country];
+	}
+
+	public bool has(Entity tile) {
+		return tile.Get<TileViewState>().countriesToViewStates.ContainsKey(country);
 	}
 
 	public void set(Entity tile, ViewState viewState) {
@@ -75,6 +83,8 @@ public class CountryViewState {
 			var tile = manager.world.GetTile(hex);
 			exploreAt(tile, viewStateNode.range);
 		}
+
+		manager.state.Send(new ViewStateUpdated { country = country });
 	}
 }
 
@@ -97,10 +107,14 @@ public class MapViewState {
 		countryViewState.Remove(country);
 	}
 
-	public CountryViewState getViewState(Entity entity) {
-		if (!countryViewState.ContainsKey(entity)) {
+	public bool has(Entity country) {
+		return countryViewState.ContainsKey(country);
+	}
+
+	public CountryViewState getViewState(Entity country) {
+		if (!countryViewState.ContainsKey(country)) {
 			Godot.GD.PushError("Country not added to MapViewState");
 		}
-		return countryViewState[entity];
+		return countryViewState[country];
 	}
 }

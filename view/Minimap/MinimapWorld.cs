@@ -9,10 +9,15 @@ public class MinimapWorld : Control  {
 	private Image hexColorsImage;
 	private ImageTexture hexColors;
 
+	private readonly Color COLOR_UNEXPLORED = new Color("#333333");
+	private readonly float UNOBSERVED_DARKEN_AMOUNT = 0.3f;
+
 	public override void _Ready() {
 		MinimapCanvas = (ColorRect) GetNode("MinimapCanvas");
 		MinimapIndicator = (MinimapIndicator) GetNode("MinimapIndicator");
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
+
+		gameView.game.state.AddElement<MinimapWorld>(this);
 	}
 
 	public void UpdateMinimap() {
@@ -32,10 +37,6 @@ public class MinimapWorld : Control  {
 
 		var topLeft = cameraTransform.AffineInverse() * new Vector2(0, 0);
 		var topLeftScreen = ((topLeft / mapSize) * RectSize).Round();
-		topLeftScreen = new Vector2(
-			Math.Clamp(topLeftScreen.x, -1, RectSize.x),
-			Math.Clamp(topLeftScreen.y, -1, RectSize.y)
-		);
 		var bottomRight = cameraTransform.AffineInverse() * viewportSize;
 		var bottomRightScreen = ((bottomRight / mapSize) * RectSize).Round();
 		var size = bottomRightScreen - topLeftScreen;
@@ -48,7 +49,7 @@ public class MinimapWorld : Control  {
 	}
 
 	public void RenderMap(Game game) {
-		GD.PrintS("(Minimap) render map");
+		// GD.PrintS("(MinimapWorld) render map");
 		this.game = game;
 		UpdateMinimap();
 
@@ -63,16 +64,25 @@ public class MinimapWorld : Control  {
 		hexColorsImage = new Image();
 		hexColorsImage.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
 		hexColors = new ImageTexture();
-
-		updateMap();
 	}
 
 	public void updateMap() {
 		hexColorsImage.Lock();
 
+		var player = game.manager.state.GetElement<Player>();
+		var mapViewState = game.manager.state.GetElement<MapViewState>();
+		var playerViewState = mapViewState.getViewState(player.playerCountry);
+
 		foreach (Entity tile in game.manager.world.tiles) {
 			var hex = tile.Get<Location>().hex;
-			hexColorsImage.SetPixel(hex.col, hex.row, tile.Get<TileData>().GetMinimapColor());
+			var color = tile.Get<TileData>().GetMinimapColor();
+			var tileViewState = playerViewState.get(tile);
+			if (tileViewState == ViewState.Unobserved) {
+				color = color.Darkened(UNOBSERVED_DARKEN_AMOUNT);
+			} else if (tileViewState == ViewState.Unexplored) {
+				color = COLOR_UNEXPLORED;
+			}
+			hexColorsImage.SetPixel(hex.col, hex.row, color);
 		}
 
 		hexColorsImage.Unlock();

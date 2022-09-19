@@ -6,6 +6,7 @@ public class GameCamera : Camera2D {
 	const float START_ZOOM = 0.5f;
 	const float MAX_ZOOM = 600;
 	private GameView gameView;
+	private bool positionChanged = false;
 
 	public override void _Ready() {
 		base._Ready();
@@ -16,7 +17,7 @@ public class GameCamera : Camera2D {
 
 	public void SetCameraCenter(Vector2 pos) {
 		Position = pos;
-		gameView.pan.OnNext(Position);
+		positionChanged = true;
 	}
 
 	public void ZoomCamera(float zoomFactor, Vector2 mousePosition) {
@@ -33,6 +34,15 @@ public class GameCamera : Camera2D {
 			(float) Math.Round(Position.x),
 			(float) Math.Round(Position.y)
 		);
-		gameView.pan.OnNext(Position);
+		positionChanged = true;
+	}
+
+	public override void _Process(float delta) {
+		base._Process(delta);
+
+		if (positionChanged) {
+			gameView.pan.OnNext(Position);
+			positionChanged = false;
+		}
 	}
 }

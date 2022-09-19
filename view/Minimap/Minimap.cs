@@ -18,6 +18,7 @@ public class Minimap : Control {
 		var mapSize = layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
 		MinimapWorld.RenderMap(game);
 		MinimapViewport.SetupMap(mapSize, MinimapWorld.RectSize);
+		MinimapViewport.UpdateMinimap();
 
 		gameView.pan.Subscribe((Vector2 _offset) => UpdateMinimap());
 		gameView.zoom.Subscribe((float _zoom) => UpdateMinimap());

@@ -68,7 +68,9 @@ public class MinimapViewport : ViewportContainer {
 
 	public void UpdateMinimap() {
 		if (canUpdateCamera) {
-			minimapCamera.Position = (gameView.camera.GetCameraScreenCenter() / mapSize) * containerSize;
+			// GD.PrintS("(MinimapViewport) update minimap viewport");
+			minimapCamera.Position = (gameView.camera.Position / mapSize) * containerSize;
+			minimapCamera.Zoom = gameView.camera.Zoom;
 		}
 	}
 

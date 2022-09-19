@@ -14,16 +14,17 @@ public class ViewStateSystem : ISystem {
 
 		// TODO: remove view state when country removed
 
-		var changedcountries = new HashSet<Entity>();
+		var changedCountries = new HashSet<Entity>();
 		commands.Receive((ViewStateNodeUpdated e) => {
 			var viewStateNode = e.entity.Get<ViewStateNode>();
 			mapViewState.getViewState(viewStateNode.country).addNodeEntity(e.entity);
-			changedcountries.Add(viewStateNode.country);
+			changedCountries.Add(viewStateNode.country);
 		});
 
-		foreach (var country in changedcountries) {
+		foreach (var country in changedCountries) {
 			var countryViewState = mapViewState.getViewState(country);
 			countryViewState.calculate();
+			// GD.PrintS($"(ViewStateSystem) calculate view state for country {country.Get<CountryData>().name}");
 			if (player.playerCountry == country) {
 				foreach (var tile in countryViewState.activeTiles) {
 					var location = tile.Get<Location>();

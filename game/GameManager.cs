@@ -68,7 +68,8 @@ public class GameManager {
 		renderSystems
 			.Add(new SpriteRenderSystem())
 			.Add(new UnitRenderSystem())
-			.Add(new BorderRenderSystem());
+			.Add(new BorderRenderSystem())
+			.Add(new MinimapRenderSystem());
 		
 		frameSystems
 			.Add(new UnitSelectionSystem())
