@@ -1,70 +1,64 @@
 # Design
 
-## Data Types
-Static classes with enums and constants
+The game is a ancient society simulator set in a procedurally generated world. Players do not control the population directly, but instead make decisions acting as the "collective leadership" of the country they control.
 
-- Tile
-- District
-- Improvement
+## World 
+The World is split into Tiles, arranged in a hexagon grid. Each tile contains Resource Nodes, which are renewable or finite Resources. Tiles may have Rivers or Roads, which connect to neighboring Tiles.
 
-## Components
-Including inherited components.
-Grouped by area.
+Each Country can only see a certain amount of the World. All their units and their controlled tiles give them an immediate view of the world ("observed"), tiles they have previously visited are termed "unobserved", and all tiles they have never visited are termed "unexplored".
 
-Core:
-- Location
-- Sprite
+## Countries and Settlements
+Countries control Settlements. Settlements have a Territory, which is a set of Tiles they control. Tiles that contain Districts are considered Urban, while Tiles with Improvements are rural. Settlements have a Market, which allows Pops in that Settlement to exchange goods.
 
-World:
-- TileData
-- ResourceNode
+### Districts
+Districts represent neighborhoods of cities or small villages. They contain many Buildings. Pops work at Buildings.
 
-Simulation:
-- DistrictData
-- ImprovementData
-- ConstructionSite
-  - DistrictConstructionSite
-  - ImprovementConstructionSite
-- JobProvider
+### Buildings
+Districts contain Buildings. Each District has a building capacity, and each building type has a certain capacity, after which no new buildings may be built. The buildings that may be built on a Tile depend on the District on that tile.
 
-View state:
-- TileViewState
-- ViewStateNode
+Buildings are owned by Pops.
 
-Units:
-- ActionQueue
-- Movement
+### Improvements
+Improvements represent the rural primary sector of the economy. Tiles can contain only one Improvement. Pops work at Improvements.
 
-## Entities
-- Tile
-  - TileData
-  - Location
-  - TileViewState
-  - ViewStateNode (if owned by Country)
-  - CountryTile (relation to Country)
-  - SettlementTile (relation to Settlement)
-- Unit
-  - UnitData
-  - Location
-  - ActionQueue
-  - Movement
-  - ViewStateNode
-- Settlement
-  - SettlementData
-  - CapitalSettlement (relation to Country, if capital)
-- District
-  - DistrictData
-  - Sprite
-  - Location
-  - JobProvider
-  - DistrictOwner (relation to Country)
-- Improvement
-  - ImprovementData
-  - Sprite
-  - JobProvider
-  - Location
-  - ImprovementOwner (relation to Country)
-- Construction
-  - ConstructionSite
-  - Location
-  - JobProvider
+### Infrastructure
+Infrastructure includes Roads, Canals, and Aqueducts. These change the properties of the Tiles they are built on. They are built from Construction Sites.
+
+## Pops
+Population is simulated by Pops, which are groups of people of the same Profession that live in a given Tile. 
+
+### Housing
+Buildings provide housing. Pops require housing, otherwise they will be homeless.
+
+### Needs
+Pops have Needs, which are Resource required to live, the amount of which is in proportion to their size and dependent on their profession. Pops have an Inventory of goods that they take these needs from. A pop that is not fulfilling its needs will decrease in size and might migrate.
+
+If Pops do not have their required needs, they will Forage from the Tile they are on. This 
+
+## Jobs
+Pops may have a Job, which is how they sustain themselves. Pops may split to become employed in a job.
+
+Pops working in Jobs may be paid in wages, in Resources, or not at all. Wages fluctuate based on supply and demand in the given Market. 
+
+Possible job types:
+- Construction at Construction Sites
+- Production at Buildings
+- Services at Buildings
+
+### Production
+Production happens in Buildings by employed Pops. A building might employ multiple types of pops in different number. Production happens in a daily cycle, after which the unit is produced and wages are paid. The output Resource is then is given to the owner Pop.
+
+### Construction
+Construction happens in Construction Sites. Construction has a Resource requirement, a labor requirement, and a build time.
+
+Units may create Construction Sites, which can be used to create Districts, Improvements, or Infrastructure. Building construction sites are created immediately.
+
+### Services
+Services happen in Buildings. Services perform a continuous task and do not produce anything.
+
+## Units
+Units are groups of Pops that can be directly controlled by the Player (or the Country AI). They have a Unit Type, which decides what type of Actions it can perform. Units represent mobile groups of people — everything from slave work gangs, merchant caravans, and legions of soldiers.
+
+Pops who are in Units do not have Jobs. They must get their needs either by Subsistence or the Market.
+
+Units have their own inventory, independent of the Pops that make it up. This is used to store equipment.
