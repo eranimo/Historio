@@ -12,6 +12,8 @@ public static class Defs {
 	public static DefStore<ImprovementType> Improvement = new DefStore<ImprovementType>("Improvement", "improvements");
 	public static DefStore<UnitType> Unit = new DefStore<UnitType>("Unit", "units");
 	public static DefStore<ResourceType> Resource = new DefStore<ResourceType>("Resource", "resources");
+	public static DefStore<BuildingType> Building = new DefStore<BuildingType>("Building", "buildings");
+	public static DefStore<PopProfessionType> PopProfession = new DefStore<PopProfessionType>("PopProfession", "popProfessions");
 }
 
 public class GameManager {
@@ -45,7 +47,6 @@ public class GameManager {
 		state.AddElement(new MapViewState(this));
 		physicsDelta = new PhysicsDelta();
 		state.AddElement(physicsDelta);
-		state.AddElement(new SelectedUnit());
 
 		// services
 		state.AddElement(world);
@@ -72,7 +73,6 @@ public class GameManager {
 			.Add(new MinimapRenderSystem());
 		
 		frameSystems
-			.Add(new UnitSelectionSystem())
 			.Add(new UnitPanelUISystem())
 			.Add(new ActionTickSystem())
 			.Add(new UnitPathSystem());

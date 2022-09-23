@@ -1,12 +1,14 @@
 
 // component of Construction entity
-public abstract class ConstructionSite {}
+public abstract class ConstructionSiteData {
+	public List<ResourceAmount> resourceRequirements;
+}
 
-public class DistrictConstructionSite : ConstructionSite {
+public class DistrictConstructionSite : ConstructionSiteData {
 	public DistrictType type;
 }
 
-public class ImprovementConstructionSite : ConstructionSite {
+public class ImprovementConstructionSite : ConstructionSiteData {
 	public ImprovementType type;
 }
 

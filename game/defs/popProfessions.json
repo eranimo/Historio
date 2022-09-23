@@ -1,0 +1,27 @@
+[
+	{
+		"id": "slave",
+		"name": "Slave",
+		"isFree": false
+	},
+	{
+		"id": "laborer",
+		"name": "Laborer",
+		"isFree": true
+	},
+	{
+		"id": "artisan",
+		"name": "Artisan",
+		"isFree": true
+	},
+	{
+		"id": "aristocrat",
+		"name": "Aristocrat",
+		"isFree": true
+	},
+	{
+		"id": "soldier",
+		"name": "Soldier",
+		"isFree": true
+	}
+]

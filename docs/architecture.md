@@ -29,6 +29,8 @@ Simulation:
   - DistrictConstructionSite
   - ImprovementConstructionSite
 - JobProvider
+- BiotaData
+- Population
 
 View state:
 - TileViewState
@@ -67,7 +69,18 @@ Units:
   - JobProvider
   - Location
   - ImprovementOwner (relation to Country)
-- Construction
+- ConstructionSite
   - ConstructionSite
   - Location
   - JobProvider
+- Pop
+  - Location
+  - Population
+- Biota
+  - Location
+  - Population
+  - ResourceNode
+  - BiotaData
+- Deposit
+  - Location
+  - ResourceNode

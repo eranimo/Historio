@@ -7,21 +7,21 @@ using System.Collections.Generic;
 public class UnitPathSystem : ISystem {
 	public void Run(Commands commands) {
 		var selectedUnitPath = commands.GetElement<SelectedUnitPath>();
-		var selectedUnit = commands.GetElement<SelectedUnit>();
-		commands.Receive((SelectedUnitUpdate e) => {
-			selectedUnitPath.render(commands, e.unit);
-		});
-		commands.Receive((UnitMoved e) => {
-			if (e.unit == selectedUnit.unit) {
-				selectedUnitPath.render(commands, e.unit);
-			}
-		});
+		var gamePanel = commands.GetElement<GamePanel>();
+		if (gamePanel.CurrentPanel.HasValue && gamePanel.CurrentPanel.Value.type == GamePanelType.Unit) {
+			var selectedUnit = gamePanel.CurrentPanel.Value.entity;
+			commands.Receive((UnitMoved e) => {
+				if (e.unit == selectedUnit) {
+					selectedUnitPath.RenderPath(e.unit);
+				}
+			});
 
-		commands.Receive((UnitMovementPathUpdated e) => {
-			if (e.unit == selectedUnit.unit) {
-				selectedUnitPath.render(commands, e.unit);
-			}
-		});
+			commands.Receive((UnitMovementPathUpdated e) => {
+				if (e.unit == selectedUnit) {
+					selectedUnitPath.RenderPath(e.unit);
+				}
+			});
+		}
 	}
 }
 
@@ -39,14 +39,20 @@ public class SelectedUnitPath : TileMap {
 		gameView.game.state.AddElement(this);
 	}
 
-	public void render(Commands commands, Entity unit) {
-		GD.PrintS("(SelectedUnitPath) render path for unit", unit);
+
+	public void ClearPath() {
+		Clear();
+	}
+
+	public void RenderPath(Entity unit) {
 		Clear();
 		if (unit is null) {
+			GD.PrintS("(SelectedUnitPath) clear path for unit", unit);
 			return;
 		}
-		var pathfinder = commands.GetElement<Pathfinder>();
-		var world = commands.GetElement<World>();
+		GD.PrintS("(SelectedUnitPath) render path for unit", unit);
+		var pathfinder = gameView.game.state.GetElement<Pathfinder>();
+		var world = gameView.game.state.GetElement<World>();
 		var location = unit.Get<Location>();
 
 		var actionQueue = unit.Get<ActionQueue>();

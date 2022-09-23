@@ -56,7 +56,10 @@ public class UnitIcon : Node2D {
 		if (hovered && @event is InputEventMouseButton) {
 			var mouseEventButton = (InputEventMouseButton) @event;
 			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex == 1) {
-				gameView.game.manager.state.Send(new SelectedUnitUpdate { unit = entity });
+				gameView.GameController.GamePanel.PanelSet(new GamePanelState {
+					type = GamePanelType.Unit,
+					entity = entity
+				});
 				GetTree().SetInputAsHandled();
 			}
 		}

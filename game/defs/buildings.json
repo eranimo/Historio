@@ -1,0 +1,38 @@
+[
+	{
+		"id": "lumberYard",
+		"name": "Lumber Yard",
+		"productionOptions": [
+			{
+				"laborRequirement": [
+					{
+						"profession": {
+							"def": "PopProfession",
+							"id": "laborer"
+						},
+						"amount": 100
+					}
+				],
+				"productionCycle": 3,
+				"input": [
+					{
+						"resource": {
+							"def": "Resource",
+							"id": "wood"
+						},
+						"amount": 10
+					}
+				],
+				"output": [
+					{
+						"resource": {
+							"def": "Resource",
+							"id": "lumber"
+						},
+						"amount": 100
+					}
+				]
+			}
+		]
+	}
+]

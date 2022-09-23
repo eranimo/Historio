@@ -50,6 +50,38 @@ public class GameMap : Node2D {
 		mapLabels = (MapLabels) GetNode<MapLabels>("MapLabels");
 		settlementLabels = (SettlementLabels) GetNode<SettlementLabels>("SettlementLabels");
 		viewState = (TileMap) GetNode<TileMap>("ViewState");
+
+		gameView.GameController.gameMapInputSubject.Subscribe((GameMapInput mapInput) => {
+			if (mapInput.type == GameMapInputType.LeftClick) {
+				if (game.manager.world.IsValidTile(mapInput.hex)) {
+					var tile = game.manager.world.GetTile(mapInput.hex);
+					clickedTile.OnNext(tile);
+				}
+			} else if (mapInput.type == GameMapInputType.Hovered) {
+				if (game.manager.world.IsValidTile(mapInput.hex)) {
+					var tile = game.manager.world.GetTile(mapInput.hex);
+					hoveredTile.OnNext(tile);
+				}
+			} else if (mapInput.type == GameMapInputType.RightClick) {
+				var selectedUnit = gameView.GameController.currentUnit;
+				if (selectedUnit is not null) {
+					if (mapInput.isShiftModifier) {
+						GD.PrintS("Queued movement to", mapInput.hex);
+						game.manager.state.Send(new ActionQueueAdd {
+							owner = selectedUnit,
+							action = new MovementAction(selectedUnit, mapInput.hex)
+						});
+					} else {
+						GD.PrintS("Set movement to", mapInput.hex);
+						game.manager.state.Send(new ActionQueueClear { owner = selectedUnit });
+						game.manager.state.Send(new ActionQueueAdd {
+							owner = selectedUnit,
+							action = new MovementAction(selectedUnit, mapInput.hex)
+						});
+					}
+				}
+			}
+		});
 	}
 
 	public void RenderMap(Game game) {
@@ -60,10 +92,10 @@ public class GameMap : Node2D {
 		layout = state.GetElement<Layout>();
 
 		clickedTile.Subscribe((Entity tile) => {
-			var selectedUnit = state.GetElement<SelectedUnit>().unit;
-			if (selectedUnit is not null) {
-				state.Send(new SelectedUnitUpdate { unit = null });
-			}
+			gameView.GameController.GamePanel.PanelSet(new GamePanelState {
+				type = GamePanelType.Tile,
+				entity = tile
+			});
 		});
 
 		hoveredTile.Subscribe((Entity tile) => {
@@ -99,6 +131,15 @@ public class GameMap : Node2D {
 		}
 	}
 
+	public void SetSelectedTile(Entity tile) {
+		if (tile is null) {
+			selectionHex.Hide();
+		} else {
+			selectionHex.Show();
+			selectionHex.Position = layout.HexToPixel(tile.Get<Location>().hex).ToVector();
+		}
+	}
+
 	private void drawTile(Entity tile) {
 		var coord = tile.Get<Location>().hex;
 		var data = tile.Get<TileData>();
@@ -110,70 +151,70 @@ public class GameMap : Node2D {
 		}
 	}
 
-	public override void _Input(InputEvent @event) {
-		if (this.game == null) {
-			return;
-		}
-		base._Input(@event);
+	// public override void _Input(InputEvent @event) {
+	// 	if (this.game == null) {
+	// 		return;
+	// 	}
+	// 	base._Input(@event);
 
-		if (@event is InputEventMouseButton) {
-			var mouseEventButton = (InputEventMouseButton) @event;
-			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex == (int) ButtonList.MaskRight) {
-				var clickedHex = getCoordAtCursor();
-				var selectedUnit = game.manager.state.GetElement<SelectedUnit>().unit;
-				if (selectedUnit is not null) {
-					if (mouseEventButton.Shift) {
-						GD.PrintS("Queued movement to", clickedHex);
-						game.manager.state.Send(new ActionQueueAdd {
-							owner = selectedUnit,
-							action = new MovementAction(selectedUnit, clickedHex)
-						});
-					} else {
-						GD.PrintS("Set movement to", clickedHex);
-						game.manager.state.Send(new ActionQueueClear { owner = selectedUnit });
-						game.manager.state.Send(new ActionQueueAdd {
-							owner = selectedUnit,
-							action = new MovementAction(selectedUnit, clickedHex)
-						});
-					}
-				}
-			}
-		}
+	// 	if (@event is InputEventMouseButton) {
+	// 		var mouseEventButton = (InputEventMouseButton) @event;
+	// 		if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex == (int) ButtonList.MaskRight) {
+	// 			var clickedHex = getCoordAtCursor();
+	// 			var selectedUnit = gameView.GameController.currentUnit;
+	// 			if (selectedUnit is not null) {
+	// 				if (mouseEventButton.Shift) {
+	// 					GD.PrintS("Queued movement to", clickedHex);
+	// 					game.manager.state.Send(new ActionQueueAdd {
+	// 						owner = selectedUnit,
+	// 						action = new MovementAction(selectedUnit, clickedHex)
+	// 					});
+	// 				} else {
+	// 					GD.PrintS("Set movement to", clickedHex);
+	// 					game.manager.state.Send(new ActionQueueClear { owner = selectedUnit });
+	// 					game.manager.state.Send(new ActionQueueAdd {
+	// 						owner = selectedUnit,
+	// 						action = new MovementAction(selectedUnit, clickedHex)
+	// 					});
+	// 				}
+	// 			}
+	// 		}
+	// 	}
 
-		if (@event.IsActionPressed("view_select")) {
-			is_placing = true;
-			var coord = getCoordAtCursor();
-			if (game.manager.world.IsValidTile(coord)) {
-				var tile = game.manager.world.GetTile(coord);
-				clickedTile.OnNext(tile);
-			}
-		} else if (@event.IsActionReleased("view_select")) {
-			is_placing = false;
-		}
+	// 	if (@event.IsActionPressed("view_select")) {
+	// 		is_placing = true;
+	// 		var coord = getCoordAtCursor();
+	// 		if (game.manager.world.IsValidTile(coord)) {
+	// 			var tile = game.manager.world.GetTile(coord);
+	// 			clickedTile.OnNext(tile);
+	// 		}
+	// 	} else if (@event.IsActionReleased("view_select")) {
+	// 		is_placing = false;
+	// 	}
 
-		if (@event is InputEventMouseMotion) {
-			var coord = getCoordAtCursor();
-			if (game.manager.world.IsValidTile(coord)) {
-				var tile = game.manager.world.GetTile(coord);
-				hoveredTile.OnNext(tile);
-			}
-		}
-	}
+	// 	if (@event is InputEventMouseMotion) {
+	// 		var coord = getCoordAtCursor();
+	// 		if (game.manager.world.IsValidTile(coord)) {
+	// 			var tile = game.manager.world.GetTile(coord);
+	// 			hoveredTile.OnNext(tile);
+	// 		}
+	// 	}
+	// }
 
-	private Hex getCoordAtCursor() {
-		var cursorPos = GetLocalMousePosition();
-		return layout.PixelToHex(new Point(cursorPos.x, cursorPos.y));
-	}
+	// private Hex getCoordAtCursor() {
+	// 	var cursorPos = GetLocalMousePosition();
+	// 	return layout.PixelToHex(new Point(cursorPos.x, cursorPos.y));
+	// }
 
-	public override void _PhysicsProcess(float delta) {
-		base._PhysicsProcess(delta);
+	// public override void _PhysicsProcess(float delta) {
+	// 	base._PhysicsProcess(delta);
 
-		if (is_placing) {
-			var coord = getCoordAtCursor();
-			if (game.manager.world.IsValidTile(coord)) {
-				var tile = game.manager.world.GetTile(coord);
-				pressedTile.OnNext(tile);
-			}
-		}
-	}
+	// 	if (is_placing) {
+	// 		var coord = getCoordAtCursor();
+	// 		if (game.manager.world.IsValidTile(coord)) {
+	// 			var tile = game.manager.world.GetTile(coord);
+	// 			pressedTile.OnNext(tile);
+	// 		}
+	// 	}
+	// }
 }

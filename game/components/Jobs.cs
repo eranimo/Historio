@@ -4,16 +4,11 @@ public class JobProvider {
 	public List<Job> jobs;
 }
 
-public class JobLaborRequirement {
-	public PopProfession profession;
-	public int laborPower;
-	public float currentLaborPower;
-}
-
-public class Job {
-	public JobStatus status = JobStatus.Inactive;
-	public bool isRepeating = false;
-	public List<JobLaborRequirement> requirements;
+public struct LaborRequirement {
+	// required pop profession
+	public DefRef<PopProfessionType> profession { get; set; }
+	// number of pops required
+	public int amount { get; set; }
 }
 
 public enum JobStatus {
@@ -24,7 +19,21 @@ public enum JobStatus {
 
 public enum JobType {
 	Construction,
-	Logging,
-	Farming,
 	Production,
+	Extraction,
+}
+
+public abstract class Job {
+	public JobStatus status = JobStatus.Inactive;
+	public bool isRepeating = false;
+	public List<LaborRequirement> laborRequirement;
+}
+
+public class ConstructionJob : Job {
+	public Entity constructionSite;
+}
+
+// component on entities that can perform jobs
+public class HasJob {
+	public Job job;
 }

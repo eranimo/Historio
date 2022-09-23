@@ -1,67 +1,51 @@
 using Godot;
-using Godot;
-using RelEcs;
-using System;
-using System.Collections.Generic;
 
 public class UnitPanelUISystem : ISystem {
 	public void Run(Commands commands) {
-		var unitPanel = commands.GetElement<UnitPanel>();
-
-		if (unitPanel is null) {
+		if (!commands.HasElement<UnitPanel>()) {
 			return;
 		}
 
-		commands.Receive((SelectedUnitUpdate e) => {
-			if (e.unit is null) {
-				unitPanel.Hide();
-			} else {
-				unitPanel.Show();
-				unitPanel.update(e.unit);
-			}
-		});
+		var unitPanel = commands.GetElement<UnitPanel>();
 
-		var selectedUnit = commands.GetElement<SelectedUnit>().unit;
-		commands.Receive((CurrentActionChanged e) => {
-			if (e.entity == selectedUnit) {
-				unitPanel.update(e.entity);
-			}
-		});
+		var gamePanel = commands.GetElement<GamePanel>();
+		if (gamePanel.CurrentPanel.HasValue && gamePanel.CurrentPanel.Value.type == GamePanelType.Unit) {
+			var selectedUnit = gamePanel.CurrentPanel.Value.entity;
+			commands.Receive((CurrentActionChanged e) => {
+				if (e.entity == selectedUnit) {
+					unitPanel.UpdateView(e.entity);
+				}
+			});
 
-		commands.Receive((UnitMoved e) => {
-			if (e.unit == selectedUnit) {
-				unitPanel.update(e.unit);
-			}
-		});
+			commands.Receive((UnitMoved e) => {
+				if (e.unit == selectedUnit) {
+					unitPanel.UpdateView(e.unit);
+				}
+			});
 
-		commands.Receive((ActionQueueChanged e) => {
-			if (e.entity == selectedUnit) {
-				unitPanel.update(e.entity);
-			}
-		});
+			commands.Receive((ActionQueueChanged e) => {
+				if (e.entity == selectedUnit) {
+					unitPanel.UpdateView(e.entity);
+				}
+			});
+		}
 	}
 }
 
-public class UnitPanel : PanelContainer {
-	private GameView gameView;
-	private Label unitNameLabel;
+public class UnitPanel : GamePanelView {
 	private Label unitPositionLabel;
 	private Label currentActionLabel;
 	private Control queueItemList;
 	private Control movementRow;
 	private Label movementTarget;
-	private RelEcs.World state;
 	private PackedScene queueItemScene;
 	private Button stopButton;
 	private Button moveButton;
 
 	public override void _Ready() {
-		gameView = (GameView) GetTree().Root.GetNode("GameView");
-		gameView.game.manager.state.AddElement(this);
-		state = gameView.game.manager.state;
+		base._Ready();
+		state.AddElement(this);
 
-		var closeButton = GetNode<ToolButton>("UnitInfo/Header/CloseButton");
-		unitNameLabel = GetNode<Label>("UnitInfo/Header/UnitNameLabel");
 		unitPositionLabel = GetNode<Label>("UnitInfo/Content/Details/DetailRow/UnitPosition");
 		currentActionLabel = GetNode<Label>("UnitInfo/Content/Actions/CurrentActionRow/CurrentActionLabel");
 
@@ -72,20 +56,20 @@ public class UnitPanel : PanelContainer {
 		stopButton = GetNode<Button>("UnitInfo/Footer/StopButton");
 		moveButton = GetNode<Button>("UnitInfo/Footer/MoveButton");
 
-		stopButton.Connect("pressed", this, nameof(stopButtonPressed));
-		closeButton.Connect("pressed", this, nameof(closeButtonPressed));
-		Hide();
+		// stopButton.Connect("pressed", this, nameof(stopButtonPressed));
+
+		UpdateView(gamePanel.CurrentPanel.Value.entity);
 	}
 
-	public Entity currentUnit => gameView.game.manager.state.GetElement<SelectedUnit>().unit;
+	// private void stopButtonPressed() => state.Send(new ActionQueueClear { owner = currentUnit });
 
-	private void closeButtonPressed() => state.Send(new SelectedUnitUpdate { unit = null });
-	private void stopButtonPressed() => state.Send(new ActionQueueClear { owner = currentUnit });
-
-	public void update(Entity unit) {
+	public override void UpdateView(Entity unit) {
 		var unitData = unit.Get<UnitData>();
 		var location = unit.Get<Location>();
-		unitNameLabel.Text = unitData.type.name;
+		var selectedUnitPath = state.GetElement<SelectedUnitPath>();
+		selectedUnitPath.RenderPath(unit);
+		unit.Get<UnitIcon>().Selected = true;
+		gamePanel.SetTitle($"Unit ({unitData.type.name})");
 		unitPositionLabel.Text = $"({location.hex.col}, {location.hex.row})";
 		
 		var actionQueue = unit.Get<ActionQueue>();
@@ -112,10 +96,9 @@ public class UnitPanel : PanelContainer {
 		}
 	}
 
-	public override void _Input(InputEvent @event) {
-		if (@event.IsActionPressed("ui_cancel")) {
-			state.Send(new SelectedUnitUpdate { unit = null });
-			GetTree().SetInputAsHandled();
-		}
+	public override void ResetView(Entity entity) {
+		entity.Get<UnitIcon>().Selected = false;
+		var selectedUnitPath = state.GetElement<SelectedUnitPath>();
+		selectedUnitPath.ClearPath();
 	}
 }

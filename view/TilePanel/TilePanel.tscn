@@ -1,0 +1,205 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://view/TilePanel/TilePanel.cs" type="Script" id=1]
+[ext_resource path="res://assets/theme.tres" type="Theme" id=2]
+[ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="DynamicFont" id=4]
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 12
+font_data = ExtResource( 3 )
+
+[node name="TilePanel" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+
+[node name="TabContainer" type="TabContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_vertical = 3
+theme = ExtResource( 2 )
+tab_align = 0
+
+[node name="Details" type="MarginContainer" parent="TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 1.0
+margin_top = 25.0
+margin_right = -1.0
+margin_bottom = -1.0
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="Container" type="HBoxContainer" parent="TabContainer/Details"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1012.0
+margin_bottom = 564.0
+
+[node name="Labels" type="VBoxContainer" parent="TabContainer/Details/Container"]
+margin_right = 499.0
+margin_bottom = 554.0
+size_flags_horizontal = 3
+
+[node name="LocationLabel" type="Label" parent="TabContainer/Details/Container/Labels"]
+margin_right = 499.0
+margin_bottom = 14.0
+text = "Location:"
+
+[node name="BiomeLabel" type="Label" parent="TabContainer/Details/Container/Labels"]
+margin_top = 18.0
+margin_right = 499.0
+margin_bottom = 32.0
+text = "Biome Type:"
+
+[node name="TerrainTypeLabel" type="Label" parent="TabContainer/Details/Container/Labels"]
+margin_top = 36.0
+margin_right = 499.0
+margin_bottom = 50.0
+text = "Terrain Type:"
+
+[node name="FeatureLabel" type="Label" parent="TabContainer/Details/Container/Labels"]
+margin_top = 54.0
+margin_right = 499.0
+margin_bottom = 68.0
+text = "Feature Type:"
+
+[node name="Values" type="VBoxContainer" parent="TabContainer/Details/Container"]
+margin_left = 503.0
+margin_right = 1002.0
+margin_bottom = 554.0
+size_flags_horizontal = 3
+
+[node name="Location" type="Label" parent="TabContainer/Details/Container/Values"]
+margin_right = 499.0
+margin_bottom = 14.0
+text = "(0, 0)"
+
+[node name="Biome" type="Label" parent="TabContainer/Details/Container/Values"]
+margin_top = 18.0
+margin_right = 499.0
+margin_bottom = 32.0
+text = "Temperate"
+
+[node name="Terrain" type="Label" parent="TabContainer/Details/Container/Values"]
+margin_top = 36.0
+margin_right = 499.0
+margin_bottom = 50.0
+text = "Plains"
+
+[node name="Feature" type="Label" parent="TabContainer/Details/Container/Values"]
+margin_top = 54.0
+margin_right = 499.0
+margin_bottom = 68.0
+text = "Forest"
+
+[node name="Resources" type="MarginContainer" parent="TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 1.0
+margin_top = 25.0
+margin_right = -1.0
+margin_bottom = -1.0
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Resources"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1012.0
+margin_bottom = 564.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Resources/ScrollContainer"]
+margin_right = 1002.0
+margin_bottom = 10.0
+size_flags_horizontal = 3
+
+[node name="ResourceListItem" type="PanelContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer"]
+margin_right = 468.0
+margin_bottom = 48.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 463.0
+margin_bottom = 43.0
+
+[node name="ResourceNodeName" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
+margin_right = 458.0
+margin_bottom = 19.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 4 )
+text = "Wood"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
+margin_top = 23.0
+margin_right = 458.0
+margin_bottom = 38.0
+custom_constants/separation = 10
+
+[node name="Size" type="HBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
+margin_right = 99.0
+margin_bottom = 15.0
+
+[node name="Label" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Size"]
+margin_right = 23.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "Size:"
+
+[node name="Value" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Size"]
+margin_left = 27.0
+margin_right = 99.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "1,234 / 5,678"
+
+[node name="Growth" type="HBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
+margin_left = 109.0
+margin_right = 206.0
+margin_bottom = 15.0
+
+[node name="Label" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Growth"]
+margin_right = 43.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "Growth:"
+
+[node name="Value" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Growth"]
+margin_left = 47.0
+margin_right = 97.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "+12 / day"
+
+[node name="Extraction" type="HBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
+margin_left = 216.0
+margin_right = 320.0
+margin_bottom = 15.0
+
+[node name="Label" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Extraction"]
+margin_right = 57.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "Extraction:"
+
+[node name="Value" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Extraction"]
+margin_left = 61.0
+margin_right = 104.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "+5 / day"

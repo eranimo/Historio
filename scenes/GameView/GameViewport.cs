@@ -42,6 +42,45 @@ public class GameViewport : ViewportContainer {
 			gameView.pan.OnNext(gameCamera.Position);
 			AcceptEvent();
 		}
+
+		if (@event is InputEventMouseButton) {
+			var mouseEventButton = (InputEventMouseButton) @event;
+			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex != (int) ButtonList.MaskMiddle) {
+				var coord = getCoordAtCursor();
+				if (mouseEventButton.ButtonIndex == (int) ButtonList.MaskLeft) {
+					gameView.GameController.gameMapInputSubject.OnNext(new GameMapInput {
+						hex = coord,
+						type = GameMapInputType.LeftClick,
+						isShiftModifier = mouseEventButton.Shift
+					});
+					AcceptEvent();
+				} else if (mouseEventButton.ButtonIndex == (int) ButtonList.MaskRight) {
+					gameView.GameController.gameMapInputSubject.OnNext(new GameMapInput {
+						hex = coord,
+						type = GameMapInputType.RightClick,
+						isShiftModifier = mouseEventButton.Shift
+					});
+					AcceptEvent();
+				}
+			}
+		}
+
+		if (@event is InputEventMouseMotion) {
+			var coord = getCoordAtCursor();
+			if (gameView.game.manager.world.IsValidTile(coord)) {
+				gameView.GameController.gameMapInputSubject.OnNext(new GameMapInput {
+					hex = coord,
+					type = GameMapInputType.Hovered,
+					isShiftModifier = false
+				});
+				AcceptEvent();
+			}
+		}
+	}
+
+	private Hex getCoordAtCursor() {
+		var cursorPos = gameView.GameController.GameMap.GetLocalMousePosition();
+		return gameView.game.state.GetElement<Layout>().PixelToHex(new Point(cursorPos.x, cursorPos.y));
 	}
 
 	public override void _PhysicsProcess(float delta) {

@@ -1,10 +1,101 @@
 [
 	{
 		"id": "wood",
-		"name": "Wood"
+		"name": "Wood",
+		"category": "RawMaterials",
+		"basePrice": 1.0
 	},
 	{
 		"id": "stone",
-		"name": "Stone"
+		"name": "Stone",
+		"category": "RawMaterials",
+		"basePrice": 2.0
+	},
+	{
+		"id": "clay",
+		"name": "Clay",
+		"category": "RawMaterials",
+		"basePrice": 3.0
+	},
+	{
+		"id": "wheat",
+		"name": "Wheat",
+		"category": "RawMaterials",
+		"basePrice": 1.0
+	},
+	{
+		"id": "bread",
+		"name": "Bread",
+		"category": "Food",
+		"basePrice": 2.0,
+		"nutrition": 1.0
+	},
+	{
+		"id": "vegetables",
+		"name": "Vegetables",
+		"category": "Food",
+		"basePrice": 2.0,
+		"nutrition": 1.0
+	},
+	{
+		"id": "meat",
+		"name": "Meat",
+		"category": "Food",
+		"basePrice": 1.0,
+		"nutrition": 2.0
+	},
+	{
+		"id": "pottery",
+		"name": "Pottery",
+		"category": "RawMaterials",
+		"basePrice": 3.0
+	},
+	{
+		"id": "baskets",
+		"name": "Baskets",
+		"category": "RawMaterials",
+		"basePrice": 3.0
+	},
+	{
+		"id": "bricks",
+		"name": "Bricks",
+		"category": "RawMaterials",
+		"basePrice": 3.0
+	},
+	{
+		"id": "lumber",
+		"name": "Lumber",
+		"category": "RawMaterials",
+		"basePrice": 2.0
+	},
+	{
+		"id": "copperOre",
+		"name": "Copper Ore",
+		"category": "RawMaterials",
+		"basePrice": 5.0
+	},
+	{
+		"id": "tinOre",
+		"name": "Tin Ore",
+		"category": "RawMaterials",
+		"basePrice": 5.0
+	},
+	{
+		"id": "copperBar",
+		"name": "Copper Bar",
+		"category": "RawMaterials",
+		"basePrice": 10.0
+	},
+	{
+		"id": "tinBar",
+		"name": "Tin Bar",
+		"category": "RawMaterials",
+		"basePrice": 10.0
+	},
+	{
+		"id": "bronzeBar",
+		"name": "Bronze Bar",
+		"category": "RawMaterials",
+		"basePrice": 20.0
 	}
 ]

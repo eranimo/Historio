@@ -18,7 +18,7 @@ public class CountryGenerator : IGeneratorStep {
 		availableLandTiles = landTiles.ToHashSet();
 
 		// TODO: make setting
-		var numCountries = 200; 
+		var numCountries = 1; 
 		var maxTilesPerTerritory = 25;
 
 		if (availableLandTiles.Count == 0) {
@@ -27,6 +27,8 @@ public class CountryGenerator : IGeneratorStep {
 
 		var countrySettlementTiles = new Dictionary<Entity, HashSet<Entity>>();
 		var countryColors = new Dictionary<Entity, Color>();
+
+		GD.PrintS(Defs.Resource.Get("lumber").category);
 
 		// create countries and capital buildings
 		for (int i = 0; i < numCountries; i++) {
@@ -100,20 +102,6 @@ public class CountryGenerator : IGeneratorStep {
 				manager.state.Send(new ViewStateNodeUpdated { entity = tile });
 			}
 		}
-	}
-
-	private Entity AddPop(
-		Entity tile,
-		PopProfession profession,
-		int size
-	) {
-		var pop = manager.state.Spawn();
-		pop.Add(new PopData {
-			size = size,
-			profession = profession
-		});
-		pop.Add<PopTile>(tile);
-		return pop;
 	}
 
 	private Entity findAvailableTile() {

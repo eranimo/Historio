@@ -27,14 +27,3 @@ public class UnitRemoved {
 /*
 UNIT SELECTION
 */
-
-// element
-public class SelectedUnit {
-	public Entity unit = null;
-}
-
-// triggers:
-
-public class SelectedUnitUpdate {
-	public Entity unit;
-}

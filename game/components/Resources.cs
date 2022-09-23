@@ -1,11 +1,29 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+
 public class ResourceType : Def {
 	public string name { get; set; }
-	public string spritePath { get; set; }
+	public float basePrice { get; set; }
+	public float nutrition { get; set; } = 0f;
+
+	[JsonConverter(typeof(StringEnumConverter))]
+	public ResourceCategory category { get; set; }
 }
 
-public struct ResourceRecord {
-	public ResourceType type;
+// struct used in Defs for tuple of resource type and amount
+public struct ResourceAmountDef {
+	public DefRef<ResourceType> resource { get; set; }
+	public int amount { get; set; }
+}
+
+public struct ResourceAmount {
+	public ResourceType resource;
 	public int amount;
+}
+
+public enum ResourceCategory {
+	Food,
+	RawMaterials,
 }
 
 public class ResourceNode {
@@ -13,8 +31,4 @@ public class ResourceNode {
 	public float amountLeft;
 	public float amountMax;
 	public float growth;
-}
-
-public class TileResources {
-	public Dictionary<ResourceType, int> resources;
 }

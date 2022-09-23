@@ -1,17 +1,6 @@
-public static class PopConstants {
-	public static Dictionary<PopProfession, string> title = new Dictionary<PopProfession, string>() {
-		{ PopProfession.Slaves, "Slaves" },
-		{ PopProfession.Laborers, "Laborers" },
-		{ PopProfession.Artisans, "Artisans" },
-		{ PopProfession.Aristocrats, "Aristocrats" },
-	};
-}
-
-public enum PopProfession {
-	Slaves,
-	Laborers,
-	Artisans,
-	Aristocrats
+public class PopProfessionType : Def {
+	public string name { get; set; }
+	public bool isFree { get; set; }
 }
 
 // relation on Pop to Tile
@@ -19,7 +8,8 @@ public class PopTile {}
 
 public class PopData {
 	public int size;
-	public PopProfession profession;
+	public PopProfessionType profession;
+	public Entity ownerPop; // Pop that owns this Pop, if the Profession allows it
 
 	public float laborPower => size;
 }
