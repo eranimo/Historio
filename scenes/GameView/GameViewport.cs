@@ -64,7 +64,9 @@ public class GameViewport : ViewportContainer {
 				}
 			}
 		}
+	}
 
+	public override void _Input(InputEvent @event) {
 		if (@event is InputEventMouseMotion) {
 			var coord = getCoordAtCursor();
 			if (gameView.game.manager.world.IsValidTile(coord)) {
@@ -73,7 +75,6 @@ public class GameViewport : ViewportContainer {
 					type = GameMapInputType.Hovered,
 					isShiftModifier = false
 				});
-				AcceptEvent();
 			}
 		}
 	}
