@@ -22,10 +22,13 @@ public class GameManager {
 	// systems that run when the game starts (either initially or when loading a game)
 	SystemGroup startSystems = new SystemGroup();
 
-	// runs every day (game)
+	// runs every day (depending on game speed)
     SystemGroup daySystems = new SystemGroup();
 
-	// runs every 60 FPS, before day systems
+	// runs every tick while game is playing, before day systems, and also at game start
+	SystemGroup playSystems = new SystemGroup();
+
+	// runs every tick regardless of play state, and also at game start
 	SystemGroup tickSystems = new SystemGroup();
 
 	// runs after game ends or player exists
@@ -33,9 +36,6 @@ public class GameManager {
 
 	// runs every day and at game start
    	SystemGroup renderSystems = new SystemGroup();
-
-	// runs every tick and at game start
-	SystemGroup frameSystems = new SystemGroup();
 
 	public World world;
 	private PhysicsDelta physicsDelta;
@@ -54,16 +54,15 @@ public class GameManager {
 		state.AddElement(new Factories(this));
 
 		daySystems
-			.Add(new ActionSystem())
-			.Add(new MovementSystem());
+			.Add(new ActionDaySystem())
+			.Add(new MovementDaySystem());
 		
-		tickSystems
-			.Add(new MovementTweenSystem())
-			.Add(new ViewStateSystem());
+		playSystems
+			.Add(new MovementTweenPlaySystem())
+			.Add(new ViewStatePlaySystem());
 	
 		startSystems
-			.Add(new ViewStateStartupSystem())
-			.Add(new ViewStateSystem())
+			.Add(new ViewStateStartSystem())
 			.Add(new PlayerStartSystem());
 
 		renderSystems
@@ -72,10 +71,10 @@ public class GameManager {
 			.Add(new BorderRenderSystem())
 			.Add(new MinimapRenderSystem());
 		
-		frameSystems
-			.Add(new UnitPanelUISystem())
+		tickSystems
+			.Add(new UnitPanelTickSystem())
 			.Add(new ActionTickSystem())
-			.Add(new UnitPathSystem());
+			.Add(new UnitPathTickSystem());
 	}
 
 	// called when game starts
@@ -83,8 +82,9 @@ public class GameManager {
 		state.AddElement<GameDate>(date);
 		Godot.GD.PrintS("(GameManager) start");
 		startSystems.Run(state);
+		tickSystems.Run(state);
+		playSystems.Run(state);
 		renderSystems.Run(state);
-		frameSystems.Run(state);
 	}
 
 	// called when game stops
@@ -102,18 +102,18 @@ public class GameManager {
 		}
 	}
 
-	public void Process(float delta) {
+	public void ProcessPlaying(float delta) {
 		try {
 			physicsDelta.delta = delta;
-			tickSystems.Run(state);
+			playSystems.Run(state);
 		} catch (Exception err) {
 			GD.PrintErr("Error processing tick: ", err);
 		}
 	}
 
-	public void UIProcess(float delta) {
+	public void Process(float delta) {
 		try {
-			frameSystems.Run(state);
+			tickSystems.Run(state);
 		} catch (Exception err) {
 			GD.PrintErr("Error processing frame: ", err);
 		}

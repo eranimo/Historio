@@ -1,7 +1,7 @@
 [
 	{
-		"id": "lumberYard",
-		"name": "Lumber Yard",
+		"id": "woodcutterYard",
+		"name": "Woodcutter Yard",
 		"productionOptions": [
 			{
 				"laborRequirement": [

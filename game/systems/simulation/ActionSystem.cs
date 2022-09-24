@@ -43,7 +43,7 @@ public class ActionTickSystem :ISystem {
 	}
 }
 
-public class ActionSystem : ISystem {
+public class ActionDaySystem : ISystem {
 	public void Run(Commands commands) {
 		var entities = commands.Query<Entity, ActionQueue>();
 

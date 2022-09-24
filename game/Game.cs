@@ -75,12 +75,12 @@ public class Game {
 	public IObservable<GameSpeed> Speed { get => speed; }
 
 	public void Process(float delta, bool force = false) {
-		manager.UIProcess(delta);
+		manager.Process(delta);
 		if (!force && !IsPlaying) {
 			return;
 		}
 
-		manager.Process(delta);
+		manager.ProcessPlaying(delta);
 
 		if (this.ticksLeftInDay == 0) {
 			int ticksLeft = this.speedTicks;

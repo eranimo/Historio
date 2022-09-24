@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using RelEcs;
 using Godot;
 
-public class ViewStateSystem : ISystem {
+public class ViewStatePlaySystem : ISystem {
 	public void Run(Commands commands) {
 		var gameMap = commands.GetElement<GameMap>();
 		var mapViewState = commands.GetElement<MapViewState>();
@@ -36,7 +36,7 @@ public class ViewStateSystem : ISystem {
 	}
 }
 
-public class ViewStateStartupSystem : ISystem {
+public class ViewStateStartSystem : ISystem {
 	public void Run(Commands commands) {
 		var gameMap = commands.GetElement<GameMap>();
 
