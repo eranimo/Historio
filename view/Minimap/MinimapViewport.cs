@@ -59,7 +59,8 @@ public class MinimapViewport : ViewportContainer {
 			var pos = (minimapCamera.GetGlobalMousePosition() / containerSize) * mapSize;
 			GD.PrintS("(MinimapViewport) move to", pos);
 			canUpdateCamera = false;
-			gameView.camera.SetCameraCenter(pos);
+			gameView.camera.Position = pos;
+			gameView.pan.OnNext(gameView.camera.Position);
 			canUpdateCamera = true;
 			AcceptEvent();
 		}
