@@ -31,8 +31,8 @@ public class SelectedUnitPath : TileMap {
 			return;
 		}
 		GD.PrintS("(SelectedUnitPath) render path for unit", unit);
-		var pathfinder = gameView.game.state.GetElement<Pathfinder>();
-		var world = gameView.game.state.GetElement<World>();
+		var pathfinder = gameView.game.state.GetElement<PathfindingService>();
+		var world = gameView.game.state.GetElement<WorldService>();
 		var location = unit.Get<Location>();
 
 		var actionQueue = unit.Get<ActionQueue>();

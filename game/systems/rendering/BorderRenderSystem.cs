@@ -19,7 +19,7 @@ public class BorderRenderSystem : ISystem {
 
 	public void Run(Commands commands) {
 		var gameMap = commands.GetElement<GameMap>();
-		var world = commands.GetElement<World>();
+		var world = commands.GetElement<WorldService>();
 
 		hexUpdates.Clear();
 		settlementUpdates.Clear();

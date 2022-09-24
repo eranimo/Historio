@@ -5,8 +5,8 @@ using System.Linq;
 public class MovementDaySystem : ISystem {
 	public void Run(Commands commands) {
 		var layout = commands.GetElement<Layout>();
-		var world = commands.GetElement<World>();
-		var pathfinder = commands.GetElement<Pathfinder>();
+		var world = commands.GetElement<WorldService>();
+		var pathfinder = commands.GetElement<PathfindingService>();
 		var sprites = commands.Query<Entity, Location, Movement>();
 
 		foreach (var (entity, location, movement) in sprites) {

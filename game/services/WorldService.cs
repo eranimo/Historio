@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RelEcs;
 
-public class World {
+public class WorldService {
 	private readonly GameManager manager;
 	public List<Entity> tiles = new List<Entity>();
 	private Dictionary<Hex, Entity> tileByHex;
@@ -10,7 +10,7 @@ public class World {
 	private Dictionary<Entity, Entity[]> neighbors = new Dictionary<Entity, Entity[]>();
 	private Dictionary<Entity, HashSet<Entity>> entitiesByTile = new Dictionary<Entity, HashSet<Entity>>();
 
-	public World(GameManager manager) {
+	public WorldService(GameManager manager) {
 		this.manager = manager;
 	}
 

@@ -4,7 +4,7 @@ using Godot;
 public class MovementTweenPlaySystem : ISystem {
 	public void Run(Commands commands) {
 		var layout = commands.GetElement<Layout>();
-		var world = commands.GetElement<World>();
+		var world = commands.GetElement<WorldService>();
 		var sprites = commands.Query<Entity, Location, UnitIcon, Movement>();
 		var delta = commands.GetElement<PhysicsDelta>().delta;
 		var game = commands.GetElement<Game>();

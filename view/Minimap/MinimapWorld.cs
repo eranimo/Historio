@@ -70,7 +70,7 @@ public class MinimapWorld : Control  {
 		hexColorsImage.Lock();
 
 		var player = game.manager.state.GetElement<Player>();
-		var mapViewState = game.manager.state.GetElement<MapViewState>();
+		var mapViewState = game.manager.state.GetElement<ViewStateService>();
 		var playerViewState = mapViewState.getViewState(player.playerCountry);
 
 		foreach (Entity tile in game.manager.world.tiles) {

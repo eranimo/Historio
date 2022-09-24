@@ -5,7 +5,7 @@ using Godot;
 public class ViewStatePlaySystem : ISystem {
 	public void Run(Commands commands) {
 		var gameMap = commands.GetElement<GameMap>();
-		var mapViewState = commands.GetElement<MapViewState>();
+		var mapViewState = commands.GetElement<ViewStateService>();
 		var player = commands.GetElement<Player>();
 
 		commands.Receive((CountryAdded e) => {
@@ -14,19 +14,23 @@ public class ViewStatePlaySystem : ISystem {
 
 		// TODO: remove view state when country removed
 
-		var changedCountries = new HashSet<Entity>();
+		var changedCountryTiles = new Dictionary<Entity, List<Entity>>();
 		commands.Receive((ViewStateNodeUpdated e) => {
 			var viewStateNode = e.entity.Get<ViewStateNode>();
 			mapViewState.getViewState(viewStateNode.country).addNodeEntity(e.entity);
-			changedCountries.Add(viewStateNode.country);
+			if (changedCountryTiles.ContainsKey(viewStateNode.country)) {
+				changedCountryTiles[viewStateNode.country].Add(e.entity);
+			} else {
+				changedCountryTiles.Add(viewStateNode.country, new List<Entity> { e.entity });
+			}
 		});
 
-		foreach (var country in changedCountries) {
+		foreach (var (country, changedTiles) in changedCountryTiles) {
+			GD.PrintS($"(ViewStatePlaySystem) updating view state for Country {country.Get<CountryData>().name}");
 			var countryViewState = mapViewState.getViewState(country);
-			countryViewState.calculate();
-			// GD.PrintS($"(ViewStateSystem) calculate view state for country {country.Get<CountryData>().name}");
+			countryViewState.CalculateChanged(changedTiles);
 			if (player.playerCountry == country) {
-				foreach (var tile in countryViewState.activeTiles) {
+				foreach (var tile in countryViewState.exploredTiles) {
 					var location = tile.Get<Location>();
 					var tileViewState = countryViewState.get(tile);
 					gameMap.viewState.SetCell(location.hex.col, location.hex.row, tileViewState.GetTileMapTile());
@@ -41,7 +45,7 @@ public class ViewStateStartSystem : ISystem {
 		var gameMap = commands.GetElement<GameMap>();
 
 		// set view state tilemap to all unexplored
-		foreach (var tile in commands.GetElement<World>().tiles) {
+		foreach (var tile in commands.GetElement<WorldService>().tiles) {
 			var location = tile.Get<Location>();
 			gameMap.viewState.SetCell(location.hex.col, location.hex.row, ViewState.Unexplored.GetTileMapTile());
 		}

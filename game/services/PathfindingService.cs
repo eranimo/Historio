@@ -4,14 +4,14 @@ using RelEcs;
 using System.Collections.Generic;
 using Godot;
 
-public class Pathfinder {
+public class PathfindingService {
 	private readonly GameManager manager;
 	private AStar2D aStar;
 	private Dictionary<int, Entity> idToTile = new Dictionary<int, Entity>();
 	private Dictionary<Entity, int> tileToID = new Dictionary<Entity, int>();
 
 
-	public Pathfinder(GameManager manager) {
+	public PathfindingService(GameManager manager) {
 		this.aStar = new AStar2D();
 		this.manager = manager;
 		this.setup();

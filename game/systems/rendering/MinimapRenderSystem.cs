@@ -4,7 +4,7 @@ public class MinimapRenderSystem : ISystem {
 	public void Run(Commands commands) {
 		var minimapWorld = commands.GetElement<MinimapWorld>();
 		var player = commands.GetElement<Player>();
-		var mapViewState = commands.GetElement<MapViewState>();
+		var mapViewState = commands.GetElement<ViewStateService>();
 
 		commands.Receive((ViewStateUpdated action) => {
 			if (action.country == player.playerCountry) {

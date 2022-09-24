@@ -93,8 +93,8 @@ public class MovementAction : Action {
 	}
 
 	public override void OnStarted(Commands commands) {
-		var world = commands.GetElement<World>();
-		var pathfinder = commands.GetElement<Pathfinder>();
+		var world = commands.GetElement<WorldService>();
+		var pathfinder = commands.GetElement<PathfindingService>();
 
 		var movement = owner.Get<Movement>();
 		var location = owner.Get<Location>();
