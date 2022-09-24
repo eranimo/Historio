@@ -16,6 +16,12 @@ public static class Defs {
 	public static DefStore<PopProfessionType> PopProfession = new DefStore<PopProfessionType>("PopProfession", "popProfessions");
 }
 
+public class DebugDaySystem : ISystem {
+	public void Run(Commands commands) {
+		commands.GetElement<GameController>().PrintStrayNodes();
+	}
+}
+
 public class GameManager {
 	public RelEcs.World state;
 
@@ -55,7 +61,8 @@ public class GameManager {
 
 		daySystems
 			.Add(new ActionDaySystem())
-			.Add(new MovementDaySystem());
+			.Add(new MovementDaySystem())
+			.Add(new DebugDaySystem());
 		
 		playSystems
 			.Add(new MovementTweenPlaySystem())

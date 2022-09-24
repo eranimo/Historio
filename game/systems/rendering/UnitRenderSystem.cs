@@ -12,6 +12,7 @@ public class UnitRenderSystem : ISystem {
 		var gameMap = commands.GetElement<GameMap>();
 
 		commands.Receive((UnitAdded e) => {
+			GD.PrintS("(UnitRenderSystem) Render unit", e.unit);
 			var location = e.unit.Get<Location>();
 			var unitData = e.unit.Get<UnitData>();
 			var unitIcon = unitIconScene.Instance<UnitIcon>();
@@ -23,6 +24,7 @@ public class UnitRenderSystem : ISystem {
 		});
 
 		commands.Receive((UnitRemoved e) => {
+			GD.PrintS("(UnitRenderSystem) Remove unit", e.unit);
 			var unitIcon = e.unit.Get<UnitIcon>();
 			gameMap.spriteContainer.RemoveChild(unitIcon);
 		});

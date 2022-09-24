@@ -28,6 +28,7 @@ public class GameController : Control {
 		GD.PrintS("(GameController) start game");
 		GameMap = GetNode<GameMap>("GameViewport/Viewport/GameMap");
 		var minimap = GetNode<Minimap>("Minimap");
+		game.manager.state.AddElement(this);
 		game.manager.state.AddElement<GameMap>(GameMap);
 		game.manager.state.AddElement<Minimap>(minimap);
 		GameMap.RenderMap(game);

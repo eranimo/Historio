@@ -48,7 +48,7 @@ public class UnitPanel : GamePanelView {
 		}
 
 		foreach (var item in queueItemList.GetChildren()) {
-			queueItemList.RemoveChild((Node) item);
+			((Node) item).QueueFree();
 		}
 
 		int num = 1;
