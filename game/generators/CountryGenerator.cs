@@ -66,6 +66,12 @@ public class CountryGenerator : IGeneratorStep {
 
 				var testFarm = hex.Neighbor(Direction.North);
 				factories.improvementFactory.AddImprovement(testFarm, Defs.Improvement.Get("farm"));
+				
+				var t =  manager.world.GetTile(hex.Neighbor(Direction.South, 1));
+				factories.biotaFactory.Add(t, Defs.BiotaType.Get("grass"), 1000);
+				factories.biotaFactory.Add(t, Defs.BiotaType.Get("vegetables"), 500);
+				factories.biotaFactory.Add(t, Defs.BiotaType.Get("rabbit"), 100);
+				factories.biotaFactory.Add(t, Defs.BiotaType.Get("wolf"), 5);
 			}
 		}
 

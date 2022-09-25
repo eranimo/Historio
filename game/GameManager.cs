@@ -14,6 +14,7 @@ public static class Defs {
 	public static DefStore<ResourceType> Resource = new DefStore<ResourceType>("Resource", "resources");
 	public static DefStore<BuildingType> Building = new DefStore<BuildingType>("Building", "buildings");
 	public static DefStore<PopProfessionType> PopProfession = new DefStore<PopProfessionType>("PopProfession", "popProfessions");
+	public static DefStore<BiotaType> BiotaType = new DefStore<BiotaType>("BiotaType", "biotaType");
 }
 
 public class DebugDaySystem : ISystem {
@@ -58,11 +59,13 @@ public class GameManager {
 		state.AddElement(world);
 		state.AddElement(new PathfindingService(this));
 		state.AddElement(new Factories(this));
+		state.AddElement(new BiotaService(this));
 
 		daySystems
 			.Add(new ActionDaySystem())
 			.Add(new MovementDaySystem())
-			.Add(new DebugDaySystem());
+			.Add(new DebugDaySystem())
+			.Add(new BiotaDaySystem());
 		
 		playSystems
 			.Add(new MovementTweenPlaySystem())

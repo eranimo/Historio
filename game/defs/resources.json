@@ -38,6 +38,13 @@
 		"nutrition": 1.0
 	},
 	{
+		"id": "straw",
+		"name": "Straw",
+		"category": "RawMaterials",
+		"basePrice": 1.0,
+		"nutrition": 0.1
+	},
+	{
 		"id": "meat",
 		"name": "Meat",
 		"category": "Food",

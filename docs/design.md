@@ -14,13 +14,17 @@ Resource Nodes represent resources that can be extracted at a given Tile. They m
 The tile attributes determine what Resource Nodes exist on a Tile. A Tile may only have one of each Resource Node type.
 
 ### Biota
-Biota represent plants and animals. Biota compete with each other for space and resources (in the case of animals)
+Biota represent plants and animals. Biota compete with each other for space and resources.
+
+Biota may create habitats 
 
 Tile Improvements can change how Biota grow. Animals on a tile with a Pasture will not migrate. Farms grow a specific plant.
 
 Plants grow at a rate dependent on the tile attributes. They may spread to other tiles.
 
-Animals may consume other biota of any type. Animals may migrate to neighboring Tiles if they fail to meet their needs on their current tile.
+Biota may consume other biota. Biota may require light to grow.
+
+Biota may spread to neighboring tiles if they have reached their 
 
 ### Deposits
 Deposits representing finite amounts of resources that may be exhausted if used up (e.g. copper ore)

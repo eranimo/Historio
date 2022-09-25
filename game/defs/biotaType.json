@@ -1,0 +1,94 @@
+[
+	{
+		"id": "grass",
+		"name": "Grass",
+		"category": "Plant",
+		"classifications": [
+			"FloweringPlants"
+		],
+		"plantRequirements": {
+			"fertility": 0.01
+		},
+		"resources": [
+			{
+				"resource": {
+					"def": "Resource",
+					"id": "straw"
+				},
+				"amount": 0.5
+			}
+		]
+	},
+	{
+		"id": "vegetables",
+		"name": "Vegetables",
+		"category": "Plant",
+		"classifications": [
+			"FloweringPlants"
+		],
+		"plantRequirements": {
+			"fertility": 0.1
+		},
+		"resources": [
+			{
+				"resource": {
+					"def": "Resource",
+					"id": "vegetables"
+				},
+				"amount": 0.25
+			}
+		]
+	},
+	{
+		"id": "rabbit",
+		"name": "Rabbit",
+		"category": "Animal",
+		"classifications": [
+			"Mammal"
+		],
+		"resources": [
+			{
+				"resource": {
+					"def": "Resource",
+					"id": "meat"
+				},
+				"amount": 0.5
+			}
+		],
+		"animalRequirements": {
+			"nutrition": [
+				{
+					"classification": "FloweringPlants",
+					"amount": 2
+				}
+			]
+		}
+	},
+	{
+		"id": "wolf",
+		"name": "Wolf",
+		"category": "Animal",
+		"classifications": [
+			"Mammal"
+		],
+		"reproductionRate": 0.25,
+		"resources": [
+			{
+				"resource": {
+					"def": "Resource",
+					"id": "meat"
+				},
+				"amount": 1
+			}
+		],
+		"animalRequirements": {
+			"space": 2,
+			"nutrition": [
+				{
+					"classification": "Mammal",
+					"amount": 1
+				}
+			]
+		}
+	}
+]

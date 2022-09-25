@@ -30,7 +30,7 @@ Simulation:
   - ImprovementConstructionSite
 - JobProvider
 - BiotaData
-- Population
+- Population (count and growth rate)
 
 View state:
 - TileViewState
@@ -76,6 +76,7 @@ Units:
 - Pop
   - Location
   - Population
+  - PopData
 - Biota
   - Location
   - Population

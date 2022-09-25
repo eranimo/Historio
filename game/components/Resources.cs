@@ -13,12 +13,12 @@ public class ResourceType : Def {
 // struct used in Defs for tuple of resource type and amount
 public struct ResourceAmountDef {
 	public DefRef<ResourceType> resource { get; set; }
-	public int amount { get; set; }
+	public float amount { get; set; }
 }
 
 public struct ResourceAmount {
 	public ResourceType resource;
-	public int amount;
+	public float amount;
 }
 
 public enum ResourceCategory {

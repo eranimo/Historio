@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://view/TilePanel/TilePanel.cs" type="Script" id=1]
 [ext_resource path="res://assets/theme.tres" type="Theme" id=2]
@@ -8,6 +8,10 @@
 font_data = ExtResource( 3 )
 
 [sub_resource type="DynamicFont" id=3]
+size = 12
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=5]
 size = 12
 font_data = ExtResource( 3 )
 
@@ -24,6 +28,7 @@ theme = ExtResource( 2 )
 tab_align = 0
 
 [node name="Details" type="MarginContainer" parent="TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 1.0
@@ -123,17 +128,17 @@ margin_bottom = 10.0
 size_flags_horizontal = 3
 
 [node name="ResourceListItem" type="PanelContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer"]
-margin_right = 468.0
+margin_right = 1002.0
 margin_bottom = 48.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem"]
 margin_left = 5.0
 margin_top = 5.0
-margin_right = 463.0
+margin_right = 997.0
 margin_bottom = 43.0
 
 [node name="ResourceNodeName" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
-margin_right = 458.0
+margin_right = 992.0
 margin_bottom = 19.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 4 )
@@ -141,7 +146,7 @@ text = "Wood"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
 margin_top = 23.0
-margin_right = 458.0
+margin_right = 992.0
 margin_bottom = 38.0
 custom_constants/separation = 10
 
@@ -203,3 +208,137 @@ margin_bottom = 15.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "+5 / day"
+
+[node name="Biota" type="MarginContainer" parent="TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 1.0
+margin_top = 25.0
+margin_right = -1.0
+margin_bottom = -1.0
+custom_constants/margin_right = 10
+custom_constants/margin_top = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Biota"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 1012.0
+margin_bottom = 564.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Biota/ScrollContainer"]
+margin_right = 1002.0
+margin_bottom = 48.0
+size_flags_horizontal = 3
+
+[node name="ResourceListItem" type="PanelContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer"]
+margin_right = 1002.0
+margin_bottom = 67.0
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem"]
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 997.0
+margin_bottom = 62.0
+
+[node name="BiotaName" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
+margin_right = 992.0
+margin_bottom = 19.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 4 )
+text = "Grass (Plant)"
+
+[node name="BiotaCategories" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
+margin_top = 23.0
+margin_right = 992.0
+margin_bottom = 38.0
+custom_colors/font_color = Color( 0.803922, 0.803922, 0.803922, 1 )
+custom_fonts/font = SubResource( 5 )
+text = "Flowering Plants"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
+margin_top = 42.0
+margin_right = 992.0
+margin_bottom = 57.0
+custom_constants/separation = 10
+
+[node name="Size" type="HBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
+margin_right = 65.0
+margin_bottom = 15.0
+
+[node name="Label" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Size"]
+margin_right = 23.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "Size:"
+
+[node name="Value" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Size"]
+margin_left = 27.0
+margin_right = 65.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "10,000"
+
+[node name="Births" type="HBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
+margin_left = 75.0
+margin_right = 134.0
+margin_bottom = 15.0
+
+[node name="Label" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Births"]
+margin_right = 34.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "Births:"
+
+[node name="Value" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Births"]
+margin_left = 38.0
+margin_right = 59.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "100"
+
+[node name="Deaths" type="HBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
+margin_left = 144.0
+margin_right = 208.0
+margin_bottom = 15.0
+
+[node name="Label" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Deaths"]
+margin_right = 39.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "Deaths:"
+
+[node name="Value" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Deaths"]
+margin_left = 43.0
+margin_right = 64.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "100"
+
+[node name="Growth" type="HBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
+margin_left = 218.0
+margin_right = 272.0
+margin_bottom = 15.0
+
+[node name="Label" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Growth"]
+margin_right = 43.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "Growth:"
+
+[node name="Value" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Growth"]
+margin_left = 47.0
+margin_right = 54.0
+margin_bottom = 15.0
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+custom_fonts/font = SubResource( 3 )
+text = "0"

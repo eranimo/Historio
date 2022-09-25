@@ -35,6 +35,12 @@ public class TileData {
 	public Tile.TerrainType terrain;
 	public Tile.FeatureType feature;
 
+	public float soilFertility = 1000f;
+	public float plantSpace = 5000f;
+	public float plantSpaceUsed = 0f;
+	public float animalSpace = 1000f;
+	public float animalSpaceUsed = 0f;
+
 	public int? GetTerrainTilesetIndex() {
 		switch (biome) {
 			case Tile.BiomeType.Ocean: return 0;
