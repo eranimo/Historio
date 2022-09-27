@@ -6,14 +6,16 @@ public class DistrictFactory : Factory {
 
 	public Entity AddDistrict(Hex hex, DistrictType districtType) {
 		var districtData = new DistrictData { type = districtType };
-		var district = manager.state.Spawn();
-		district.Add(districtData);
-		district.Add(new Location { hex = hex });
 
 		var sprite = new Sprite();
 		sprite.Centered = false;
 		sprite.Texture = ResourceLoader.Load<Texture>(districtType.spritePath);
-		district.Add(sprite);
+
+		var district = Spawn()
+			.Add(districtData)
+			.Add(new Location { hex = hex })
+			.Add(sprite)
+			.Id();
 
 		manager.state.Send(new SpriteAdded { entity = district });
 		return district;

@@ -4,6 +4,14 @@ public class Factory {
 	public Factory(GameManager manager) {
 		this.manager = manager;
 	}
+
+	public EntityBuilder Spawn() {
+		return new EntityBuilder(manager.state, manager.state.Spawn().Identity);
+	}
+
+	public EntityBuilder On(Entity entity) {
+		return new EntityBuilder(manager.state, entity.Identity);
+	}
 }
 
 public class Factories {

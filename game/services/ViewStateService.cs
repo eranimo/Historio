@@ -48,19 +48,19 @@ public class CountryViewState {
 			set(tile, ViewState.Unexplored);
 			return ViewState.Unexplored;
 		}
-		return tile.Get<TileViewState>().countriesToViewStates[country];
+		return manager.Get<TileViewState>(tile).countriesToViewStates[country];
 	}
 
 	public bool has(Entity tile) {
-		return tile.Get<TileViewState>().countriesToViewStates.ContainsKey(country);
+		return manager.Get<TileViewState>(tile).countriesToViewStates.ContainsKey(country);
 	}
 
 	public void set(Entity tile, ViewState viewState) {
-		tile.Get<TileViewState>().countriesToViewStates[country] = viewState;
+		manager.Get<TileViewState>(tile).countriesToViewStates[country] = viewState;
 	}
 
 	public HashSet<Entity> getTilesInRange(Entity tile, int range) {
-		var hex = tile.Get<Location>().hex;
+		var hex = manager.Get<Location>(tile).hex;
 		var results = new HashSet<Entity> { tile };
 		foreach (var surroundingHex in hex.Bubble(range)) {
 			if (manager.world.IsValidTile(surroundingHex)) {
@@ -87,8 +87,8 @@ public class CountryViewState {
 				}
 			}
 
-			var hex = nodeEntity.Get<Location>().hex;
-			var viewStateNode = nodeEntity.Get<ViewStateNode>();
+			var hex = manager.Get<Location>(nodeEntity).hex;
+			var viewStateNode = manager.Get<ViewStateNode>(nodeEntity);
 			var currentTile = manager.world.GetTile(hex);
 			var tiles = getTilesInRange(currentTile, viewStateNode.range);
 

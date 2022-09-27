@@ -32,15 +32,15 @@ public class UnitPanel : GamePanelView {
 	// private void stopButtonPressed() => state.Send(new ActionQueueClear { owner = currentUnit });
 
 	public override void UpdateView(Entity unit) {
-		var unitData = unit.Get<UnitData>();
-		var location = unit.Get<Location>();
+		var unitData = gameView.game.manager.Get<UnitData>(unit);
+		var location = gameView.game.manager.Get<Location>(unit);
 		var selectedUnitPath = state.GetElement<SelectedUnitPath>();
 		selectedUnitPath.RenderPath(unit);
-		unit.Get<UnitIcon>().Selected = true;
+		gameView.game.manager.Get<UnitIcon>(unit).Selected = true;
 		gamePanel.SetTitle($"Unit ({unitData.type.name})");
 		unitPositionLabel.Text = $"({location.hex.col}, {location.hex.row})";
 		
-		var actionQueue = unit.Get<ActionQueue>();
+		var actionQueue = gameView.game.manager.Get<ActionQueue>(unit);
 		if (actionQueue.currentAction is null) {
 			currentActionLabel.Text = "Idle";
 		} else {
@@ -65,7 +65,7 @@ public class UnitPanel : GamePanelView {
 	}
 
 	public override void ResetView(Entity entity) {
-		entity.Get<UnitIcon>().Selected = false;
+		gameView.game.manager.Get<UnitIcon>(entity).Selected = false;
 		var selectedUnitPath = state.GetElement<SelectedUnitPath>();
 		selectedUnitPath.ClearPath();
 	}

@@ -14,7 +14,7 @@ public class CountryGenerator : IGeneratorStep {
 		var nameFactory = new NameFactory("greek");
 		rng = new Random(options.Seed);
 		this.manager = manager;
-		var landTiles = from tile in manager.world.tiles where tile.Get<TileData>().IsLand select tile;
+		var landTiles = from tile in manager.world.tiles where manager.Get<TileData>(tile).IsLand select tile;
 		availableLandTiles = landTiles.ToHashSet();
 
 		// TODO: make setting
@@ -36,7 +36,7 @@ public class CountryGenerator : IGeneratorStep {
 			var countryData = new CountryData{ name = countryName };
 			var country = manager.state.Spawn();
 			var countryColor = Color.FromHsv((float) rng.NextDouble(), 0.5f, 1.0f);
-			country.Add(countryData);
+			manager.On(country).Add(countryData);
 			var sourceTile = findAvailableTile();
 			availableLandTiles.Remove(sourceTile);
 			var territoryHexes = new HashSet<Entity>();
@@ -50,9 +50,9 @@ public class CountryGenerator : IGeneratorStep {
 			var label = new MapLabel();
 			label.LabelType = MapLabel.MapLabelType.Territory;
 			label.Text = countryName;
-			country.Add(label);
+			manager.On(country).Add(label);
 
-			var hex = sourceTile.Get<Location>().hex;
+			var hex = manager.Get<Location>(sourceTile).hex;
 			// add capital building
 			factories.districtFactory.AddDistrict(hex, Defs.District.Get("village"));
 
@@ -89,21 +89,22 @@ public class CountryGenerator : IGeneratorStep {
 		// add settlement entities
 		foreach (var (country, territoryHexes) in countrySettlementTiles) {
 			var countryColor = countryColors[country];
-			country.Get<CountryData>().color = countryColor;
+			manager.Get<CountryData>(country).color = countryColor;
 			// capital territory
 			var capitalName = nameFactory.GetName();
 			var capitalData = new SettlementData {
 				name = capitalName,
 				ownerCountry = country,
 			};
-			var capital = manager.state.Spawn();
-			capital.Add<SettlementData>(capitalData);
-			capital.Add<CapitalSettlement>(new CapitalSettlement(), country);
+			var capital = manager.Spawn()
+				.Add<SettlementData>(capitalData)
+				.Add<CapitalSettlement>(new CapitalSettlement(), country)
+				.Id();
 
 			foreach (var tile in territoryHexes) {
-				tile.Add(new CountryTile(), country);
-				tile.Add(new SettlementTile(), capital);
-				tile.Add(new ViewStateNode { country = country, range = 3 });
+				manager.On(tile).Add(new CountryTile(), country);
+				manager.On(tile).Add(new SettlementTile(), capital);
+				manager.On(tile).Add(new ViewStateNode { country = country, range = 3 });
 				manager.state.Send(new TileBorderUpdate { settlement = capital, tile = tile });
 				manager.state.Send(new ViewStateNodeUpdated { entity = tile });
 			}

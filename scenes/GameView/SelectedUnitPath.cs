@@ -33,9 +33,9 @@ public class SelectedUnitPath : TileMap {
 		GD.PrintS("(SelectedUnitPath) render path for unit", unit);
 		var pathfinder = gameView.game.state.GetElement<PathfindingService>();
 		var world = gameView.game.state.GetElement<WorldService>();
-		var location = unit.Get<Location>();
+		var location = gameView.game.manager.Get<Location>(unit);
 
-		var actionQueue = unit.Get<ActionQueue>();
+		var actionQueue = gameView.game.manager.Get<ActionQueue>(unit);
 
 		// current action path
 		Hex currentHex = location.hex;

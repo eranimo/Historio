@@ -5,12 +5,13 @@ public class BiotaFactory : Factory {
 	}
 
 	public Entity Add(Entity tile, BiotaType biotaType, int size) {
-		var biota = manager.state.Spawn();
-		biota.Add(new BiotaData {
-			biotaType = biotaType,
-			size = size
-		});
-		biota.Add(new BiotaTile(), tile);
+		var biota = Spawn()
+			.Add<BiotaData>(new BiotaData {
+				biotaType = biotaType,
+				size = size
+			})
+			.Add(new BiotaTile(), tile)
+			.Id();
 		manager.state.Send(new BiotaAdded {
 			biota = biota,
 			tile = tile,

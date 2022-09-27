@@ -74,8 +74,8 @@ public class MinimapWorld : Control  {
 		var playerViewState = mapViewState.getViewState(player.playerCountry);
 
 		foreach (Entity tile in game.manager.world.tiles) {
-			var hex = tile.Get<Location>().hex;
-			var color = tile.Get<TileData>().GetMinimapColor();
+			var hex = gameView.game.manager.Get<Location>(tile).hex;
+			var color = gameView.game.manager.Get<TileData>(tile).GetMinimapColor();
 			var tileViewState = playerViewState.get(tile);
 			if (tileViewState == ViewState.Unobserved) {
 				color = color.Darkened(UNOBSERVED_DARKEN_AMOUNT);

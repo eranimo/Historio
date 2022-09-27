@@ -1,16 +1,18 @@
 using Godot;
 
 public class MinimapRenderSystem : ISystem {
-	public void Run(Commands commands) {
-		var minimapWorld = commands.GetElement<MinimapWorld>();
-		var player = commands.GetElement<Player>();
-		var mapViewState = commands.GetElement<ViewStateService>();
+	public RelEcs.World World { get; set; }
 
-		commands.Receive((ViewStateUpdated action) => {
+	public void Run() {
+		var minimapWorld = this.GetElement<MinimapWorld>();
+		var player = this.GetElement<Player>();
+		var mapViewState = this.GetElement<ViewStateService>();
+
+		foreach (var action in this.Receive<ViewStateUpdated>()) {
 			if (action.country == player.playerCountry) {
 				// GD.PrintS("(MinimapRenderSystem) view state updated, updating minimap");
 				minimapWorld.updateMap();
 			}
-		});
+		}
 	}
 }

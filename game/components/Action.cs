@@ -57,19 +57,19 @@ public abstract class Action {
 
 	// called before action is added to the queue
 	// and before it is started
-	public abstract bool CanPerform();
+	public abstract bool CanPerform(ISystem system);
 
 	// called when action has started
-	public abstract void OnStarted(Commands commands);
+	public abstract void OnStarted(ISystem system);
 
 	// called on each day tick after started
 	public abstract void OnDayTick(GameDate date);
 
-	public abstract void OnCancelled(Commands commands);
+	public abstract void OnCancelled(ISystem system);
 
-	public abstract void OnQueued(Commands commands);
+	public abstract void OnQueued(ISystem system);
 
-	public abstract void OnFinished(Commands commands);
+	public abstract void OnFinished(ISystem system);
 
 	public abstract string GetLabel();
 
@@ -88,16 +88,17 @@ public class MovementAction : Action {
 		this.target = target;
 	}
 
-	public override bool CanPerform() {
-		return this.owner.Has<Movement>() && this.owner.Has<Location>();
+	public override bool CanPerform(ISystem system) {
+		return system.HasComponent<Movement>(this.owner)
+			&& system.HasComponent<Location>(this.owner);
 	}
 
-	public override void OnStarted(Commands commands) {
-		var world = commands.GetElement<WorldService>();
-		var pathfinder = commands.GetElement<PathfindingService>();
+	public override void OnStarted(ISystem system) {
+		var world = system.GetElement<WorldService>();
+		var pathfinder = system.GetElement<PathfindingService>();
 
-		var movement = owner.Get<Movement>();
-		var location = owner.Get<Location>();
+		var movement = system.GetComponent<Movement>(owner);
+		var location = system.GetComponent<Location>(owner);
 
 		movement.currentTarget = target;
 		movement.movementAction = this;
@@ -118,17 +119,17 @@ public class MovementAction : Action {
 		}			
 	}
 
-	public override void OnQueued(Commands commands) {
-		commands.Send(new UnitMovementPathUpdated { unit = owner });
+	public override void OnQueued(ISystem system) {
+		system.Send(new UnitMovementPathUpdated { unit = owner });
 	}
 
-	public override void OnFinished(Commands commands) {
-		commands.Send(new UnitMovementPathUpdated { unit = owner });
+	public override void OnFinished(ISystem system) {
+		system.Send(new UnitMovementPathUpdated { unit = owner });
 	}
 
-	public override void OnCancelled(Commands commands) {
-		var movement = owner.Get<Movement>();
-		commands.Send(new UnitMovementPathUpdated { unit = owner });
+	public override void OnCancelled(ISystem system) {
+		var movement = system.GetComponent<Movement>(owner);
+		system.Send(new UnitMovementPathUpdated { unit = owner });
 		movement.Reset();
 	}
 

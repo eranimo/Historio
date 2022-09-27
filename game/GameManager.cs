@@ -18,8 +18,10 @@ public static class Defs {
 }
 
 public class DebugDaySystem : ISystem {
-	public void Run(Commands commands) {
-		commands.GetElement<GameController>().PrintStrayNodes();
+	public RelEcs.World World { get; set; }
+
+	public void Run() {
+		this.GetElement<GameController>().PrintStrayNodes();
 	}
 }
 
@@ -127,5 +129,26 @@ public class GameManager {
 		} catch (Exception err) {
 			GD.PrintErr("Error processing frame: ", err);
 		}
+	}
+
+	public T Get<T>(Entity entity) where T : class {
+		return state.GetComponent<T>(entity.Identity);
+	}
+
+	public T Get<T>(Entity entity, Entity target) where T : class {
+		return state.GetComponent<T>(entity.Identity, target.Identity);
+	}
+
+	public T Get<T>(Entity entity, Type type) where T : class {
+		var typeIdentity = state.GetTypeIdentity(type);
+		return state.GetComponent<T>(entity.Identity, typeIdentity);
+	}
+
+	public EntityBuilder Spawn() {
+		return new EntityBuilder(state, state.Spawn().Identity);
+	}
+
+	public EntityBuilder On(Entity entity) {
+		return new EntityBuilder(state, entity.Identity);
 	}
 }

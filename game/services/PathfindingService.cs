@@ -22,19 +22,19 @@ public class PathfindingService {
 		aStar.Clear();
 
 		foreach (var tile in manager.world.tiles) {
-			var hex = tile.Get<Location>().hex;
+			var hex = manager.Get<Location>(tile).hex;
 			var id = idToTile.Count + 1;
 			aStar.AddPoint(id, hex.ToVector());
 			idToTile.Add(id, tile);
 			tileToID.Add(tile, id);
 		}
 		foreach (var tile in manager.world.tiles) {
-			var tileData = tile.Get<TileData>();
-			var hex = tile.Get<Location>().hex;
+			var tileData = manager.Get<TileData>(tile);
+			var hex = manager.Get<Location>(tile).hex;
 			foreach (var neighborHex in hex.Neighbors()) {
 				if (manager.world.IsValidTile(neighborHex)) {
 					var neighborTile = manager.world.GetTile(neighborHex);
-					var neighborTileData = neighborTile.Get<TileData>();
+					var neighborTileData = manager.Get<TileData>(neighborTile);
 					if (
 						tileData.IsLand == neighborTileData.IsLand
 						|| !tileData.IsLand == !neighborTileData.IsLand
@@ -65,6 +65,6 @@ public class PathfindingService {
 	}
 
 	public float getMovementCost(Hex hex) {
-		return manager.world.GetTile(hex).Get<TileData>().movementCost;
+		return manager.world.GetTileData(hex).movementCost;
 	}
 }

@@ -2,31 +2,33 @@ using Godot;
 using RelEcs;
 
 public class UnitRenderSystem : ISystem {
+	public RelEcs.World World { get; set; }
+
 	private PackedScene unitIconScene;
 
 	public UnitRenderSystem() {
 		unitIconScene = ResourceLoader.Load<PackedScene>("res://view/UnitIcon/UnitIcon.tscn");
 	}
 
-	public void Run(Commands commands) {
-		var gameMap = commands.GetElement<GameMap>();
+	public void Run() {
+		var gameMap = this.GetElement<GameMap>();
 
-		commands.Receive((UnitAdded e) => {
+		foreach (var e in this.Receive<UnitAdded>()) {
 			GD.PrintS("(UnitRenderSystem) Render unit", e.unit);
-			var location = e.unit.Get<Location>();
-			var unitData = e.unit.Get<UnitData>();
+			var location = this.GetComponent<Location>(e.unit);
+			var unitData = this.GetComponent<UnitData>(e.unit);
 			var unitIcon = unitIconScene.Instance<UnitIcon>();
 			unitIcon.entity = e.unit;
 			unitIcon.UnitType = unitData.type;
-			e.unit.Add(unitIcon);
+			this.On(e.unit).Add(unitIcon);
 			unitIcon.Position = gameMap.layout.HexToPixel(location.hex).ToVector();
 			gameMap.spriteContainer.AddChild(unitIcon);
-		});
+		}
 
-		commands.Receive((UnitRemoved e) => {
+		foreach (var e in this.Receive<UnitRemoved>()) {
 			GD.PrintS("(UnitRenderSystem) Remove unit", e.unit);
-			var unitIcon = e.unit.Get<UnitIcon>();
+			var unitIcon = this.GetComponent<UnitIcon>(e.unit);
 			gameMap.spriteContainer.RemoveChild(unitIcon);
-		});
+		}
 	}
 }

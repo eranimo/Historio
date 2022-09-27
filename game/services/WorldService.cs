@@ -20,16 +20,21 @@ public class WorldService {
 	}
 
 	public void AddTile(Hex coord, TileData tileData) {
-		var tile = manager.state.Spawn();
-		tile.Add<Location>(new Location { hex = coord });
-		tile.Add<TileData>(tileData);
-		tile.Add(new TileViewState());
+		var tile = manager.Spawn()
+			.Add<Location>(new Location { hex = coord })
+			.Add<TileData>(tileData)
+			.Add(new TileViewState())
+			.Id();
 		tileByHex.Add(coord, tile);
 		tiles.Add(tile);
 	}
 
 	public Entity GetTile(Hex coord) {
 		return tileByHex[coord];
+	}
+
+	public TileData GetTileData(Hex coord) {
+		return manager.Get<TileData>(GetTile(coord));
 	}
 
 	public HashSet<Entity> entitiesAtTile(Hex coord) {
@@ -41,7 +46,7 @@ public class WorldService {
 	}
 
 	public void moveEntity(Entity entity, Hex nextHex) {
-		var loc = entity.Get<Location>();
+		var loc = manager.Get<Location>(entity);
 		var hex = loc.hex;
 		var currentTile = GetTile(hex);
 		var nextTile = GetTile(nextHex);
@@ -63,7 +68,7 @@ public class WorldService {
 		if (neighbors.ContainsKey(tile)) {
 			return neighbors[tile];
 		} else {
-			var tileNeighbors = tile.Get<Location>().hex
+			var tileNeighbors = manager.Get<Location>(tile).hex
 				.Neighbors()
 				.Where(hex => IsValidTile(hex))
 				.Select(hex => GetTile(hex))

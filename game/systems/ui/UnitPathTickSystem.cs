@@ -1,20 +1,22 @@
 public class UnitPathTickSystem : ISystem {
-	public void Run(Commands commands) {
-		var selectedUnitPath = commands.GetElement<SelectedUnitPath>();
-		var gamePanel = commands.GetElement<GamePanel>();
+	public RelEcs.World World { get; set; }
+
+	public void Run() {
+		var selectedUnitPath = this.GetElement<SelectedUnitPath>();
+		var gamePanel = this.GetElement<GamePanel>();
 		if (gamePanel.CurrentPanel.HasValue && gamePanel.CurrentPanel.Value.type == GamePanelType.Unit) {
 			var selectedUnit = gamePanel.CurrentPanel.Value.entity;
-			commands.Receive((UnitMoved e) => {
+			foreach (var e in this.Receive<UnitMoved>()) {
 				if (e.unit == selectedUnit) {
 					selectedUnitPath.RenderPath(e.unit);
 				}
-			});
+			}
 
-			commands.Receive((UnitMovementPathUpdated e) => {
+			foreach (var e in this.Receive<UnitMovementPathUpdated>()) {
 				if (e.unit == selectedUnit) {
 					selectedUnitPath.RenderPath(e.unit);
 				}
-			});
+			}
 		}
 	}
 }

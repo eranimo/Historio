@@ -6,12 +6,12 @@ public class PopFactory : Factory {
 		Entity tile,
 		int size
 	) {
-		var pop = manager.state.Spawn();
-		pop.Add(new PopData {
-			size = size,
-		});
-		pop.Add<PopTile>(tile);
-		pop.Add<Inventory>(new Inventory());
-		return pop;
+		return Spawn()
+			.Add(new PopData {
+				size = size,
+			})
+			.Add<PopTile>(tile)
+			.Add<Inventory>(new Inventory())
+			.Id();
 	}
 }

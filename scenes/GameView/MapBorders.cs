@@ -18,6 +18,7 @@ public class MapBorders : Polygon2D {
 	private ImageTexture hexAreaColors;
 
 	private Dictionary<RelEcs.Entity, int> activeTerritoryEntities = new Dictionary<RelEcs.Entity, int>();
+	private GameView gameView;
 
 	public int? selectedTerritory {
 		get { return _selectedTerritory; }
@@ -27,7 +28,9 @@ public class MapBorders : Polygon2D {
 		}
 	}
 
-	public override void _Ready() {}
+	public override void _Ready() {
+		gameView = (GameView) GetTree().Root.GetNode("GameView");
+	}
 
 	private Hex worldSize => gameMap.game.state.GetElement<WorldData>().worldSize;
 
@@ -61,7 +64,8 @@ public class MapBorders : Polygon2D {
 		hexTerritoryColorImage.Lock();
 		
 		foreach (var (hex, territory) in updates) {
-			var color = territory.Get<SettlementData>().ownerCountry.Get<CountryData>().color;
+			var settlementData = gameView.game.manager.Get<SettlementData>(territory);
+			var color = gameView.game.manager.Get<CountryData>(settlementData.ownerCountry).color;
 			int id;
 			if (activeTerritoryEntities.ContainsKey(territory)) {
 				id = activeTerritoryEntities[territory];
@@ -84,7 +88,8 @@ public class MapBorders : Polygon2D {
 		hexAreaColorImage.Lock();
 
 		foreach (var (hex, territory) in updates) {
-			var color = territory.Get<SettlementData>().ownerCountry.Get<CountryData>().color;
+			var settlementData = gameView.game.manager.Get<SettlementData>(territory);
+			var color = gameView.game.manager.Get<CountryData>(settlementData.ownerCountry).color;
 			int id;
 			if (activeTerritoryEntities.ContainsKey(territory)) {
 				id = activeTerritoryEntities[territory];

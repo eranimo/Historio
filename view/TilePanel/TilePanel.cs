@@ -20,8 +20,8 @@ public class TilePanel : GamePanelView {
 	}
 
 	public override void UpdateView(Entity tile) {
-		var location = tile.Get<Location>();
-		var tileData = tile.Get<TileData>();
+		var location = gameView.game.manager.Get<Location>(tile);
+		var tileData = gameView.game.manager.Get<TileData>(tile);
 		gameView.GameController.GameMap.SetSelectedTile(tile);
 		gamePanel.SetTitle($"Tile ({location.hex.col}, {location.hex.row})");
 

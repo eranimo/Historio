@@ -3,11 +3,13 @@ using Godot;
 using System.Linq;
 
 public class MovementDaySystem : ISystem {
-	public void Run(Commands commands) {
-		var layout = commands.GetElement<Layout>();
-		var world = commands.GetElement<WorldService>();
-		var pathfinder = commands.GetElement<PathfindingService>();
-		var sprites = commands.Query<Entity, Location, Movement>();
+	public RelEcs.World World { get; set; }
+
+	public void Run() {
+		var layout = this.GetElement<Layout>();
+		var world = this.GetElement<WorldService>();
+		var pathfinder = this.GetElement<PathfindingService>();
+		var sprites = this.Query<Entity, Location, Movement>();
 
 		foreach (var (entity, location, movement) in sprites) {
 			if (movement.currentTarget != null) {
@@ -34,10 +36,10 @@ public class MovementDaySystem : ISystem {
 
 				if (next != null) {
 					world.moveEntity(entity, next);
-					commands.Send(new UnitMoved { unit = entity });
+					this.Send(new UnitMoved { unit = entity });
 
-					if (entity.Has<ViewStateNode>()) {
-						commands.Send(new ViewStateNodeUpdated { entity = entity });
+					if (this.HasComponent<ViewStateNode>(entity)) {
+						this.Send(new ViewStateNodeUpdated { entity = entity });
 					}
 
 					if (movement.currentTarget == location.hex) {

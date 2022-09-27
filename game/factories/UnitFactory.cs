@@ -7,19 +7,17 @@ public class UnitFactory : Factory {
 		UnitType unitType
 	) {
 		var unitData = new UnitData { type = unitType, ownerCountry = ownerCountry };
-		var unit = manager.state.Spawn();
-		unit.Add(unitData);
-		unit.Add(new Location { hex = hex });
+		var unit = Spawn()
+			.Add(unitData)
+			.Add(new Location { hex = hex })
+			.Add(new ActionQueue())
+			.Add(new Movement())
+			.Add(new ViewStateNode { country = ownerCountry, range = 2 })
+			.Id();
 
 		manager.state.Send(new UnitAdded { unit = unit });
-
-		var actionQueue = new ActionQueue();
-		unit.Add(actionQueue);
-
-		var movement = new Movement();
-		unit.Add(movement);
-		unit.Add(new ViewStateNode { country = ownerCountry, range = 2 });
 		manager.state.Send(new ViewStateNodeUpdated { entity = unit });
+
 		manager.world.moveEntity(unit, hex);
 	}
 }

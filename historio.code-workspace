@@ -7,6 +7,6 @@
   "settings": {
     "editor.insertSpaces": false,
 	"editor.detectIndentation": false,
-	"godot_tools.scene_file_config": "e:\\Projects\\historio\\addons"
+	"godot_tools.scene_file_config": ""
   }
 }

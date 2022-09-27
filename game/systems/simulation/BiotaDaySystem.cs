@@ -82,24 +82,28 @@ Example:
 
 
 public class BiotaDaySystem : ISystem {
-	public void Run(Commands commands) {
+	public RelEcs.World World { get; set; }
+
+	public void Run() {
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 
-		var biotaService = commands.GetElement<BiotaService>();
-		var tilesChanged = new HashSet<Entity>();
-		commands.Receive((BiotaAdded biotaAdded) => {
+		var biotaService = this.GetElement<BiotaService>();
+		var tilesChanged = new HashSet<TileData>();
+		foreach (var biotaAdded in this.Receive<BiotaAdded>()) {
 			// GD.PrintS("Add biota", biotaAdded.biota.Get<BiotaData>().biotaType);
-			biotaService.AddBiota(biotaAdded.biota, biotaAdded.tile);
-			tilesChanged.Add(biotaAdded.tile);
-		});
+			TileData tileData = this.GetComponent<TileData>(biotaAdded.tile);
+			BiotaData biotaData = this.GetComponent<BiotaData>(biotaAdded.biota);
+			biotaService.AddBiota(biotaData, tileData);
+			tilesChanged.Add(tileData);
+		}
 
 		foreach (var tile in tilesChanged) {
 			biotaService.UpdateTileBiota(tile);
 		}
 
-		var tiles = commands.Query<Entity>().Has<TileData>();
-		foreach (var tile in tiles) {
-			biotaService.CalculateTile(tile);
+		var tiles = this.Query<Entity, TileData>();
+		foreach (var (tile, tileData) in tiles) {
+			biotaService.CalculateTile(tileData);
 			biotaService.DebugTile(tile);
 		}
 

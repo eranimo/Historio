@@ -3,7 +3,6 @@ using System.Linq;
 using Godot;
 
 public class BiotaTileData {
-	private readonly Entity tile;
 	private readonly TileData tileData;
 	public MultiSet<BiotaCategory, BiotaData> biotaByCategory;
 	public Dictionary<BiotaType, BiotaData> biotaByType;
@@ -13,12 +12,11 @@ public class BiotaTileData {
 	public HashSet<BiotaData> plants;
 	public HashSet<BiotaData> animals;
 
-	public BiotaTileData(Entity tile) {
-		this.tile = tile;
-		tileData = tile.Get<TileData>();
+	public BiotaTileData(TileData tileData) {
+		this.tileData = tileData;
 	}
 
-	public void UpdateTileBiota(List<Entity> biotaList) {
+	public void UpdateTileBiota(List<BiotaData> biotaList) {
 		biotaByCategory = new MultiSet<BiotaCategory, BiotaData>();
 		biotaByType = new Dictionary<BiotaType, BiotaData>();
 		biotaByClassification = new MultiSet<BiotaClassification, BiotaData>();
@@ -26,8 +24,7 @@ public class BiotaTileData {
 		plants = new HashSet<BiotaData>();
 		animals = new HashSet<BiotaData>();
 
-		foreach (var biota in biotaList) {
-			var biotaData = biota.Get<BiotaData>();
+		foreach (var biotaData in biotaList) {
 			biotaByType[biotaData.biotaType] = biotaData;
 			biota.Add(biotaData);
 			if (biotaData.biotaType.category == BiotaCategory.Plant) {
@@ -43,7 +40,6 @@ public class BiotaTileData {
 			}
 		}
 
-		var tileData = tile.Get<TileData>();
 		tileData.plantSpaceUsed = plants.Sum(plant => plant.spaceUsed);
 		tileData.animalSpaceUsed = animals.Sum(animal => animal.spaceUsed);
 	}
@@ -51,53 +47,51 @@ public class BiotaTileData {
 
 public class BiotaService {
 	private readonly GameManager manager;
-	private MultiMap<Entity, Entity> biotaByTile = new MultiMap<Entity, Entity>();
-	private Dictionary<Entity, BiotaTileData> tilesBiotaData = new Dictionary<Entity, BiotaTileData>();
+	private MultiMap<TileData, BiotaData> biotaByTile = new MultiMap<TileData, BiotaData>();
+	private Dictionary<TileData, BiotaTileData> tilesBiotaData = new Dictionary<TileData, BiotaTileData>();
 
 	public BiotaService(GameManager manager) {
 		this.manager = manager;
 	}
 
-	public void AddBiota(Entity biota, Entity tile) {
-		var biotaType = biota.Get<BiotaData>().biotaType;
-		biotaByTile.Add(tile, biota);
+	public void AddBiota(BiotaData biotaData, TileData tileData) {
+		biotaByTile.Add(tileData, biotaData);
 	}
 
-	public BiotaData GetBiotaByType(Entity tile, BiotaType type) {
-		if (!tilesBiotaData.ContainsKey(tile)) {
+	public BiotaData GetBiotaByType(TileData tileData, BiotaType type) {
+		if (!tilesBiotaData.ContainsKey(tileData)) {
 			return null;
 		}
-		return tilesBiotaData[tile].biotaByType[type];
+		return tilesBiotaData[tileData].biotaByType[type];
 	}
 
-	public bool HasBiotaType(Entity tile, BiotaType type) {
-		if (!tilesBiotaData.ContainsKey(tile)) {
+	public bool HasBiotaType(TileData tileData, BiotaType type) {
+		if (!tilesBiotaData.ContainsKey(tileData)) {
 			return false;
 		}
-		return tilesBiotaData[tile].biotaByType.ContainsKey(type);
+		return tilesBiotaData[tileData].biotaByType.ContainsKey(type);
 	}
 
 	// update tile when biota are added or removed
-	public void UpdateTileBiota(Entity tile) {
-		if (!tilesBiotaData.ContainsKey(tile)) {
-			tilesBiotaData[tile] = new BiotaTileData(tile);
+	public void UpdateTileBiota(TileData tileData) {
+		if (!tilesBiotaData.ContainsKey(tileData)) {
+			tilesBiotaData[tileData] = new BiotaTileData(tileData);
 		}
-		tilesBiotaData[tile].UpdateTileBiota(biotaByTile[tile]);
+		tilesBiotaData[tileData].UpdateTileBiota(biotaByTile[tileData]);
 	}
 
-	public BiotaTileData GetBiotaTileData(Entity tile) {
-		if (!tilesBiotaData.ContainsKey(tile)) {
-			tilesBiotaData[tile] = new BiotaTileData(tile);
+	public BiotaTileData GetBiotaTileData(TileData tileData) {
+		if (!tilesBiotaData.ContainsKey(tileData)) {
+			tilesBiotaData[tileData] = new BiotaTileData(tileData);
 		}
-		return tilesBiotaData[tile];
+		return tilesBiotaData[tileData];
 	}
 
-	public int CalculateTile(Entity tile) {
-		if (biotaByTile[tile].Count == 0) {
+	public int CalculateTile(TileData tileData) {
+		if (biotaByTile[tileData].Count == 0) {
 			return 0;
 		}
-		var biotaTileData = tilesBiotaData[tile];
-		var tileData = tile.Get<TileData>();
+		var biotaTileData = tilesBiotaData[tileData];
 
 		// calculate plant growth
 		var plantSpaceFree = tileData.plantSpace - tileData.plantSpaceUsed;
@@ -222,14 +216,14 @@ public class BiotaService {
 	}
 
 	public void DebugTile(Entity tile) {
-		if (biotaByTile[tile].Count == 0) {
+		var tileData = manager.Get<TileData>(tile);
+		if (biotaByTile[tileData].Count == 0) {
 			return;
 		}
-		var tileData = tile.Get<TileData>();
-		var plants = tilesBiotaData[tile].plants;
-		var animals = tilesBiotaData[tile].animals;
+		var plants = tilesBiotaData[tileData].plants;
+		var animals = tilesBiotaData[tileData].animals;
 
-		GD.PrintS($"Tile biota {tile.Get<Location>().hex}");
+		GD.PrintS($"Tile biota {manager.Get<Location>(tile).hex}");
 		GD.PrintS("\tPlants:");
 		foreach (var plant in plants) {
 			var share = Math.Round((double) (((float) plant.size) / ((float) tileData.plantSpace)) * 100, 2);

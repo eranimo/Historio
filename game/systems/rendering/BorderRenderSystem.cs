@@ -9,6 +9,8 @@ public class BorderRenderSystem : ISystem {
 	private HashSet<Entity> countryUpdates;
 	private PackedScene settlementLabelScene;
 
+	public RelEcs.World World { get; set; }
+
 	public BorderRenderSystem() {
 		hexUpdates = new List<(Hex, RelEcs.Entity)>();
 		settlementUpdates = new HashSet<Entity>();
@@ -17,21 +19,21 @@ public class BorderRenderSystem : ISystem {
 		settlementLabelScene = ResourceLoader.Load<PackedScene>("res://scenes/GameView/SettlementLabel.tscn");
 	}
 
-	public void Run(Commands commands) {
-		var gameMap = commands.GetElement<GameMap>();
-		var world = commands.GetElement<WorldService>();
+	public void Run() {
+		var gameMap = this.GetElement<GameMap>();
+		var world = this.GetElement<WorldService>();
 
 		hexUpdates.Clear();
 		settlementUpdates.Clear();
 		countryUpdates.Clear();
 		
-		commands.Receive((TileBorderUpdate e) => {
-			var location = e.tile.Get<Location>();
-			var territoryData = e.settlement.Get<SettlementData>();
+		foreach (var e in this.Receive<TileBorderUpdate>()) {
+			var location = this.GetComponent<Location>(e.tile);
+			var territoryData = this.GetComponent<SettlementData>(e.settlement);
 			hexUpdates.Add((location.hex, e.settlement));
 			settlementUpdates.Add(e.settlement);
 			countryUpdates.Add(territoryData.ownerCountry);
-		});
+		}
 
 		if (hexUpdates.Count > 0) {
 			gameMap.mapBorders.updateTerritoryMap(hexUpdates);
@@ -43,8 +45,8 @@ public class BorderRenderSystem : ISystem {
 				var settlementLabel = settlementLabelScene.Instance<SettlementLabel>();
 				var territoryHexes = hexUpdates.Where(item => item.Item2 == settlement).Select(item => item.Item1).ToHashSet();
 				gameMap.settlementLabels.Add(settlementLabel);
-				var settlementData = settlement.Get<SettlementData>();
-				var countryData = settlementData.ownerCountry.Get<CountryData>();
+				var settlementData = this.GetComponent<SettlementData>(settlement);
+				var countryData = this.GetComponent<CountryData>(settlementData.ownerCountry);
 				settlementLabel.text = settlementData.name;
 				settlementLabel.color = countryData.color;
 				settlementLabel.position = gameMap.layout.Centroid(territoryHexes).ToVector();
@@ -56,7 +58,7 @@ public class BorderRenderSystem : ISystem {
 			}
 
 			foreach (var country in countryUpdates) {
-				var label = country.Get<MapLabel>();
+				var label = this.GetComponent<MapLabel>(country);
 				var countryHexes = settlementUpdatesPerCountry[country];
 				gameMap.mapLabels.AddLabel(label);
 				label.SetPosition(gameMap.layout.Centroid(countryHexes).ToVector() - new Godot.Vector2(0, 23));

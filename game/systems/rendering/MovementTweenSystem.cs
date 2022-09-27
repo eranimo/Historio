@@ -2,12 +2,14 @@ using System.Linq;
 using Godot;
 
 public class MovementTweenPlaySystem : ISystem {
-	public void Run(Commands commands) {
-		var layout = commands.GetElement<Layout>();
-		var world = commands.GetElement<WorldService>();
-		var sprites = commands.Query<Entity, Location, UnitIcon, Movement>();
-		var delta = commands.GetElement<PhysicsDelta>().delta;
-		var game = commands.GetElement<Game>();
+	public RelEcs.World World { get; set; }
+
+	public void Run() {
+		var layout = this.GetElement<Layout>();
+		var world = this.GetElement<WorldService>();
+		var sprites = this.Query<Entity, Location, UnitIcon, Movement>();
+		var delta = this.GetElement<PhysicsDelta>().delta;
+		var game = this.GetElement<Game>();
 
 		try {
 			foreach (var (entity, location, unitIcon, movement) in sprites) {

@@ -1,19 +1,21 @@
 using RelEcs;
 
 public class SpriteRenderSystem : ISystem {
-	public void Run(Commands commands) {
-		var gameMap = commands.GetElement<GameMap>();
+	public RelEcs.World World { get; set; }
 
-		commands.Receive((SpriteAdded e) => {
-			var location = e.entity.Get<Location>();
-			var sprite = e.entity.Get<Godot.Sprite>();
+	public void Run() {
+		var gameMap = this.GetElement<GameMap>();
+
+		foreach (var e in this.Receive<SpriteAdded>()) {
+			var location = this.GetComponent<Location>(e.entity);
+			var sprite = this.GetComponent<Godot.Sprite>(e.entity);
 			sprite.Position = gameMap.layout.HexToPixel(location.hex).ToVector();
 			gameMap.spriteContainer.AddChild(sprite);
-		});
+		}
 
-		commands.Receive((SpriteRemoved e) => {
-			var sprite = e.entity.Get<Godot.Sprite>();
+		foreach (var e in this.Receive<SpriteRemoved>()) {
+			var sprite = this.GetComponent<Godot.Sprite>(e.entity);
 			gameMap.spriteContainer.RemoveChild(sprite);
-		});
+		}
 	}
 }

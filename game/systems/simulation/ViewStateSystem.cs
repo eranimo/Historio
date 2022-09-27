@@ -3,35 +3,38 @@ using RelEcs;
 using Godot;
 
 public class ViewStatePlaySystem : ISystem {
-	public void Run(Commands commands) {
-		var gameMap = commands.GetElement<GameMap>();
-		var mapViewState = commands.GetElement<ViewStateService>();
-		var player = commands.GetElement<Player>();
+	public RelEcs.World World { get; set; }
 
-		commands.Receive((CountryAdded e) => {
+	public void Run() {
+		var gameMap = this.GetElement<GameMap>();
+		var mapViewState = this.GetElement<ViewStateService>();
+		var player = this.GetElement<Player>();
+
+		foreach (var e in this.Receive<CountryAdded>()) {
 			mapViewState.add(e.country);
-		});
+		}
 
 		// TODO: remove view state when country removed
 
 		var changedCountryTiles = new Dictionary<Entity, List<Entity>>();
-		commands.Receive((ViewStateNodeUpdated e) => {
-			var viewStateNode = e.entity.Get<ViewStateNode>();
+		
+		foreach (var e in this.Receive<ViewStateNodeUpdated>()) {
+			var viewStateNode = this.GetComponent<ViewStateNode>(e.entity);
 			mapViewState.getViewState(viewStateNode.country).addNodeEntity(e.entity);
 			if (changedCountryTiles.ContainsKey(viewStateNode.country)) {
 				changedCountryTiles[viewStateNode.country].Add(e.entity);
 			} else {
 				changedCountryTiles.Add(viewStateNode.country, new List<Entity> { e.entity });
 			}
-		});
+		}
 
 		foreach (var (country, changedTiles) in changedCountryTiles) {
-			GD.PrintS($"(ViewStatePlaySystem) updating view state for Country {country.Get<CountryData>().name}");
+			GD.PrintS($"(ViewStatePlaySystem) updating view state for Country {this.GetComponent<CountryData>(country).name}");
 			var countryViewState = mapViewState.getViewState(country);
 			countryViewState.CalculateChanged(changedTiles);
 			if (player.playerCountry == country) {
 				foreach (var tile in countryViewState.exploredTiles) {
-					var location = tile.Get<Location>();
+					var location = this.GetComponent<Location>(tile);
 					var tileViewState = countryViewState.get(tile);
 					gameMap.viewState.SetCell(location.hex.col, location.hex.row, tileViewState.GetTileMapTile());
 				}
@@ -41,12 +44,14 @@ public class ViewStatePlaySystem : ISystem {
 }
 
 public class ViewStateStartSystem : ISystem {
-	public void Run(Commands commands) {
-		var gameMap = commands.GetElement<GameMap>();
+	public RelEcs.World World { get; set; }
+
+	public void Run() {
+		var gameMap = this.GetElement<GameMap>();
 
 		// set view state tilemap to all unexplored
-		foreach (var tile in commands.GetElement<WorldService>().tiles) {
-			var location = tile.Get<Location>();
+		foreach (var tile in this.GetElement<WorldService>().tiles) {
+			var location = this.GetComponent<Location>(tile);
 			gameMap.viewState.SetCell(location.hex.col, location.hex.row, ViewState.Unexplored.GetTileMapTile());
 		}
 	}
