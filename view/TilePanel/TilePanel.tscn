@@ -28,7 +28,6 @@ theme = ExtResource( 2 )
 tab_align = 0
 
 [node name="Details" type="MarginContainer" parent="TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 1.0
@@ -210,6 +209,7 @@ custom_fonts/font = SubResource( 3 )
 text = "+5 / day"
 
 [node name="Biota" type="MarginContainer" parent="TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 1.0

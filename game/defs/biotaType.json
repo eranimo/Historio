@@ -6,6 +6,7 @@
 		"classifications": [
 			"FloweringPlants"
 		],
+		"reproductionRate": 1.0,
 		"plantRequirements": {
 			"fertility": 0.01
 		},
@@ -23,6 +24,7 @@
 		"id": "vegetables",
 		"name": "Vegetables",
 		"category": "Plant",
+		"reproductionRate": 1.0,
 		"classifications": [
 			"FloweringPlants"
 		],
@@ -44,8 +46,9 @@
 		"name": "Rabbit",
 		"category": "Animal",
 		"classifications": [
-			"Mammal"
+			"SmallMammal"
 		],
+		"reproductionRate": 1.0,
 		"resources": [
 			{
 				"resource": {
@@ -59,7 +62,7 @@
 			"nutrition": [
 				{
 					"classification": "FloweringPlants",
-					"amount": 2
+					"amount": 1
 				}
 			]
 		}
@@ -69,9 +72,9 @@
 		"name": "Wolf",
 		"category": "Animal",
 		"classifications": [
-			"Mammal"
+			"Predator"
 		],
-		"reproductionRate": 0.25,
+		"reproductionRate": 0.5,
 		"resources": [
 			{
 				"resource": {
@@ -85,8 +88,8 @@
 			"space": 2,
 			"nutrition": [
 				{
-					"classification": "Mammal",
-					"amount": 1
+					"classification": "SmallMammal",
+					"amount": 0.25
 				}
 			]
 		}

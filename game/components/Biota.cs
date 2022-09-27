@@ -13,6 +13,9 @@ public class BiotaType : Def {
 	// modifier for how fast this biota reproduces naturally
 	public float reproductionRate { get; set; } = 0.05f;
 
+	// space one unit takes up
+	public float space { get; set; } = 1f;
+
 	public PlantRequirements plantRequirements;
 	public AnimalRequirements animalRequirements;
 
@@ -28,21 +31,16 @@ public enum BiotaCategory {
 [JsonConverter(typeof(StringEnumConverter))]
 public enum BiotaClassification {
 	FloweringPlants,
-	Mammal,
+	SmallMammal,
+	Predator,
 }
 
 public class PlantRequirements {
-	// space one unit takes up
-	public float space { get; set; } = 1f;
-
 	// fertility required per unit
 	public float fertility { get; set; }
 }
 
 public class AnimalRequirements {
-	// space one unit takes up
-	public float space { get; set; } = 1f;
-
 	// how much of a certain biota category do they need (per unit)
 	public List<BiotaNeedDef> nutrition { get; set; }
 }
@@ -61,8 +59,11 @@ public class BiotaData {
 	// stats
 	public int births = 0;
 	public int deathsKilled = 0;
+
+	// animal only
 	public int deathsStarved = 0;
 	public float needPercentFilled;
+	public int migrated = 0;
 
 	public int deaths {
 		get {
@@ -73,6 +74,12 @@ public class BiotaData {
 	public int growth {
 		get {
 			return births - deaths;
+		}
+	}
+
+	public float spaceUsed {
+		get {
+			return biotaType.space * size;
 		}
 	}
 }

@@ -1,149 +1,224 @@
+using System;
 using System.Linq;
 using Godot;
 
+public class BiotaTileData {
+	private readonly Entity tile;
+	private readonly TileData tileData;
+	public MultiSet<BiotaCategory, BiotaData> biotaByCategory;
+	public Dictionary<BiotaType, BiotaData> biotaByType;
+	public MultiSet<BiotaClassification, BiotaData> biotaByClassification;
+
+	public HashSet<BiotaData> biota;
+	public HashSet<BiotaData> plants;
+	public HashSet<BiotaData> animals;
+
+	public BiotaTileData(Entity tile) {
+		this.tile = tile;
+		tileData = tile.Get<TileData>();
+	}
+
+	public void UpdateTileBiota(List<Entity> biotaList) {
+		biotaByCategory = new MultiSet<BiotaCategory, BiotaData>();
+		biotaByType = new Dictionary<BiotaType, BiotaData>();
+		biotaByClassification = new MultiSet<BiotaClassification, BiotaData>();
+		biota = new HashSet<BiotaData>();
+		plants = new HashSet<BiotaData>();
+		animals = new HashSet<BiotaData>();
+
+		foreach (var biota in biotaList) {
+			var biotaData = biota.Get<BiotaData>();
+			biotaByType[biotaData.biotaType] = biotaData;
+			biota.Add(biotaData);
+			if (biotaData.biotaType.category == BiotaCategory.Plant) {
+				plants.Add(biotaData);
+			} else if (biotaData.biotaType.category == BiotaCategory.Animal) {
+				animals.Add(biotaData);
+			}
+
+			biotaByCategory.Add(biotaData.biotaType.category, biotaData);
+
+			foreach (var classification in biotaData.biotaType.classifications) {
+				biotaByClassification.Add(classification, biotaData);
+			}
+		}
+
+		var tileData = tile.Get<TileData>();
+		tileData.plantSpaceUsed = plants.Sum(plant => plant.spaceUsed);
+		tileData.animalSpaceUsed = animals.Sum(animal => animal.spaceUsed);
+	}
+}
 
 public class BiotaService {
 	private readonly GameManager manager;
 	private MultiMap<Entity, Entity> biotaByTile = new MultiMap<Entity, Entity>();
-	private MultiMap<Entity, Entity> plantsByTile = new MultiMap<Entity, Entity>();
-	private MultiMap<Entity, Entity> animalsByTile = new MultiMap<Entity, Entity>();
-	private Dictionary<Entity, MultiSet<BiotaClassification, Entity>> biotaByTileAndClassification = new Dictionary<Entity, MultiSet<BiotaClassification, Entity>>();
+	private Dictionary<Entity, BiotaTileData> tilesBiotaData = new Dictionary<Entity, BiotaTileData>();
 
 	public BiotaService(GameManager manager) {
 		this.manager = manager;
 	}
 
-	public void AddBiota(BiotaAdded biotaAdded) {
-		var biotaType = biotaAdded.biota.Get<BiotaData>().biotaType;
-		biotaByTile.Add(biotaAdded.tile, biotaAdded.biota);
-		if (biotaType.category == BiotaCategory.Plant) {
-			plantsByTile.Add(biotaAdded.tile, biotaAdded.biota);
-		} else if (biotaType.category == BiotaCategory.Animal) {
-			animalsByTile.Add(biotaAdded.tile, biotaAdded.biota);
-		}
-
-		if (!biotaByTileAndClassification.ContainsKey(biotaAdded.tile)) {
-			biotaByTileAndClassification[biotaAdded.tile] = new MultiSet<BiotaClassification, Entity>();
-		}
-		foreach (var classification in biotaType.classifications) {
-			biotaByTileAndClassification[biotaAdded.tile].Add(classification, biotaAdded.biota);
-		}
+	public void AddBiota(Entity biota, Entity tile) {
+		var biotaType = biota.Get<BiotaData>().biotaType;
+		biotaByTile.Add(tile, biota);
 	}
 
-	private int getFitness(TileData tileData, BiotaData biotaData) {
-		// TODO: implement fitness function depending on tile data
-		return 1;
+	public BiotaData GetBiotaByType(Entity tile, BiotaType type) {
+		if (!tilesBiotaData.ContainsKey(tile)) {
+			return null;
+		}
+		return tilesBiotaData[tile].biotaByType[type];
 	}
 
-	public void CalculateTile(Entity tile) {
-		var tileData = tile.Get<TileData>();
-		var plants = from entity in plantsByTile[tile] select entity.Get<BiotaData>();
-		var animals = from entity in animalsByTile[tile] select entity.Get<BiotaData>();
-		
+	public bool HasBiotaType(Entity tile, BiotaType type) {
+		if (!tilesBiotaData.ContainsKey(tile)) {
+			return false;
+		}
+		return tilesBiotaData[tile].biotaByType.ContainsKey(type);
+	}
+
+	// update tile when biota are added or removed
+	public void UpdateTileBiota(Entity tile) {
+		if (!tilesBiotaData.ContainsKey(tile)) {
+			tilesBiotaData[tile] = new BiotaTileData(tile);
+		}
+		tilesBiotaData[tile].UpdateTileBiota(biotaByTile[tile]);
+	}
+
+	public BiotaTileData GetBiotaTileData(Entity tile) {
+		if (!tilesBiotaData.ContainsKey(tile)) {
+			tilesBiotaData[tile] = new BiotaTileData(tile);
+		}
+		return tilesBiotaData[tile];
+	}
+
+	public int CalculateTile(Entity tile) {
 		if (biotaByTile[tile].Count == 0) {
-			return;
+			return 0;
 		}
-
-		var biotaByClassification = biotaByTileAndClassification[tile];
-
-		// calculate space used
-		tileData.plantSpaceUsed = 0;
-		foreach (var plant in plants) {
-			tileData.plantSpaceUsed += plant.biotaType.plantRequirements.space * plant.size;
-		}
-
-		tileData.animalSpaceUsed = 0;
-		foreach (var animal in animals) {
-			tileData.animalSpaceUsed += animal.biotaType.animalRequirements.space * animal.size;
-		}
-
-		foreach (var plant in plants) {
-			plant.births = 0;
-			plant.deathsKilled = 0;
-			plant.deathsStarved = 0;
-		}
-
-		// sort plants by fitness
-		var sortedPlants = from plant in plants
-			where plant.size > 0
-			orderby getFitness(tileData, plant) descending
-			select plant;
-
-		// sort animals by fitness
-		var sortedAnimals = from animal in animals
-			where animal.size > 0
-			orderby getFitness(tileData, animal) descending
-			select animal;
+		var biotaTileData = tilesBiotaData[tile];
+		var tileData = tile.Get<TileData>();
 
 		// calculate plant growth
-		var spaceLeft = tileData.plantSpace - tileData.plantSpaceUsed;
-		foreach (var plant in sortedPlants) {
-			if (spaceLeft <= 0) {
-				break;
-			}
-			var births = plant.size * plant.biotaType.reproductionRate;
-			var birthsReal = (int) Mathf.Floor(Mathf.Min(spaceLeft, births));
-			plant.size += birthsReal;
-			plant.births += birthsReal;
-			spaceLeft -= birthsReal;
+		var plantSpaceFree = tileData.plantSpace - tileData.plantSpaceUsed;
+		GD.PrintS("Plant space", tileData.plantSpace);
+		GD.PrintS("Plant space free", plantSpaceFree);
+		GD.PrintS("Plant space used", tileData.plantSpaceUsed);
+		foreach (var plant in biotaTileData.plants) {
+			GD.PrintS($"\tGrowth for {plant.biotaType.name} (size: {plant.size} space used: {plant.spaceUsed})");
+			var share = ((float) plant.spaceUsed) / tileData.plantSpace;
+			var reproductionRate = plant.biotaType.reproductionRate;
+			var births = (int) Math.Round(plantSpaceFree * share * reproductionRate);
+			GD.PrintS($"\t\tShare = {share}");
+			GD.PrintS($"\t\tReproduction rate = {reproductionRate}");
+			GD.PrintS($"\t\tBirths = {births}");
+			plant.size += births;
+			plant.births = births;
 		}
 
-		foreach (var animal in animals) {
-			animal.births = 0;
-			animal.deathsKilled = 0;
-			animal.deathsStarved = 0;
-		}
+		tileData.plantSpaceUsed = biotaTileData.plants.Sum(plant => plant.biotaType.space * plant.size);
+		GD.PrintS("Plant space used", tileData.plantSpaceUsed);
 		
-		// calculate animal consumption
-		foreach (var animal in sortedAnimals) {
-			GD.PrintS($"Consumption: {animal.biotaType.name}");
-			var needs = animal.biotaType.animalRequirements.nutrition;
+		// foreach (var animal in biotaTileData.animals) {
+		// 	animal.births = 0;
+		// 	animal.deathsKilled = 0;
+		// 	animal.deathsStarved = 0;
+		// 	animal.migrated = 0;
+		// }
 
-			foreach (var need in needs) {
-				// for each need, find biota to consume
-				var biotaSatisfyingNeed = biotaByClassification[need.classification];
-				var needSize = (int) Mathf.Ceil(need.amount * ((float) animal.size));
-				var needFulfilled = 0;
-				foreach (var consumedBiota in biotaSatisfyingNeed) {
-					BiotaData consumedBiotaData = consumedBiota.Get<BiotaData>();
-					var needRemaining = needSize - needFulfilled;
+		// // calculate animal consumption
+		// var animalSpaceLeft = tileData.animalSpace - tileData.animalSpaceUsed;
+		// foreach (var animal in biotaTileData.animals) {
+		// 	// GD.PrintS($"Consumption: {animal.biotaType.name}");
+		// 	var needs = animal.biotaType.animalRequirements.nutrition;
 
-					var consumedSizeReal = (int) Mathf.Min(needRemaining, consumedBiotaData.size);
-					consumedBiotaData.size -= consumedSizeReal;
-					consumedBiotaData.deathsKilled += consumedSizeReal;
-					GD.PrintS($"\tconsume {consumedSizeReal} {consumedBiotaData.biotaType.name}");
-					needFulfilled += consumedSizeReal;
-				}
-				GD.PrintS("\tneedFulfilled", needFulfilled);
-				GD.PrintS("\tneedSize", needSize);
-				float needPercentFilled = (float) decimal.ToDouble(decimal.Divide(needFulfilled, needSize));
-				GD.PrintS("\tneedPercentFilled", needPercentFilled);
-				animal.needPercentFilled = needPercentFilled;
+		// 	float totalNeedsFulfilled = 1f;
+		// 	foreach (var need in needs) {
+		// 		// for each need, find biota to consume
+		// 		var biotaSatisfyingNeed = biotaTileData.biotaByClassification[need.classification];
+		// 		var needSize = (int) Mathf.Ceil(need.amount * ((float) animal.size));
+		// 		var needFulfilled = 0;
+		// 		foreach (var consumedBiota in biotaSatisfyingNeed) {
+		// 			var needRemaining = needSize - needFulfilled;
+		// 			var consumedSizeReal = (int) Mathf.Min(needRemaining, consumedBiota.size);
+		// 			consumedBiota.size -= consumedSizeReal;
+		// 			consumedBiota.deathsKilled += consumedSizeReal;
+		// 			needFulfilled += consumedSizeReal;
+		// 		}
+		// 		float needPercentFilled = (float) decimal.ToDouble(decimal.Divide(needFulfilled, needSize));
+		// 		totalNeedsFulfilled *= needPercentFilled;
+		// 	}
 
-				// grow population
-				var births = (int) Mathf.Floor(animal.size * animal.biotaType.reproductionRate * needPercentFilled);
-				animal.size += births;
-				animal.births = births;
+		// 	animal.needPercentFilled = totalNeedsFulfilled;
 
-				// if we have left over needs, reduce population because of starvation
-				var starved = (int) Mathf.Floor(animal.size * ((1 - needPercentFilled) / 10));
-				animal.size -= starved;
-				animal.deathsStarved += starved;
-			}
-		}
+		// 	// grow population
+		// 	var births = (int) Mathf.Ceil(animal.size * animal.biotaType.reproductionRate * totalNeedsFulfilled);
+		// 	var birthsReal = (int) Mathf.Floor(Mathf.Min(animalSpaceLeft, births));
+		// 	animal.size += birthsReal;
+		// 	animal.births = birthsReal;
 
-		// handle plant spread
-		var worldService = manager.state.GetElement<WorldService>();
-		foreach (var plant in plants) {
-			foreach (var neighbor in worldService.GetNeighbors(tile)) {
-				var percentShare = tileData.plantSpace;
-			}
-		}
+		// 	// if we have left over needs, reduce population because of starvation
+		// 	var starved = (int) Mathf.Ceil(animal.size * ((1 - totalNeedsFulfilled) / 10));
+		// 	animal.size -= starved;
+		// 	animal.deathsStarved += starved;
 
-		// TODO: handle animal migration
+		// 	animalSpaceLeft -= birthsReal;
+		// }
+		// tileData.animalSpaceUsed = tileData.animalSpace - animalSpaceLeft;
+
+		// // handle plant spread
+		// var worldService = manager.state.GetElement<WorldService>();
+		// var biotaFactory = manager.state.GetElement<Factories>().biotaFactory;
+		// var rng = new RandomNumberGenerator();
+		// foreach (var plant in biotaTileData.plants) {
+		// 	var percentShare = (float) plant.size / tileData.plantSpace;
+		// 	// GD.PrintS($"Spread: {plant.biotaType.name} ({tile.Get<Location>().hex})");
+
+		// 	// for each neighbor, decide if spreading there
+		// 	foreach (var neighbor in worldService.GetNeighbors(tile)) {
+		// 		var chance = percentShare * 0.5;
+		// 		if (rng.Randf() < chance) {
+		// 			var spreadAmount = (int) Mathf.Round(plant.size / 10f);
+		// 			if (!HasBiotaType(neighbor, plant.biotaType)) {
+		// 				// GD.PrintS($"\tSpread to ({neighbor.Get<Location>().hex}) with size {spreadAmount}");
+		// 				biotaFactory.Add(neighbor, plant.biotaType, spreadAmount);
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		// // handle animal migration
+		// foreach (var animal in biotaTileData.animals) {
+		// 	if (animal.deathsStarved == 0) {
+		// 		continue;
+		// 	}
+		// 	// GD.PrintS($"Migrate: {animal.biotaType.name} ({tile.Get<Location>().hex})");
+		// 	var percentChanceToMigrate = ((float) animal.deathsStarved) / ((float) animal.size);
+		// 	// GD.PrintS("\tpercentChanceToMigrate", percentChanceToMigrate);
+		// 	if (percentChanceToMigrate > 0) {
+		// 		int totalMigrated = 0;
+
+		// 		// size of the "stressed" population
+		// 		// e.g. if 80% of needs are met, 20% of the population can migrate
+		// 		int maxMigrationSize = (int) Mathf.Round((1 - animal.needPercentFilled) * ((float) animal.size));
+		// 		foreach (var neighbor in worldService.GetNeighbors(tile)) {
+		// 			if (rng.Randf() < percentChanceToMigrate) {
+		// 				// up to 1/6 of the max migration size can move to each neighbor
+		// 				var migrateAmountMax = (int) Mathf.Ceil(maxMigrationSize / 6f);
+		// 				var migrateAmount = rng.RandiRange(0, migrateAmountMax);
+		// 				totalMigrated += migrateAmount;
+		// 				// GD.PrintS($"\t{animal.biotaType.name} ({tile.Get<Location>().hex}) migrated to ({neighbor.Get<Location>().hex}) with size {migrateAmount}");
+		// 				biotaFactory.Add(neighbor, animal.biotaType, migrateAmount);
+		// 			}
+		// 		}
+		// 		animal.size -= totalMigrated;
+		// 		animal.migrated += totalMigrated;
+		// 	}
+		// }
 
 		// TODO: delete biota with size 0
 
+		return biotaTileData.biota.Count;
 	}
 
 	public void DebugTile(Entity tile) {
@@ -151,17 +226,19 @@ public class BiotaService {
 			return;
 		}
 		var tileData = tile.Get<TileData>();
-		var plants = from entity in plantsByTile[tile] select entity.Get<BiotaData>();
-		var animals = from entity in animalsByTile[tile] select entity.Get<BiotaData>();
+		var plants = tilesBiotaData[tile].plants;
+		var animals = tilesBiotaData[tile].animals;
 
 		GD.PrintS($"Tile biota {tile.Get<Location>().hex}");
 		GD.PrintS("\tPlants:");
 		foreach (var plant in plants) {
-			GD.PrintS($"\t\t{plant.biotaType.name} (size: {plant.size} births: {plant.births} killed: {plant.deathsKilled} starved: {plant.deathsStarved})");
+			var share = Math.Round((double) (((float) plant.size) / ((float) tileData.plantSpace)) * 100, 2);
+			GD.PrintS($"\t\t{plant.biotaType.name} (size: {plant.size} births: {plant.births} killed: {plant.deathsKilled} share: {share}%)");
 		}
 		GD.PrintS("\tAnimals:");
 		foreach (var animal in animals) {
-			GD.PrintS($"\t\t{animal.biotaType.name} (size: {animal.size} births: {animal.births} killed: {animal.deathsKilled} starved: {animal.deathsStarved} need percent fulfilled: {animal.needPercentFilled})");
+			var share = Math.Round((double) (((float) animal.size) / ((float) tileData.animalSpace)) * 100, 2);
+			GD.PrintS($"\t\t{animal.biotaType.name} (size: {animal.size} births: {animal.births} killed: {animal.deathsKilled} starved: {animal.deathsStarved} needs: {(int) (animal.needPercentFilled * 100)}% share: {share}%)");
 		}
 	}
 }
