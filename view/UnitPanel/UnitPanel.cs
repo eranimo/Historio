@@ -12,7 +12,9 @@ public class UnitPanel : GamePanelView {
 
 	public override void _Ready() {
 		base._Ready();
-		state.AddElement(this);
+		if (!state.HasElement<UnitPanel>()) {
+			state.AddElement(this);
+		}
 
 		unitPositionLabel = GetNode<Label>("UnitInfo/Content/Details/DetailRow/UnitPosition");
 		currentActionLabel = GetNode<Label>("UnitInfo/Content/Actions/CurrentActionRow/CurrentActionLabel");

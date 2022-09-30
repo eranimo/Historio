@@ -9,7 +9,9 @@ public class TilePanel : GamePanelView {
 
 	public override void _Ready() {
 		base._Ready();
-		state.AddElement(this);
+		if (!state.HasElement<TilePanel>()) {
+			state.AddElement(this);
+		}
 
 		locationLabel = (Label) GetNode("TabContainer/Details/Container/Values/Location");
 		biomeLabel = (Label) GetNode("TabContainer/Details/Container/Values/Biome");

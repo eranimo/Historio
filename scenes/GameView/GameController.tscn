@@ -311,9 +311,9 @@ texture_pressed = SubResource( 16 )
 texture_hover = SubResource( 16 )
 
 [node name="CountryPanel" type="PanelContainer" parent="."]
-margin_top = 28.0
+margin_top = 24.0
 margin_right = 383.0
-margin_bottom = 81.0
+margin_bottom = 77.0
 
 [node name="MarginContainer" type="MarginContainer" parent="CountryPanel"]
 margin_left = 5.0

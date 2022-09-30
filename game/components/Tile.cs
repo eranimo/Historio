@@ -26,6 +26,11 @@ public static class Tile {
 	}
 }
 
+public enum TileSideFeature {
+	Stream,
+	StreamFord,
+}
+
 public class TileData {
 	public float height;
 	public float temperature;
