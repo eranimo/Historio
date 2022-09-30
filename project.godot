@@ -128,6 +128,10 @@ view_camera_change={
  ]
 }
 
+[mono]
+
+project/assembly_name="Historio"
+
 [network]
 
 limits/debugger_stdout/max_messages_per_frame=100000

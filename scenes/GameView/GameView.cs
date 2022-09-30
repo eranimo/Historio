@@ -61,6 +61,9 @@ public class GameView : Control {
 			game.Slower();
 		} else if (@event.IsActionPressed("game_speed_up")) {
 			game.Faster();
+		} else if (@event.IsActionPressed("ui_cancel")) {
+			GameController.GameMenu.ShowMenu();
+			GetTree().SetInputAsHandled();
 		}
 	}
 }

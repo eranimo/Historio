@@ -81,8 +81,8 @@ size_flags_vertical = 3
 custom_styles/bg = SubResource( 8 )
 
 [node name="MarginContainer" type="PanelContainer" parent="UnitInfo/Content/Actions/ActionQueue"]
-margin_right = 510.0
-margin_bottom = 553.0
+margin_right = 10.0
+margin_bottom = 10.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 

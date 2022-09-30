@@ -20,6 +20,9 @@ public class GameController : Control {
 	public Viewport GameViewport { get; private set; }
 
 	public GamePanel GamePanel;
+
+	public GameMenu GameMenu { get; private set; }
+
 	public GameMap GameMap;
 
 	public Subject<GameMapInput> gameMapInputSubject = new Subject<GameMapInput>();
@@ -36,6 +39,7 @@ public class GameController : Control {
 		
 		GameViewport = (Viewport) GetNode("GameViewport/Viewport");
 		GamePanel = (GamePanel) GetNode("GamePanel");
+		GameMenu = (GameMenu) GetNode("%GameMenu");
 
 		game.Start();
 
