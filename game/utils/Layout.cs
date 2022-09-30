@@ -35,9 +35,9 @@ public class Layout {
 		return Hex.FromCube(frac.HexRound());
 	}
 
-	public Point HexCornerOffset(int corner) {
+	public Point HexCornerOffset(HexCorner corner) {
 		Orientation M = flat;
-		double angle = 2.0 * Math.PI * (M.start_angle - corner) / 6.0;
+		double angle = 2.0 * Math.PI * (M.start_angle - ((int) corner)) / 6.0;
 		return new Point(size.x * Math.Cos(angle), size.y * Math.Sin(angle));
 	}
 
@@ -45,10 +45,14 @@ public class Layout {
 		List<Point> corners = new List<Point> {};
 		Point center = HexToPixel(h);
 		for (int i = 0; i < 6; i++) {
-			Point offset = HexCornerOffset(i);
+			Point offset = HexCornerOffset((HexCorner) i);
 			corners.Add(new Point(center.x + offset.x, center.y + offset.y));
 		}
 		return corners;
+	}
+
+	public List<Point> PolygonCorners(Hex hex) {
+		return PolygonCorners(Hex.ToCube(hex));
 	}
 
     public Point HexSize => new Point(

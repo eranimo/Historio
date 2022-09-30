@@ -33,6 +33,12 @@ public class WorldService {
 		return tileByHex[coord];
 	}
 
+	public List<Hex> Hexes {
+		get {
+			return tileByHex.Keys.ToList();
+		}
+	}
+
 	public TileData GetTileData(Hex coord) {
 		return manager.Get<TileData>(GetTile(coord));
 	}

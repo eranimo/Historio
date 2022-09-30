@@ -45,6 +45,8 @@ public class WorldGenerator : IGeneratorStep {
 
 		manager.world.initWorld(new Point(TileWidth, TileHeight));
 
+		var tiles = new Dictionary<Hex, TileData>();
+
 		for (var x = 0; x < this.TileWidth; x++) {
 			for (var y = 0; y < this.TileHeight; y++) {
 				var height = heightNoise.Get(x, y) * 255;
@@ -53,36 +55,59 @@ public class WorldGenerator : IGeneratorStep {
 				var coordLong = ((x / (double) this.TileWidth) * 360) - 180;
 				var coordLat = ((-y / (double) this.TileHeight) * 180) + 90;
 
-				TileData tile = new TileData {
+				TileData tileData = new TileData {
 					height = height,
 					temperature = temperature,
 					rainfall = rainfall,
 				};
 				Hex hex = new Hex(x, y);
 
-				if (tile.height < worldOptions.Sealevel - 10) {
-					tile.biome = Tile.BiomeType.Ocean;
-				} else if (tile.height < worldOptions.Sealevel) {
-					tile.biome = Tile.BiomeType.Coast;
+				if (tileData.height < worldOptions.Sealevel - 10) {
+					tileData.biome = Tile.BiomeType.Ocean;
+				} else if (tileData.height < worldOptions.Sealevel) {
+					tileData.biome = Tile.BiomeType.Coast;
 				} else {
-					if (tile.temperature < 0.10) {
-						tile.biome = Tile.BiomeType.Arctic;
-					} else if (tile.temperature < 0.70) {
-						tile.biome = Tile.BiomeType.Temperate;
-						if (tile.rainfall > 0.5) {
-							tile.feature = Tile.FeatureType.Forest;
+					if (tileData.temperature < 0.10) {
+						tileData.biome = Tile.BiomeType.Arctic;
+					} else if (tileData.temperature < 0.70) {
+						tileData.biome = Tile.BiomeType.Temperate;
+						if (tileData.rainfall > 0.5) {
+							tileData.feature = Tile.FeatureType.Forest;
 						} else {
-							tile.feature = Tile.FeatureType.Grassland;
+							tileData.feature = Tile.FeatureType.Grassland;
 						}
 					} else {
-						tile.biome = Tile.BiomeType.Desert;
+						tileData.biome = Tile.BiomeType.Desert;
 					}
 				}
 
-				manager.world.AddTile(hex, tile);
+				tiles.Add(hex, tileData);
 			}
 		}
-		GD.PrintS($"Added {manager.world.tiles.Count} tiles");
+
+		// river generation
+		var rng = new RandomNumberGenerator();
+		rng.Seed = (ulong) options.Seed;
+		int riverSegments = 0;
+		foreach (var (hex, tile) in tiles) {
+			if (rng.Randf() < 0.1f) {
+				foreach (HexDirection dir in Enum.GetValues(typeof(HexDirection))) {
+					bool addRiver = rng.Randf() < 0.20f;
+					tile.riverSegments[dir] = addRiver;
+					if (addRiver) {
+						riverSegments++;
+					}
+				}
+			}
+		}
+		GD.PrintS("(WorldGenerator) river generation", riverSegments);
+
+
+		foreach (var (hex, tile) in tiles) {
+			manager.world.AddTile(hex, tile);
+		}
+
+		GD.PrintS($"(WorldGenerator) Added {manager.world.tiles.Count} tiles");
 		manager.state.GetElement<PathfindingService>().setup();
 
 		manager.state.AddElement<WorldData>(new WorldData {

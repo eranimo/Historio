@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=2]
+[gd_scene load_steps=40 format=2]
 
 [ext_resource path="res://assets/terrain.tres" type="TileSet" id=1]
 [ext_resource path="res://assets/features.tres" type="TileSet" id=2]
@@ -19,6 +19,7 @@
 [ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=17]
 [ext_resource path="res://assets/ui.png" type="Texture" id=18]
 [ext_resource path="res://assets/SpeedDisplaySlow.tres" type="Texture" id=19]
+[ext_resource path="res://scenes/GameView/Rivers.cs" type="Script" id=20]
 [ext_resource path="res://assets/icons/MinusIcon.tres" type="Texture" id=21]
 [ext_resource path="res://assets/icons/PlusIcon.tres" type="Texture" id=22]
 [ext_resource path="res://assets/theme.tres" type="Theme" id=23]
@@ -153,6 +154,9 @@ cell_size = Vector2( 25, 28 )
 cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
 cell_half_offset = 1
 format = 1
+
+[node name="Rivers" type="Node2D" parent="GameViewport/Viewport/GameMap"]
+script = ExtResource( 20 )
 
 [node name="MapBorders" type="Polygon2D" parent="GameViewport/Viewport/GameMap"]
 material = SubResource( 2 )

@@ -5,13 +5,59 @@ using System.Linq;
 using System.Collections.Generic;
 using Godot;
 
-public enum Direction {
+public enum HexDirection {
 	SouthEast = 0,
 	NorthEast = 1,
 	North = 2,
 	NorthWest = 3,
 	SouthWest = 4,
 	South = 5,
+}
+
+public enum HexCorner {
+	SouthWest = 0,
+	West = 1,
+	NorthWest = 2,
+	NorthEast = 3,
+	East = 4,
+	SouthEast = 5,
+}
+
+public class HexSide {
+	private readonly Hex hex;
+	private readonly HexDirection direction;
+
+	private Dictionary<HexDirection, HexCorner[]> directionToCorners = new Dictionary<HexDirection, HexCorner[]> {
+		{ HexDirection.SouthWest, new HexCorner[] { HexCorner.West, HexCorner.SouthWest } },
+		{ HexDirection.NorthWest, new HexCorner[] { HexCorner.NorthWest, HexCorner.West } },
+		{ HexDirection.North, new HexCorner[] { HexCorner.NorthEast, HexCorner.NorthWest } },
+		{ HexDirection.NorthEast, new HexCorner[] { HexCorner.East, HexCorner.NorthEast } },
+		{ HexDirection.SouthEast, new HexCorner[] { HexCorner.SouthEast, HexCorner.East } },
+		{ HexDirection.South, new HexCorner[] { HexCorner.SouthWest, HexCorner.SouthEast } },
+	};
+
+	public HexSide(Hex hex, HexDirection direction) {
+		this.hex = hex;
+		this.direction = direction;
+	}
+
+	public HexCorner[] Corners {
+		get {
+			return directionToCorners[direction];
+		}
+	}
+
+	public HexCorner LeftCorner {
+		get {
+			return directionToCorners[direction][0];
+		}
+	}
+
+	public HexCorner RightCorner {
+		get {
+			return directionToCorners[direction][1];
+		}
+	}
 }
 
 public struct Point {
@@ -90,15 +136,15 @@ public struct CubeCoord {
 		new CubeCoord(0, 1, -1)
 	};
 
-	static public CubeCoord Direction(Direction direction) {
+	static public CubeCoord Direction(HexDirection direction) {
 		return CubeCoord.directions[(int) direction];
 	}
 
-	public CubeCoord Neighbor(Direction direction) {
+	public CubeCoord Neighbor(HexDirection direction) {
 		return Add(CubeCoord.Direction(direction));
 	}
 
-	public CubeCoord Neighbor(Direction direction, int distance) {
+	public CubeCoord Neighbor(HexDirection direction, int distance) {
 		return Add(CubeCoord.Direction(direction).Scale(distance));
 	}
 
@@ -111,7 +157,7 @@ public struct CubeCoord {
 		new CubeCoord(1, 1, -2)
 	};
 
-	public CubeCoord DiagonalNeighbor(Direction direction) {
+	public CubeCoord DiagonalNeighbor(HexDirection direction) {
 		return Add(CubeCoord.diagonals[(int) direction]);
 	}
 
@@ -129,11 +175,11 @@ public struct CubeCoord {
 
 	public List<CubeCoord> Ring(int radius = 1) {
 		List<CubeCoord> results = new List<CubeCoord>();
-		CubeCoord hex = Add(CubeCoord.Direction((Direction) 4).Scale(radius));
+		CubeCoord hex = Add(CubeCoord.Direction((HexDirection) 4).Scale(radius));
 		for (int i = 0; i < 6; i++) {
 			for (int j = 0; j < radius; j++) {
 				results.Add(hex);
-				hex = hex.Neighbor((Direction) i);
+				hex = hex.Neighbor((HexDirection) i);
 			}
 		}
 		return results;
@@ -230,22 +276,26 @@ public class Hex {
 		return !h1.Equals(h2);
 	}
 
-	public Hex Neighbor(Direction direction) {
+	public HexSide Side(HexDirection direction) {
+		return new HexSide(this, direction);
+	}
+
+	public Hex Neighbor(HexDirection direction) {
 		return Hex.FromCube(ToCube(this).Neighbor(direction));
 	}
 
-	public Hex Neighbor(Direction direction, int distance) {
+	public Hex Neighbor(HexDirection direction, int distance) {
 		return Hex.FromCube(ToCube(this).Neighbor(direction, distance));
 	}
 
 	public Hex[] Neighbors() {
 		return new Hex[] {
-			Neighbor(Direction.SouthEast),
-			Neighbor(Direction.NorthEast),
-			Neighbor(Direction.North),
-			Neighbor(Direction.NorthWest),
-			Neighbor(Direction.SouthWest),
-			Neighbor(Direction.South),
+			Neighbor(HexDirection.SouthEast),
+			Neighbor(HexDirection.NorthEast),
+			Neighbor(HexDirection.North),
+			Neighbor(HexDirection.NorthWest),
+			Neighbor(HexDirection.SouthWest),
+			Neighbor(HexDirection.South),
 		};
 	}
 

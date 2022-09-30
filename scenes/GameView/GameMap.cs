@@ -16,6 +16,7 @@ public class GameMap : Node2D {
 	private TileMap terrain;
 	private TileMap features;
 	private TileMap grid;
+	private Rivers rivers;
 	private Sprite selectionHex;
 	private Sprite hoverHex;
 
@@ -43,6 +44,7 @@ public class GameMap : Node2D {
 		terrain = (TileMap) GetNode<TileMap>("Terrain");
 		features = (TileMap) GetNode<TileMap>("Features");
 		grid = (TileMap) GetNode<TileMap>("Grid");
+		rivers = (Rivers) GetNode<Rivers>("Rivers");
 		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
 		hoverHex = (Sprite) GetNode<Sprite>("HoverHex");
 		spriteContainer = (Node2D) GetNode<Node2D>("SpriteContainer");
@@ -129,6 +131,7 @@ public class GameMap : Node2D {
 		foreach (Entity tile in game.manager.world.tiles) {
 			drawTile(tile);
 		}
+		rivers.RenderRivers();
 	}
 
 	public void SetSelectedTile(Entity tile) {
