@@ -85,6 +85,9 @@ public class GameViewport : ViewportContainer {
 	}
 
 	public override void _PhysicsProcess(float delta) {
+		if (gameView.isConsoleToggled) {
+			return;
+		}
 		moveDirection.x = 0;
 		moveDirection.y = 0;
 		var moveAmount = BASE_MOVE_AMOUNT;

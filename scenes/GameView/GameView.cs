@@ -13,6 +13,8 @@ public class GameView : Control {
 	public BehaviorSubject<float> zoom = new BehaviorSubject<float>(1);
 	public BehaviorSubject<Vector2> pan = new BehaviorSubject<Vector2>(new Vector2(0, 0));
 	public IObservable<float> OnZoom { get => zoom; }
+	public bool isConsoleToggled { get; private set; }
+
 	public GameCamera camera;
 
 	public override void _Ready() {
@@ -31,6 +33,13 @@ public class GameView : Control {
 		generatorThread.game = new Game();
 		var t = new System.Threading.Thread(generatorThread.Generate);
 		t.Start();
+
+		var console = GetTree().Root.GetNode<CanvasLayer>("Console");
+		console.Connect("toggled", this, nameof(handleConsoleToggle));
+	}
+
+	private void handleConsoleToggle(bool toggled) {
+		isConsoleToggled = toggled;
 	}
 
 	private void OnGeneratorProgress(string label, int value) {
@@ -51,16 +60,23 @@ public class GameView : Control {
 	public override void _Input(InputEvent @event) {
 		base._Input(@event);
 
+		if (isConsoleToggled) {
+			return;
+		}
+
 		if (@event.IsActionPressed("game_toggle_play")) {
 			if (game.IsPlaying) {
 				game.Pause();
 			} else {
 				game.Play();
 			}
+			GetTree().SetInputAsHandled();
 		} else if (@event.IsActionPressed("game_speed_down")) {
 			game.Slower();
+			GetTree().SetInputAsHandled();
 		} else if (@event.IsActionPressed("game_speed_up")) {
 			game.Faster();
+			GetTree().SetInputAsHandled();
 		} else if (@event.IsActionPressed("ui_cancel")) {
 			GameController.GameMenu.ShowMenu();
 			GetTree().SetInputAsHandled();
