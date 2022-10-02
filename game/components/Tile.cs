@@ -31,6 +31,7 @@ public enum TileSideFeature {
 	StreamFord,
 }
 
+[Serializable]
 public class TileData {
 	public float height;
 	public float temperature;
@@ -99,10 +100,12 @@ public class TileViewState {
 }
 
 // Added to entities with Hex components to propagate areas where that country is "observing" a tile
+[Serializable]
 public class ViewStateNode {
 	public Entity country;
 	public int range;
 }
+
 
 // Trigger when view state nodes for a country updates
 public class ViewStateNodeUpdated {

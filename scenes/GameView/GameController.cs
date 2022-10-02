@@ -46,8 +46,17 @@ public class GameController : Control {
 
 		var console = GetTree().Root.GetNode<Console>("CSharpConsole");
 
-		console.AddCommand("next_day", this, nameof(CommandNextDay))
+		console.AddCommand("next_day", this, nameof(handleNextDay))
 			.SetDescription("Processes the next day in the game")
+			.Register();
+
+		console.AddCommand("observe", this, nameof(handleObserve))
+			.SetDescription("Enable observer mode")
+			.Register();
+
+		console.AddCommand("play", this, nameof(handlePlay))
+			.SetDescription("Play as as the specified country")
+			.AddArgument("country_id", Variant.Type.Int)
 			.Register();
 	}
 
@@ -60,10 +69,19 @@ public class GameController : Control {
 		}
 	}
 
-	private void CommandNextDay() {
+	private void handleNextDay() {
 		for (int i = 0; i <= game.speedTicks; i++) {
 			game.Process(1f, true);
 		}
+	}
+
+	private void handleObserve() {
+		game.state.GetElement<Player>().playerCountry = null;
+		game.state.Send(new PlayerChanged());
+	}
+
+	private void handlePlay(int country_id) {
+		GD.PrintS("Play as", country_id);
 	}
 
 	public override void _Process(float delta) {

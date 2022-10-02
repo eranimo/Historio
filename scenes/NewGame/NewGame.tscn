@@ -1,13 +1,14 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://assets/theme.tres" type="Theme" id=2]
 
-[sub_resource type="StyleBoxFlat" id=1]
+[sub_resource type="StyleBoxFlat" id=4]
 content_margin_left = 10.0
 content_margin_right = 10.0
 content_margin_top = 10.0
 content_margin_bottom = 10.0
-bg_color = Color( 0.133333, 0.133333, 0.133333, 1 )
+bg_color = Color( 0.145098, 0.145098, 0.145098, 1 )
 
 [sub_resource type="DynamicFont" id=2]
 size = 24
@@ -19,13 +20,15 @@ font_data = ExtResource( 1 )
 [node name="NewGame" type="PanelContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_styles/panel = SubResource( 1 )
+theme = ExtResource( 2 )
+custom_styles/panel = SubResource( 4 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 1014.0
 margin_bottom = 590.0
+custom_constants/separation = 10
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -35,120 +38,120 @@ margin_right = 1004.0
 margin_bottom = 29.0
 
 [node name="PageTitle" type="Label" parent="VBoxContainer/Header"]
-margin_right = 917.0
+margin_right = 919.0
 margin_bottom = 29.0
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 2 )
 text = "New Game"
 
 [node name="MainMenuButton" type="Button" parent="VBoxContainer/Header"]
-margin_left = 921.0
-margin_top = 4.0
+margin_left = 923.0
+margin_top = 2.0
 margin_right = 1004.0
-margin_bottom = 24.0
+margin_bottom = 26.0
 size_flags_vertical = 4
 text = "Main Menu"
 
 [node name="Panel" type="PanelContainer" parent="VBoxContainer"]
-margin_top = 33.0
+margin_top = 39.0
 margin_right = 1004.0
-margin_bottom = 94.0
+margin_bottom = 96.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Panel"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 997.0
-margin_bottom = 54.0
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 999.0
+margin_bottom = 52.0
 
 [node name="Label" type="Label" parent="VBoxContainer/Panel/VBoxContainer"]
-margin_right = 990.0
+margin_right = 994.0
 margin_bottom = 19.0
 custom_fonts/font = SubResource( 3 )
 text = "Game settings"
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/Panel/VBoxContainer"]
 margin_top = 23.0
-margin_right = 990.0
+margin_right = 994.0
 margin_bottom = 47.0
 custom_constants/separation = 30
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Panel/VBoxContainer/HBoxContainer2"]
-margin_right = 480.0
+margin_right = 482.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="VBoxContainer/Panel/VBoxContainer/HBoxContainer2/HBoxContainer"]
 margin_top = 5.0
-margin_right = 238.0
+margin_right = 239.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "World name"
 
 [node name="TextEdit" type="LineEdit" parent="VBoxContainer/Panel/VBoxContainer/HBoxContainer2/HBoxContainer"]
-margin_left = 242.0
-margin_right = 480.0
+margin_left = 243.0
+margin_right = 482.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/Panel/VBoxContainer/HBoxContainer2"]
-margin_left = 510.0
-margin_right = 990.0
+margin_left = 512.0
+margin_right = 994.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
 [node name="MainPanel" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 98.0
+margin_top = 106.0
 margin_right = 1004.0
-margin_bottom = 556.0
+margin_bottom = 546.0
 size_flags_vertical = 3
 
 [node name="SettingsPanel" type="TabContainer" parent="VBoxContainer/MainPanel"]
 margin_right = 500.0
-margin_bottom = 458.0
+margin_bottom = 440.0
 size_flags_horizontal = 3
 tab_align = 0
 
 [node name="World" type="VBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 4.0
-margin_top = 32.0
-margin_right = -4.0
-margin_bottom = -4.0
+margin_left = 1.0
+margin_top = 25.0
+margin_right = -1.0
+margin_bottom = -1.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel/World"]
-margin_right = 492.0
+margin_right = 498.0
 margin_bottom = 24.0
 
 [node name="Label" type="Label" parent="VBoxContainer/MainPanel/SettingsPanel/World/HBoxContainer"]
 margin_top = 5.0
-margin_right = 244.0
+margin_right = 247.0
 margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "Seed"
 
 [node name="SettingSeed" type="LineEdit" parent="VBoxContainer/MainPanel/SettingsPanel/World/HBoxContainer"]
-margin_left = 248.0
-margin_right = 492.0
+margin_left = 251.0
+margin_right = 498.0
 margin_bottom = 24.0
 size_flags_horizontal = 3
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/MainPanel/SettingsPanel/World"]
 margin_top = 28.0
-margin_right = 492.0
-margin_bottom = 48.0
+margin_right = 498.0
+margin_bottom = 52.0
 
 [node name="Label" type="Label" parent="VBoxContainer/MainPanel/SettingsPanel/World/HBoxContainer2"]
-margin_top = 3.0
-margin_right = 244.0
-margin_bottom = 17.0
+margin_top = 5.0
+margin_right = 247.0
+margin_bottom = 19.0
 size_flags_horizontal = 3
 text = "World size"
 
 [node name="SettingWorldSize" type="OptionButton" parent="VBoxContainer/MainPanel/SettingsPanel/World/HBoxContainer2"]
-margin_left = 248.0
-margin_right = 492.0
-margin_bottom = 20.0
+margin_left = 251.0
+margin_right = 498.0
+margin_bottom = 24.0
 size_flags_horizontal = 3
 text = "Small"
 items = [ "Small", null, false, 0, null, "Medium", null, false, 1, null, "Large", null, false, 2, null ]
@@ -228,64 +231,64 @@ size_flags_horizontal = 3
 [node name="WorldInfo" type="ScrollContainer" parent="VBoxContainer/MainPanel"]
 margin_left = 504.0
 margin_right = 1004.0
-margin_bottom = 458.0
+margin_bottom = 440.0
 size_flags_horizontal = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MainPanel/WorldInfo"]
 margin_right = 500.0
-margin_bottom = 458.0
+margin_bottom = 440.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Panel" type="PanelContainer" parent="VBoxContainer/MainPanel/WorldInfo/VBoxContainer"]
 margin_right = 500.0
-margin_bottom = 458.0
+margin_bottom = 440.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/MainPanel/WorldInfo/VBoxContainer/Panel"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 493.0
-margin_bottom = 451.0
+margin_left = 5.0
+margin_top = 5.0
+margin_right = 495.0
+margin_bottom = 435.0
 
 [node name="Label" type="Label" parent="VBoxContainer/MainPanel/WorldInfo/VBoxContainer/Panel/VBoxContainer"]
-margin_right = 486.0
+margin_right = 490.0
 margin_bottom = 19.0
 custom_fonts/font = SubResource( 3 )
 text = "World Info"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MainPanel/WorldInfo/VBoxContainer/Panel/VBoxContainer"]
 margin_top = 23.0
-margin_right = 486.0
+margin_right = 490.0
 margin_bottom = 37.0
 
 [node name="Label" type="Label" parent="VBoxContainer/MainPanel/WorldInfo/VBoxContainer/Panel/VBoxContainer/HBoxContainer"]
-margin_right = 241.0
+margin_right = 243.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
 text = "World name"
 
 [node name="Label2" type="Label" parent="VBoxContainer/MainPanel/WorldInfo/VBoxContainer/Panel/VBoxContainer/HBoxContainer"]
-margin_left = 245.0
-margin_right = 486.0
+margin_left = 247.0
+margin_right = 490.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
 text = "Foobar"
 
 [node name="Footer" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 560.0
+margin_top = 556.0
 margin_right = 1004.0
 margin_bottom = 580.0
 
 [node name="Label" type="Label" parent="VBoxContainer/Footer"]
-margin_top = 3.0
-margin_right = 917.0
-margin_bottom = 17.0
+margin_top = 5.0
+margin_right = 919.0
+margin_bottom = 19.0
 size_flags_horizontal = 3
 
 [node name="StartGameButton" type="Button" parent="VBoxContainer/Footer"]
-margin_left = 921.0
+margin_left = 923.0
 margin_right = 1004.0
-margin_bottom = 20.0
+margin_bottom = 24.0
 text = "Start Game"

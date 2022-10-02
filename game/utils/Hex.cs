@@ -242,6 +242,7 @@ public struct FractionalCubeCoord {
 
 }
 
+[Serializable]
 public class Hex {
 	public Hex() {}
 	public Hex(int col, int row) {

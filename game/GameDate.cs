@@ -9,6 +9,11 @@ public class GameDate {
 		this.dayTicks = dayTicks;
 	}
 
+	public void SetDay(int ticks) {
+		dayTicks = ticks;
+		dateTime = new DateTime(1, 1, 1).AddDays(dayTicks);
+	}
+
 	public void NextDay() {
 		dayTicks += 1;
 		dateTime = dateTime.Add(TimeSpan.FromDays(1));

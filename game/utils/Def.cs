@@ -3,7 +3,8 @@ using System.Reflection;
 using Godot;
 using Newtonsoft.Json;
 
-public class Def : Resource {
+[Serializable]
+public class Def {
 	public string type { get; set; }
 	public string id { get; set; }
 }

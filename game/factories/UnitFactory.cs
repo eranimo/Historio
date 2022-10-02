@@ -6,9 +6,9 @@ public class UnitFactory : Factory {
 		Hex hex,
 		UnitType unitType
 	) {
-		var unitData = new UnitData { type = unitType, ownerCountry = ownerCountry };
 		var unit = Spawn()
-			.Add(unitData)
+			.Add(new UnitData { type = unitType })
+			.Add<UnitCountry>(ownerCountry)
 			.Add(new Location { hex = hex })
 			.Add(new ActionQueue())
 			.Add(new Movement())

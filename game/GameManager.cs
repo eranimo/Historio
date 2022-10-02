@@ -46,6 +46,9 @@ public class GameManager {
 	// runs every day and at game start
    	SystemGroup renderSystems = new SystemGroup();
 
+	// runs on every tick when game menu is open
+	SystemGroup menuSystems = new SystemGroup();
+
 	public WorldService world;
 	private PhysicsDelta physicsDelta;
 
@@ -62,6 +65,7 @@ public class GameManager {
 		state.AddElement(new PathfindingService(this));
 		state.AddElement(new Factories(this));
 		state.AddElement(new BiotaService(this));
+		state.AddElement(new SaveService(this));
 
 		daySystems
 			.Add(new ActionDaySystem())
@@ -87,6 +91,10 @@ public class GameManager {
 			.Add(new UnitPanelTickSystem())
 			.Add(new ActionTickSystem())
 			.Add(new UnitPathTickSystem());
+
+		menuSystems
+			.Add(new SaveSystem())
+			.Add(new SaveGameModalTickSystem());
 	}
 
 	// called when game starts
@@ -119,7 +127,7 @@ public class GameManager {
 			physicsDelta.delta = delta;
 			playSystems.Run(state);
 		} catch (Exception err) {
-			GD.PrintErr("Error processing tick: ", err);
+			GD.PrintErr("Error processing playing tick: ", err);
 		}
 	}
 
@@ -127,7 +135,15 @@ public class GameManager {
 		try {
 			tickSystems.Run(state);
 		} catch (Exception err) {
-			GD.PrintErr("Error processing frame: ", err);
+			GD.PrintErr("Error processing tick: ", err);
+		}
+	}
+
+	public void ProcessMenu() {
+		try {
+			menuSystems.Run(state);
+		} catch (Exception err) {
+			GD.PrintErr("Error processing menu tick: ", err);
 		}
 	}
 

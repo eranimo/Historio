@@ -2,6 +2,7 @@ using RelEcs;
 using Godot;
 using System;
 using System.Reactive.Subjects;
+using System.Linq;
 
 public class GameView : Control {
 	private Label desc;
@@ -50,6 +51,13 @@ public class GameView : Control {
 	private void OnGameGenerated() {
 		GD.PrintS("Game generated");
 		game = generatorThread.game;
+
+		// generate new SavedGame
+		var countryName = game.manager.Get<CountryData>(game.state.GetElement<Player>().playerCountry).name;
+		var countryNameSafe = System.IO.Path.GetInvalidFileNameChars().Aggregate(countryName, (f, c) => f.Replace(c, '_'));
+		var rng = new Godot.RandomNumberGenerator();
+		var saveName = $"{countryNameSafe}-{rng.RandiRange(1, 10000)}";
+		game.savedGame = new SavedGame { name = saveName };
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 		GameController.game = game;

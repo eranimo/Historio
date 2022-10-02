@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 
+[Serializable]
 public class Movement {
 	// hex we are moving to
 	public Hex currentTarget = null; 

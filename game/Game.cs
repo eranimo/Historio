@@ -54,6 +54,8 @@ public class Game {
 	public readonly GameManager manager;
 	public int ticksLeftInDay = 0;
 
+	public SavedGame savedGame { get; set; }
+
 	public Game() {
 		this.date = new GameDate(0);
 		this.manager = new GameManager();

@@ -1,18 +1,25 @@
+using System;
 using System.Collections.Generic;
 using RelEcs;
 
 
+[Serializable]
 public class UnitType : Def {
 	public string name { get; set; }
 	public string spritePath { get; set; }
 }
 
+[Serializable]
 public class UnitData {
 	public UnitType type;
-	public Entity ownerCountry;
 }
 
+// relation on Unit to Country
+[Serializable]
+public class UnitCountry {}
+
 // Relation on entity to Country
+[Serializable]
 public class UnitCountryOwner {}
 
 

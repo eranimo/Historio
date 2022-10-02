@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Godot;
 
+[Serializable]
 public class ActionQueue {
 	public Action currentAction;
 	public Queue<Action> actions = new Queue<Action>();
@@ -46,6 +47,7 @@ public enum ActionStatus {
 	Finished, // action finished, will be removed
 }
 
+[Serializable]
 public abstract class Action {
 	public Entity owner;
 	public ActionStatus status;
