@@ -1,5 +1,22 @@
-using Godot;
 using System;
+using Godot;
+
+public abstract class SerializedNode<T> {
+	public abstract void Serialize(T node);
+	public abstract T Deserialize();
+}
+
+[Serializable]
+public class SerializedUnitIcon : SerializedNode<UnitIcon> {
+
+	public override UnitIcon Deserialize() {
+		throw new System.NotImplementedException();
+	}
+
+	public override void Serialize(UnitIcon node) {
+		throw new System.NotImplementedException();
+	}
+}
 
 public class UnitIcon : Node2D {
 	private GameView gameView;

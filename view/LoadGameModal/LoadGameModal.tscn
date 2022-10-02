@@ -1,11 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://assets/theme.tres" type="Theme" id=1]
 [ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://assets/ui.png" type="Texture" id=3]
 [ext_resource path="res://view/LoadGameModal/LoadGameModal.cs" type="Script" id=4]
-[ext_resource path="res://view/LoadGameModal/LoadSaveListItem.tscn" type="PackedScene" id=5]
-[ext_resource path="res://view/LoadGameModal/LoadSaveEntryListItem.tscn" type="PackedScene" id=6]
 
 [sub_resource type="DynamicFont" id=2]
 size = 24
@@ -87,11 +85,7 @@ size_flags_vertical = 3
 
 [node name="SaveList" type="VBoxContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/Saves"]
 unique_name_in_owner = true
-margin_right = 472.0
-margin_bottom = 43.0
 size_flags_horizontal = 3
-
-[node name="LoadSaveListItem" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/Saves/SaveList" instance=ExtResource( 5 )]
 
 [node name="SaveEntries" type="ScrollContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2"]
 margin_left = 482.0
@@ -101,8 +95,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries"]
-margin_right = 472.0
-margin_bottom = 61.0
+margin_right = 88.0
+margin_bottom = 18.0
 size_flags_horizontal = 3
 
 [node name="SelectedSaveCountryName" type="Label" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/VBoxContainer"]
@@ -115,8 +109,5 @@ text = "Tribe of Atlasi"
 unique_name_in_owner = true
 margin_top = 18.0
 margin_right = 472.0
-margin_bottom = 61.0
+margin_bottom = 18.0
 custom_constants/separation = 10
-
-[node name="LoadSaveEntryListItem" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/VBoxContainer/SaveEntryList" instance=ExtResource( 6 )]
-margin_bottom = 43.0

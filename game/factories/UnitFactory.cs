@@ -12,7 +12,9 @@ public class UnitFactory : Factory {
 			.Add(new Location { hex = hex })
 			.Add(new ActionQueue())
 			.Add(new Movement())
-			.Add(new ViewStateNode { country = ownerCountry, range = 2 })
+			.Add(new ViewStateNode { range = 2 })
+			.Add<ViewStateOwner>(ownerCountry)
+			.Add<Persisted>()
 			.Id();
 
 		manager.state.Send(new UnitAdded { unit = unit });

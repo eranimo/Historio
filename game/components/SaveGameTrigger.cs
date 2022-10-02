@@ -1,3 +1,6 @@
+class Persisted {}
+
+
 // trigger for saving a game
 public class SaveGameTrigger {
 	public SavedGameEntryMetadata entry;

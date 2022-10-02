@@ -11,7 +11,7 @@ public class ActionTickSystem :ISystem {
 				GD.PrintS("(ActionTickSystem) Action cancelled", actionQueue.currentAction);
 				if (actionQueue.currentAction is not null) {
 					actionQueue.currentAction.status = ActionStatus.Cancelled;
-					actionQueue.currentAction.OnCancelled(this);
+					actionQueue.currentAction.OnCancelled(this, e.owner);
 				}
 				actionQueue.currentAction = null;
 				this.Send(new CurrentActionChanged { entity = e.owner });
@@ -23,13 +23,13 @@ public class ActionTickSystem :ISystem {
 		foreach (var e in this.Receive<ActionQueueAdd>()) {
 			if (this.HasComponent<ActionQueue>(e.owner)) {
 				GD.PrintS("(ActionTickSystem) Action queued", e.action);
-				if (e.action.CanPerform(this)) {
+				if (e.action.CanPerform(this, e.owner)) {
 					this.GetComponent<ActionQueue>(e.owner).actions.Enqueue(e.action);
 					this.Send(new ActionQueueChanged { entity = e.owner });
-					e.action.OnQueued(this);
+					e.action.OnQueued(this, e.owner);
 				} else {
 					e.action.status = ActionStatus.Cancelled;
-					e.action.OnCancelled(this);
+					e.action.OnCancelled(this, e.owner);
 				}
 			}
 		}
@@ -37,7 +37,7 @@ public class ActionTickSystem :ISystem {
 		foreach (var e in this.Receive<ActionQueueRemove>()) {
 			if (this.HasComponent<ActionQueue>(e.owner)) {
 				var actionQueue = this.GetComponent<ActionQueue>(e.owner);
-				e.action.OnCancelled(this);
+				e.action.OnCancelled(this, e.owner);
 				actionQueue.actions = new Queue<Action>(actionQueue.actions.Where(a => a != e.action));
 				this.Send(new ActionQueueChanged { entity = e.owner });
 			}
@@ -55,7 +55,7 @@ public class ActionDaySystem : ISystem {
 			if (actionQueue.currentAction is not null) {
 				if (actionQueue.currentAction.status == ActionStatus.Finished) {
 					GD.PrintS("(ActionSystem) Action finished", actionQueue.currentAction);
-					actionQueue.currentAction.OnFinished(this);
+					actionQueue.currentAction.OnFinished(this, entity);
 					actionQueue.currentAction = null;
 					this.Send(new CurrentActionChanged { entity = entity });
 				} else if (actionQueue.currentAction.status == ActionStatus.Cancelled) {
@@ -67,7 +67,7 @@ public class ActionDaySystem : ISystem {
 
 			if (actionQueue.currentAction is null && actionQueue.actions.Count > 0) {
 				actionQueue.currentAction = actionQueue.actions.Dequeue();
-				actionQueue.currentAction.OnStarted(this);
+				actionQueue.currentAction.OnStarted(this, entity);
 				this.Send(new ActionStarted { entity = entity });
 			}
 		}

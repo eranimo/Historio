@@ -49,29 +49,27 @@ public enum ActionStatus {
 
 [Serializable]
 public abstract class Action {
-	public Entity owner;
 	public ActionStatus status;
 
 	public Action(Entity owner) {
-		this.owner = owner;
 		this.status = ActionStatus.Inactive;
 	}
 
 	// called before action is added to the queue
 	// and before it is started
-	public abstract bool CanPerform(ISystem system);
+	public abstract bool CanPerform(ISystem system, Entity owner);
 
 	// called when action has started
-	public abstract void OnStarted(ISystem system);
+	public abstract void OnStarted(ISystem system, Entity owner);
 
 	// called on each day tick after started
 	public abstract void OnDayTick(GameDate date);
 
-	public abstract void OnCancelled(ISystem system);
+	public abstract void OnCancelled(ISystem system, Entity owner);
 
-	public abstract void OnQueued(ISystem system);
+	public abstract void OnQueued(ISystem system, Entity owner);
 
-	public abstract void OnFinished(ISystem system);
+	public abstract void OnFinished(ISystem system, Entity owner);
 
 	public abstract string GetLabel();
 
@@ -90,12 +88,12 @@ public class MovementAction : Action {
 		this.target = target;
 	}
 
-	public override bool CanPerform(ISystem system) {
-		return system.HasComponent<Movement>(this.owner)
-			&& system.HasComponent<Location>(this.owner);
+	public override bool CanPerform(ISystem system, Entity owner) {
+		return system.HasComponent<Movement>(owner)
+			&& system.HasComponent<Location>(owner);
 	}
 
-	public override void OnStarted(ISystem system) {
+	public override void OnStarted(ISystem system, Entity owner) {
 		var world = system.GetElement<WorldService>();
 		var pathfinder = system.GetElement<PathfindingService>();
 
@@ -121,15 +119,15 @@ public class MovementAction : Action {
 		}			
 	}
 
-	public override void OnQueued(ISystem system) {
+	public override void OnQueued(ISystem system, Entity owner) {
 		system.Send(new UnitMovementPathUpdated { unit = owner });
 	}
 
-	public override void OnFinished(ISystem system) {
+	public override void OnFinished(ISystem system, Entity owner) {
 		system.Send(new UnitMovementPathUpdated { unit = owner });
 	}
 
-	public override void OnCancelled(ISystem system) {
+	public override void OnCancelled(ISystem system, Entity owner) {
 		var movement = system.GetComponent<Movement>(owner);
 		system.Send(new UnitMovementPathUpdated { unit = owner });
 		movement.Reset();

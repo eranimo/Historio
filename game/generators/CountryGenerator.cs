@@ -36,7 +36,7 @@ public class CountryGenerator : IGeneratorStep {
 			var countryData = new CountryData{ name = countryName };
 			var country = manager.state.Spawn();
 			var countryColor = Color.FromHsv((float) rng.NextDouble(), 0.5f, 1.0f);
-			manager.On(country).Add(countryData);
+			manager.On(country).Add(countryData).Add<Persisted>();
 			var sourceTile = findAvailableTile();
 			availableLandTiles.Remove(sourceTile);
 			var territoryHexes = new HashSet<Entity>();
@@ -45,12 +45,6 @@ public class CountryGenerator : IGeneratorStep {
 			countrySettlementTiles.Add(country, territoryHexes);
 
 			manager.state.Send(new CountryAdded { country = country });
-
-			// add label
-			var label = new MapLabel();
-			label.LabelType = MapLabel.MapLabelType.Territory;
-			label.Text = countryName;
-			manager.On(country).Add(label);
 
 			var hex = manager.Get<Location>(sourceTile).hex;
 			// add capital building
@@ -102,9 +96,11 @@ public class CountryGenerator : IGeneratorStep {
 				.Id();
 
 			foreach (var tile in territoryHexes) {
-				manager.On(tile).Add(new CountryTile(), country);
-				manager.On(tile).Add(new SettlementTile(), capital);
-				manager.On(tile).Add(new ViewStateNode { country = country, range = 3 });
+				manager.On(tile)
+					.Add(new CountryTile(), country)
+					.Add(new SettlementTile(), capital)
+					.Add(new ViewStateNode { range = 3 })
+					.Add<ViewStateOwner>(country);
 				manager.state.Send(new TileBorderUpdate { settlement = capital, tile = tile });
 				manager.state.Send(new ViewStateNodeUpdated { entity = tile });
 			}

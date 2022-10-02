@@ -3,6 +3,10 @@ using System;
 
 public class LoadGameModal : Control {
 	private GameView gameView;
+	private VBoxContainer saveList;
+
+	private PackedScene LoadSaveEntryListItem = ResourceLoader.Load<PackedScene>("res://view/LoadGameModal/LoadSaveEntryListItem.tscn");
+	private PackedScene LoadSaveListItem = ResourceLoader.Load<PackedScene>("res://view/LoadGameModal/LoadSaveListItem.tscn");
 
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
@@ -10,6 +14,8 @@ public class LoadGameModal : Control {
 		var closeButton = (TextureButton) GetNode("%CloseButton");
 
 		closeButton.Connect("pressed", this, nameof(handleClose));
+
+		saveList = (VBoxContainer) GetNode("%SaveList");
 	}
 
 	private void handleClose() {
@@ -22,14 +28,14 @@ public class LoadGameModal : Control {
 		var saveService = gameView.game.state.GetElement<SaveService>();
 		var savedGames = saveService.GetSaves();
 
-		foreach (var child in saveEntryList.GetChildren()) {
+		foreach (var child in saveList.GetChildren()) {
 			((Node) child).QueueFree();
 		}
 
 		foreach (SavedGame savedGame in savedGames) {
-			var listItem = (SaveEntryListItem) SaveEntryListItem.Instance();
+			var listItem = (LoadSaveListItem) LoadSaveListItem.Instance();
 
-			saveEntryList.AddChild(listItem);
+			saveList.AddChild(listItem);
 		}
 	}
 

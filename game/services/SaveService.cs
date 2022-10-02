@@ -25,22 +25,60 @@ public class SavedGameEntry {
 }
 
 [Serializable]
+public class SerializedComponent {
+	public Type type;
+	public object component;
+}
+
+[Serializable]
+public class SerializedRelation {
+	public Type type;
+	public int entity;
+}
+
+[Serializable]
+public class SerializedEntity {
+	public int id;
+	public List<SerializedComponent> components = new List<SerializedComponent>();
+	public List<SerializedRelation> relations = new List<SerializedRelation>();
+}
+
+[Serializable]
 public class SaveData {
-	public List<(UnitData, Location, ActionQueue, Movement, ViewStateNode)> unitData = new List<(UnitData, Location, ActionQueue, Movement, ViewStateNode)>();
+	public Dictionary<int, SerializedEntity> entities = new Dictionary<int, SerializedEntity>();
 
 	public void Save(ISystem system) {
-		var unitQuery = system.Query<UnitData, Location, ActionQueue, Movement, ViewStateNode>();
+		var unitQuery = system.QueryBuilder<Entity>().Has<Persisted>().Build();
 
-		foreach (var item in unitQuery) {
-			unitData.Add(item);
+		foreach (var entity in unitQuery) {
+			Godot.GD.PrintS(entity);
+			var serializedEntity = new SerializedEntity { id = entity.Identity.Id };
+			foreach (var (type, obj) in system.GetComponents(entity)) {
+				if (type.Type == entity.GetType()) {
+					continue;
+				}
+				if (obj is Godot.Node) {
+					throw new Exception("Cannot serialize Godot Nodes");
+				} else if (type.IsRelation) {
+					Godot.GD.PrintS("\tRelation:", type.Type, type.Identity.Id);
+					serializedEntity.relations.Add(new SerializedRelation {
+						type = type.Type,
+						entity = type.Identity.Id
+					});
+				} else {
+					Godot.GD.PrintS("\tComponent:", type.Type, obj);
+					serializedEntity.components.Add(new SerializedComponent {
+						type = type.Type,
+						component = obj
+					});
+				}
+			}
+			entities[serializedEntity.id] = serializedEntity;
 		}
 	}
 
 	public void Load(ISystem system) {
-		foreach (var item in unitData) {
-			var entityBuilder = system.Spawn();
-			item.GetType().GetProperties().Select(i => entityBuilder.Add(i.GetValue(item)));
-		}
+		
 	}
 }
 
@@ -111,6 +149,7 @@ public class SaveService {
 		
 		var stream = new FileStream(saveEntryPath, FileMode.Create, FileAccess.Write, FileShare.None);
 		formatter.Serialize(stream, saveEntry);
+		Godot.GD.PrintS("(SaveService) Saved game file to", saveEntryPath);
 		stream.Close();
 	}
 
@@ -121,11 +160,13 @@ public class SaveService {
 
 		// delete save file
 		var saveFilePath = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}/saves/{saveMetadata.name}.sav");
+		Godot.GD.PrintS("(SaveService) Deleted game file at", saveFilePath);
 		File.Delete(saveFilePath);
 	}
 
 	public SavedGameEntry LoadGame(SavedGame savedGame, SavedGameEntryMetadata saveMetadata) {
 		var saveFilePath = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}/saves/{saveMetadata.name}.sav");
+		Godot.GD.PrintS("(SaveService) Loading game file from", saveFilePath);
 		var stream = new FileStream(saveFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 		SavedGameEntry saveGameEntry = (SavedGameEntry) formatter.Deserialize(stream);
 		stream.Close();

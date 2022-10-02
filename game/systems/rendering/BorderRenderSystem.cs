@@ -58,10 +58,10 @@ public class BorderRenderSystem : ISystem {
 			}
 
 			foreach (var country in countryUpdates) {
-				var label = this.GetComponent<MapLabel>(country);
 				var countryHexes = settlementUpdatesPerCountry[country];
-				gameMap.mapLabels.AddLabel(label);
-				label.SetPosition(gameMap.layout.Centroid(countryHexes).ToVector() - new Godot.Vector2(0, 23));
+				var position = gameMap.layout.Centroid(countryHexes).ToVector() - new Godot.Vector2(0, 23);
+				var countryName = this.GetComponent<CountryData>(country).name;
+				gameMap.mapLabels.SetLabel(country, MapLabel.MapLabelType.Territory, countryName, position);
 			}
 		}
 	}

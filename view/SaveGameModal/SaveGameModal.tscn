@@ -120,3 +120,31 @@ custom_constants/separation = 10
 [node name="SaveEntryListItem" parent="Container/PanelContainer/VBoxContainer/VBoxContainer/ScrollContainer/SaveEntryList" instance=ExtResource( 6 )]
 margin_right = 954.0
 margin_bottom = 43.0
+
+[node name="SaveOverwriteConfirm" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -153.0
+margin_top = -35.0
+margin_right = 97.0
+margin_bottom = 44.0
+window_title = "Confirm Overwrite"
+dialog_text = "Are you sure you want to overwrite this save?"
+dialog_autowrap = true
+
+[node name="SaveAccept" type="AcceptDialog" parent="."]
+unique_name_in_owner = true
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -142.0
+margin_top = -31.0
+margin_right = 108.0
+margin_bottom = 31.0
+window_title = "Save Successful"
+dialog_text = "It fucking worked!"
+dialog_autowrap = true

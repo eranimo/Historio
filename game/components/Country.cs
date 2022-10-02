@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
+[Serializable]
 public class CountryData {
 	public string name;
 	public Color color;

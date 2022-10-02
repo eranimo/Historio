@@ -20,11 +20,12 @@ public class ViewStatePlaySystem : ISystem {
 		
 		foreach (var e in this.Receive<ViewStateNodeUpdated>()) {
 			var viewStateNode = this.GetComponent<ViewStateNode>(e.entity);
-			mapViewState.getViewState(viewStateNode.country).addNodeEntity(e.entity);
-			if (changedCountryTiles.ContainsKey(viewStateNode.country)) {
-				changedCountryTiles[viewStateNode.country].Add(e.entity);
+			var viewStateOwner = this.GetTarget<ViewStateOwner>(e.entity);
+			mapViewState.getViewState(viewStateOwner).addNodeEntity(e.entity);
+			if (changedCountryTiles.ContainsKey(viewStateOwner)) {
+				changedCountryTiles[viewStateOwner].Add(e.entity);
 			} else {
-				changedCountryTiles.Add(viewStateNode.country, new List<Entity> { e.entity });
+				changedCountryTiles.Add(viewStateOwner, new List<Entity> { e.entity });
 			}
 		}
 

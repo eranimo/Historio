@@ -10,6 +10,8 @@ public class UnitRenderSystem : ISystem {
 		unitIconScene = ResourceLoader.Load<PackedScene>("res://view/UnitIcon/UnitIcon.tscn");
 	}
 
+	private Dictionary<Entity, UnitIcon> unitIcons = new Dictionary<Entity, UnitIcon>();
+
 	public void Run() {
 		var gameMap = this.GetElement<GameMap>();
 
@@ -20,15 +22,15 @@ public class UnitRenderSystem : ISystem {
 			var unitIcon = unitIconScene.Instance<UnitIcon>();
 			unitIcon.entity = e.unit;
 			unitIcon.UnitType = unitData.type;
-			this.On(e.unit).Add(unitIcon);
 			unitIcon.Position = gameMap.layout.HexToPixel(location.hex).ToVector();
+			unitIcons.Add(e.unit, unitIcon);
 			gameMap.spriteContainer.AddChild(unitIcon);
 		}
 
 		foreach (var e in this.Receive<UnitRemoved>()) {
 			GD.PrintS("(UnitRenderSystem) Remove unit", e.unit);
-			var unitIcon = this.GetComponent<UnitIcon>(e.unit);
-			gameMap.spriteContainer.RemoveChild(unitIcon);
+			var unitIcon = unitIcons[e.unit];
+			unitIcon.QueueFree();
 		}
 	}
 }

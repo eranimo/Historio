@@ -102,9 +102,12 @@ public class TileViewState {
 // Added to entities with Hex components to propagate areas where that country is "observing" a tile
 [Serializable]
 public class ViewStateNode {
-	public Entity country;
 	public int range;
 }
+
+// relation on entity that has a ViewStateNode to Country entity
+[Serializable]
+public class ViewStateOwner {}
 
 
 // Trigger when view state nodes for a country updates

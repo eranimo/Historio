@@ -1,6 +1,7 @@
-[gd_resource type="Theme" load_steps=23 format=2]
+[gd_resource type="Theme" load_steps=29 format=2]
 
 [ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://assets/ui.png" type="Texture" id=2]
 
 [sub_resource type="StyleBoxEmpty" id=4]
 
@@ -75,12 +76,15 @@ content_margin_left = 5.0
 content_margin_right = 5.0
 content_margin_top = 5.0
 content_margin_bottom = 5.0
-bg_color = Color( 0.223529, 0.223529, 0.223529, 1 )
+bg_color = Color( 0.210938, 0.210938, 0.210938, 1 )
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color( 0.368627, 0.368627, 0.368627, 1 )
+
+[sub_resource type="StyleBoxFlat" id=28]
+bg_color = Color( 0.211765, 0.211765, 0.211765, 1 )
 
 [sub_resource type="DynamicFont" id=21]
 size = 12
@@ -144,6 +148,31 @@ border_color = Color( 0.34902, 0.34902, 0.34902, 1 )
 
 [sub_resource type="StyleBoxEmpty" id=13]
 
+[sub_resource type="DynamicFont" id=26]
+size = 14
+font_data = ExtResource( 1 )
+
+[sub_resource type="AtlasTexture" id=24]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 15, 15 )
+
+[sub_resource type="AtlasTexture" id=25]
+atlas = ExtResource( 2 )
+region = Rect2( 15, 0, 15, 15 )
+
+[sub_resource type="StyleBoxFlat" id=27]
+content_margin_left = 5.0
+content_margin_right = 5.0
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color( 0.188235, 0.188235, 0.188235, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.368627, 0.368627, 0.368627, 1 )
+expand_margin_top = 23.0
+
 [resource]
 Button/colors/font_color = Color( 0.88, 0.88, 0.88, 1 )
 Button/colors/font_color_disabled = Color( 0.9, 0.9, 0.9, 0.2 )
@@ -176,6 +205,7 @@ OptionButton/styles/normal = null
 OptionButton/styles/pressed = null
 Panel/styles/panel = SubResource( 14 )
 PanelContainer/styles/panel = SubResource( 1 )
+PopupPanel/styles/panel = SubResource( 28 )
 ProgressBar/colors/font_color = Color( 0.94, 0.94, 0.94, 1 )
 ProgressBar/colors/font_color_shadow = Color( 0, 0, 0, 1 )
 ProgressBar/fonts/font = SubResource( 21 )
@@ -213,3 +243,8 @@ ToolButton/styles/focus = SubResource( 10 )
 ToolButton/styles/hover = SubResource( 11 )
 ToolButton/styles/normal = SubResource( 12 )
 ToolButton/styles/pressed = SubResource( 13 )
+WindowDialog/colors/title_color = Color( 1, 1, 1, 1 )
+WindowDialog/fonts/title_font = SubResource( 26 )
+WindowDialog/icons/close = SubResource( 24 )
+WindowDialog/icons/close_highlight = SubResource( 25 )
+WindowDialog/styles/panel = SubResource( 27 )
