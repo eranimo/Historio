@@ -54,7 +54,7 @@ margin_right = 49.0
 margin_bottom = 24.0
 text = "Select"
 
-[node name="LoadLatestBuiton" type="Button" parent="HBoxContainer/Control"]
+[node name="LoadLatestButton" type="Button" parent="HBoxContainer/Control"]
 unique_name_in_owner = true
 margin_left = 53.0
 margin_right = 136.0

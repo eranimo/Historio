@@ -57,7 +57,7 @@ public class GameView : Control {
 		var countryNameSafe = System.IO.Path.GetInvalidFileNameChars().Aggregate(countryName, (f, c) => f.Replace(c, '_'));
 		var rng = new Godot.RandomNumberGenerator();
 		var saveName = $"{countryNameSafe}-{rng.RandiRange(1, 10000)}";
-		game.savedGame = new SavedGame { name = saveName };
+		game.savedGame = new SavedGameMetadata { name = saveName };
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 		GameController.game = game;

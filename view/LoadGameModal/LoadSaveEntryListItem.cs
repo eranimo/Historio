@@ -1,21 +1,39 @@
 using Godot;
 using System;
 
-public class LoadSaveEntryListItem : PanelContainer
-{
-	// Declare member variables here. Examples:
-	// private int a = 2;
-	// private string b = "text";
+public class LoadSaveEntryListItem : PanelContainer {
+	private Label saveEntryName;
+	private Label saveDate;
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-		
+	public delegate void Load();
+	public delegate void Delete();
+
+	public event Load OnLoad;
+	public event Delete OnDelete;
+
+	public string SaveEntryName {
+		get { return saveEntryName.Text; }
+		set { saveEntryName.Text = value; }
 	}
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+	public string SaveDate {
+		get { return saveDate.Text; }
+		set { saveDate.Text = value; }
+	}
+
+	public override void _Ready() {
+		saveEntryName = (Label) GetNode("%SaveEntryName");
+		saveDate = (Label) GetNode("%SaveDate");
+
+		GetNode("%LoadEntryButton").Connect("pressed", this, nameof(handleLoad));
+		GetNode("%DeleteEntryButton").Connect("pressed", this, nameof(handleDelete));
+	}
+
+	private void handleLoad() {
+		OnLoad.Invoke();
+	}
+
+	private void handleDelete() {
+		OnDelete.Invoke();
+	}
 }

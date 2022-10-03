@@ -53,19 +53,7 @@ public class GameManager {
 	private PhysicsDelta physicsDelta;
 
 	public GameManager() {
-		world = new WorldService(this);
-		state = new RelEcs.World();
-		state.AddElement(new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5)));
-		state.AddElement(new ViewStateService(this));
-		physicsDelta = new PhysicsDelta();
-		state.AddElement(physicsDelta);
-
-		// services
-		state.AddElement(world);
-		state.AddElement(new PathfindingService(this));
-		state.AddElement(new Factories(this));
-		state.AddElement(new BiotaService(this));
-		state.AddElement(new SaveService(this));
+		setup();
 
 		daySystems
 			.Add(new ActionDaySystem())
@@ -95,6 +83,27 @@ public class GameManager {
 		menuSystems
 			.Add(new SaveSystem())
 			.Add(new SaveGameModalTickSystem());
+	}
+
+	private void setup() {
+		world = new WorldService(this);
+		state = new RelEcs.World();
+		state.AddElement(new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5)));
+		state.AddElement(new ViewStateService(this));
+		physicsDelta = new PhysicsDelta();
+		state.AddElement(physicsDelta);
+		state.AddElement(this);
+
+		// services
+		state.AddElement(world);
+		state.AddElement(new PathfindingService(this));
+		state.AddElement(new Factories(this));
+		state.AddElement(new BiotaService(this));
+		state.AddElement(new SaveService(this));
+	}
+
+	public void Reset() {
+		setup();
 	}
 
 	// called when game starts

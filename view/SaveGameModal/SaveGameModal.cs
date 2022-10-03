@@ -40,19 +40,19 @@ public class SaveGameModal : Control {
 			((Node) child).QueueFree();
 		}
 
-		SavedGame savedGame = gameView.game.savedGame;
+		SavedGameMetadata savedGame = gameView.game.savedGame;
 		foreach (SavedGameEntryMetadata save in savedGame.saves) {
 			var listItem = (SaveEntryListItem) SaveEntryListItem.Instance();
+			saveEntryList.AddChild(listItem);
 			listItem.SaveEntryName = save.name;
 			listItem.SaveDate = save.saveDate.ToString();
 			listItem.SaveEntryDelete += () => {
-				saveService.DeleteSaveGame(savedGame, save);
+				saveService.DeleteSave(savedGame, save);
 			};
 			listItem.SaveEntryOverwrite += () => {
-				saveService.DeleteSaveGame(savedGame, save);
+				saveService.DeleteSave(savedGame, save);
 				gameView.game.state.Send(new SaveGameTrigger { entry = save });
 			};
-			saveEntryList.AddChild(listItem);
 		}
 		gameView.game.state.Send(new SaveModalLoadTrigger());
 	}

@@ -38,7 +38,7 @@ public class UnitPanel : GamePanelView {
 		var location = gameView.game.manager.Get<Location>(unit);
 		var selectedUnitPath = state.GetElement<SelectedUnitPath>();
 		selectedUnitPath.RenderPath(unit);
-		gameView.game.manager.Get<UnitIcon>(unit).Selected = true;
+		// gameView.game.manager.Get<UnitIcon>(unit).Selected = true;
 		gamePanel.SetTitle($"Unit ({unitData.type.name})");
 		unitPositionLabel.Text = $"({location.hex.col}, {location.hex.row})";
 		
@@ -67,7 +67,7 @@ public class UnitPanel : GamePanelView {
 	}
 
 	public override void ResetView(Entity entity) {
-		gameView.game.manager.Get<UnitIcon>(entity).Selected = false;
+		// gameView.game.manager.Get<UnitIcon>(entity).Selected = false;
 		var selectedUnitPath = state.GetElement<SelectedUnitPath>();
 		selectedUnitPath.ClearPath();
 	}

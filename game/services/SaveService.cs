@@ -1,10 +1,11 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
 
 [Serializable]
-public class SavedGame {
+public class SavedGameMetadata {
 	public string name; // directory filename
 	public List<SavedGameEntryMetadata> saves = new List<SavedGameEntryMetadata>();
 }
@@ -33,6 +34,7 @@ public class SerializedComponent {
 [Serializable]
 public class SerializedRelation {
 	public Type type;
+	public object relation;
 	public int entity;
 }
 
@@ -48,9 +50,9 @@ public class SaveData {
 	public Dictionary<int, SerializedEntity> entities = new Dictionary<int, SerializedEntity>();
 
 	public void Save(ISystem system) {
-		var unitQuery = system.QueryBuilder<Entity>().Has<Persisted>().Build();
+		var persisted = system.QueryBuilder<Entity>().Has<Persisted>().Build();
 
-		foreach (var entity in unitQuery) {
+		foreach (var entity in persisted) {
 			Godot.GD.PrintS(entity);
 			var serializedEntity = new SerializedEntity { id = entity.Identity.Id };
 			foreach (var (type, obj) in system.GetComponents(entity)) {
@@ -63,6 +65,7 @@ public class SaveData {
 					Godot.GD.PrintS("\tRelation:", type.Type, type.Identity.Id);
 					serializedEntity.relations.Add(new SerializedRelation {
 						type = type.Type,
+						relation = obj,
 						entity = type.Identity.Id
 					});
 				} else {
@@ -78,7 +81,60 @@ public class SaveData {
 	}
 
 	public void Load(ISystem system) {
-		
+		var newEntities = new Dictionary<int, Entity>();
+
+		// remove all entities
+		var persisted = system.QueryBuilder<Entity>().Has<Persisted>().Build();
+		foreach (var e in persisted) {
+			system.Despawn(e);
+		}
+
+		var addMethods = typeof(EntityBuilder)
+			.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+			.Where(x => x.Name == "Add");
+		foreach (var method in addMethods) {
+			Godot.GD.PrintS("method", method.ToString());
+			Godot.GD.PrintS("\t generic args", String.Join(",", method.GetParameters().Select(x => x.ToString())));
+			Godot.GD.PrintS("\t generic args", String.Join(",", method.GetParameters().Select(x => x.ParameterType.IsGenericParameter)));
+		}
+		var addMethodRelation = addMethods
+			.Single(x => x.IsGenericMethodDefinition
+				&& x.GetParameters().Length == 1
+				&& x.GetParameters()[0].ParameterType == typeof(Entity)
+			);
+		var addMethodRelationWithData = addMethods
+			.Single(x => x.IsGenericMethodDefinition
+				&& x.GetParameters().Length == 2
+				&& x.GetParameters()[1].ParameterType == typeof(Entity)
+			);
+		var addMethodComponent = addMethods
+			.Single(x => x.IsGenericMethodDefinition
+				&& x.GetParameters().Length == 1
+				&& x.GetParameters()[0].ParameterType.IsGenericParameter
+			);
+
+	
+		foreach (var (entityID, serializedEntity) in entities) {
+			newEntities[entityID] = system.Spawn().Id();
+		}
+
+		foreach (var (entityID, serializedEntity) in entities) {
+			var builder = system.On(newEntities[entityID]);
+			foreach (var item in serializedEntity.components) {
+				var addMethodG = addMethodComponent.MakeGenericMethod(new Type[] { item.type });
+				addMethodG.Invoke(builder, new object[] { item.component });
+			}
+			foreach (var item in serializedEntity.relations) {
+				var entity = newEntities[item.entity];
+				if (item.relation is null) {
+					var addMethodG = addMethodRelation.MakeGenericMethod(new Type[] { item.type });
+					addMethodG.Invoke(builder, new object[] { entity });
+				} else {
+					var addMethodG = addMethodRelationWithData.MakeGenericMethod(new Type[] { item.type });
+					addMethodG.Invoke(builder, new object[] { item.relation, entity });
+				}
+			}
+		}
 	}
 }
 
@@ -93,24 +149,29 @@ public class SaveService {
 	private GameManager manager;
 	private BinaryFormatter formatter;
 	private readonly string SAVE_GAME_FOLDER = "user://saved_games";
+	private readonly string SAVE_METADATA_FILENAME = "metadata.dat";
 
 	public SaveService(GameManager manager) {
 		this.manager = manager;
 		formatter = new BinaryFormatter();
 	}
 
-	public List<SavedGame> GetSaves() {
-		var saves = new List<SavedGame>();
+	public List<SavedGameMetadata> GetSaves() {
+		var saves = new List<SavedGameMetadata>();
 		var saveDirectories = new List<string>();
+
+		Directory.CreateDirectory(Godot.ProjectSettings.GlobalizePath(SAVE_GAME_FOLDER));
 
 		var savedGameFolder = Godot.ProjectSettings.GlobalizePath(SAVE_GAME_FOLDER);
 		try {
 			foreach (string name in Directory.GetDirectories(savedGameFolder)) {
-				var path = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{name}/save.dat");
-				var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-				SavedGame savedGame = (SavedGame) formatter.Deserialize(stream);
-				saves.Add(savedGame);
-				stream.Close();
+				try {
+					var path = Path.Combine(name, SAVE_METADATA_FILENAME);
+					var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+					SavedGameMetadata savedGame = (SavedGameMetadata) formatter.Deserialize(stream);
+					saves.Add(savedGame);
+					stream.Close();
+				} catch (FileNotFoundException) {};
 			}
 		} catch (UnauthorizedAccessException) {
 			return saves;
@@ -119,10 +180,10 @@ public class SaveService {
 		return saves;
 	}
 
-	private void saveSavedGame(SavedGame savedGame) {
+	private void saveSavedGame(SavedGameMetadata savedGame) {
 		Directory.CreateDirectory(Godot.ProjectSettings.GlobalizePath(SAVE_GAME_FOLDER));
 		Directory.CreateDirectory(Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}"));
-		var path = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}/save.sav");
+		var path = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}/{SAVE_METADATA_FILENAME}");
 		var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
 		formatter.Serialize(stream, savedGame);
 		stream.Close();
@@ -149,24 +210,31 @@ public class SaveService {
 		
 		var stream = new FileStream(saveEntryPath, FileMode.Create, FileAccess.Write, FileShare.None);
 		formatter.Serialize(stream, saveEntry);
-		Godot.GD.PrintS("(SaveService) Saved game file to", saveEntryPath);
+		Godot.GD.PrintS("(SaveService) Saved game save at", saveEntryPath);
 		stream.Close();
 	}
 
-	public void DeleteSaveGame(SavedGame savedGame, SavedGameEntryMetadata saveMetadata) {
+	public void DeleteSavedGame(SavedGameMetadata savedGame) {
+		// delete save
+		var saveFilePath = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}");
+		Godot.GD.PrintS("(SaveService) Deleted game at", saveFilePath);
+		Directory.Delete(saveFilePath, true);
+	}
+
+	public void DeleteSave(SavedGameMetadata savedGame, SavedGameEntryMetadata saveMetadata) {
 		// delete metadata
 		savedGame.saves.Remove(saveMetadata);
 		saveSavedGame(savedGame);
 
 		// delete save file
 		var saveFilePath = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}/saves/{saveMetadata.name}.sav");
-		Godot.GD.PrintS("(SaveService) Deleted game file at", saveFilePath);
+		Godot.GD.PrintS("(SaveService) Deleted game save at", saveFilePath);
 		File.Delete(saveFilePath);
 	}
 
-	public SavedGameEntry LoadGame(SavedGame savedGame, SavedGameEntryMetadata saveMetadata) {
+	public SavedGameEntry LoadGame(SavedGameMetadata savedGame, SavedGameEntryMetadata saveMetadata) {
 		var saveFilePath = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}/saves/{saveMetadata.name}.sav");
-		Godot.GD.PrintS("(SaveService) Loading game file from", saveFilePath);
+		Godot.GD.PrintS("(SaveService) Loading game save at", saveFilePath);
 		var stream = new FileStream(saveFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
 		SavedGameEntry saveGameEntry = (SavedGameEntry) formatter.Deserialize(stream);
 		stream.Close();

@@ -1,21 +1,46 @@
 using Godot;
 using System;
 
-public class LoadSaveListItem : PanelContainer
-{
-	// Declare member variables here. Examples:
-	// private int a = 2;
-	// private string b = "text";
+public class LoadSaveListItem : PanelContainer {
+	private Label countryName;
+	private Label lastSaveDate;
 
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-		
+	public delegate void Select();
+	public delegate void LoadLatest();
+	public delegate void Delete();
+
+	public event Select OnSelect;	
+	public event LoadLatest OnLoadLatest;	
+	public event Delete OnDelete;
+
+	public string CountryName {
+		get { return countryName.Text; }
+		set { countryName.Text = value; }
 	}
 
-//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-//  public override void _Process(float delta)
-//  {
-//      
-//  }
+	public string LastSaveDate {
+		get { return lastSaveDate.Text; }
+		set { lastSaveDate.Text = value; }
+	}
+
+	public override void _Ready() {
+		countryName = (Label) GetNode("%CountryName");
+		lastSaveDate =  (Label) GetNode("%LastSaveDate");
+
+		GetNode("%SelectButton").Connect("pressed", this, nameof(handleSelect));
+		GetNode("%LoadLatestButton").Connect("pressed", this, nameof(handleLoadLatest));
+		GetNode("%DeleteButton").Connect("pressed", this, nameof(handleDelete));
+	}
+
+	private void handleSelect() {
+		OnSelect.Invoke();
+	}
+
+	private void handleLoadLatest() {
+		OnLoadLatest.Invoke();
+	}
+
+	private void handleDelete() {
+		OnDelete.Invoke();
+	}
 }

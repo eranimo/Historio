@@ -12,6 +12,6 @@ public class SaveModalSaveTrigger {
 }
 
 public class LoadGameTrigger {
-	public SavedGame saveGame;
-	public SavedGameEntryMetadata entry;
+	public SavedGameMetadata savedGame;
+	public SavedGameEntryMetadata saveEntry;
 }
