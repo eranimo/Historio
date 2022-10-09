@@ -2,7 +2,6 @@ using Godot;
 using System;
 
 public class SaveGameModal : Control {
-	private GameView gameView;
 	private Label countryName;
 	private LineEdit saveNameInput;
 	private Button saveButton;
@@ -12,15 +11,18 @@ public class SaveGameModal : Control {
 	public string SaveNameInput { get => saveNameInput.Text; set => saveNameInput.Text = value; }
 
 	private PackedScene SaveEntryListItem = ResourceLoader.Load<PackedScene>("res://view/SaveGameModal/SaveEntryListItem.tscn");
+	private GameView gameView;
+	private SaveManager saveManager;
 
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
+		gameView.game.state.AddElement<SaveGameModal>(this);
+		saveManager = new SaveManager();
 
 		var closeButton = (TextureButton) GetNode("%CloseButton");
 		closeButton.Connect("pressed", this, nameof(handleClose));
 
 		countryName = (Label) GetNode("%CountryName");
-		gameView.game.state.AddElement<SaveGameModal>(this);
 
 		saveNameInput = (LineEdit) GetNode("%SaveNameInput");
 
@@ -34,8 +36,6 @@ public class SaveGameModal : Control {
 	public void OpenModal() {
 		Show();
 
-		var saveService = gameView.game.state.GetElement<SaveService>();
-
 		foreach (var child in saveEntryList.GetChildren()) {
 			((Node) child).QueueFree();
 		}
@@ -47,10 +47,10 @@ public class SaveGameModal : Control {
 			listItem.SaveEntryName = save.name;
 			listItem.SaveDate = save.saveDate.ToString();
 			listItem.SaveEntryDelete += () => {
-				saveService.DeleteSave(savedGame, save);
+				saveManager.DeleteSave(savedGame, save);
 			};
 			listItem.SaveEntryOverwrite += () => {
-				saveService.DeleteSave(savedGame, save);
+				saveManager.DeleteSave(savedGame, save);
 				gameView.game.state.Send(new SaveGameTrigger { entry = save });
 			};
 		}

@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=1]
 [ext_resource path="res://assets/theme.tres" type="Theme" id=2]
 [ext_resource path="res://scenes/MainMenu/MainMenu.cs" type="Script" id=3]
+[ext_resource path="res://view/LoadGameModal/LoadGameModal.tscn" type="PackedScene" id=5]
 
 [sub_resource type="DynamicFont" id=2]
 size = 48
@@ -66,7 +67,7 @@ align = 1
 [node name="Panel" type="PanelContainer" parent="VBoxContainer"]
 margin_top = 92.0
 margin_right = 353.0
-margin_bottom = 249.0
+margin_bottom = 317.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -75,36 +76,48 @@ __meta__ = {
 margin_left = 5.0
 margin_top = 5.0
 margin_right = 348.0
-margin_bottom = 152.0
+margin_bottom = 220.0
 custom_constants/separation = 5
+
+[node name="Continue" type="Button" parent="VBoxContainer/Panel/VBoxContainer"]
+unique_name_in_owner = true
+margin_right = 343.0
+margin_bottom = 39.0
+custom_fonts/font = SubResource( 3 )
+text = "Continue Game"
 
 [node name="NewGameButton" type="Button" parent="VBoxContainer/Panel/VBoxContainer"]
 unique_name_in_owner = true
+margin_top = 44.0
 margin_right = 343.0
-margin_bottom = 33.0
+margin_bottom = 83.0
 custom_fonts/font = SubResource( 3 )
 text = "New Game"
 
 [node name="LoadGameButton" type="Button" parent="VBoxContainer/Panel/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 38.0
+margin_top = 88.0
 margin_right = 343.0
-margin_bottom = 71.0
+margin_bottom = 127.0
 custom_fonts/font = SubResource( 3 )
 text = "Load Game"
 
-[node name="SettingsButon" type="Button" parent="VBoxContainer/Panel/VBoxContainer"]
+[node name="SettingsButton" type="Button" parent="VBoxContainer/Panel/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 76.0
+margin_top = 132.0
 margin_right = 343.0
-margin_bottom = 109.0
+margin_bottom = 171.0
 custom_fonts/font = SubResource( 3 )
 text = "Settings"
 
 [node name="ExitButton" type="Button" parent="VBoxContainer/Panel/VBoxContainer"]
 unique_name_in_owner = true
-margin_top = 114.0
+margin_top = 176.0
 margin_right = 343.0
-margin_bottom = 147.0
+margin_bottom = 215.0
 custom_fonts/font = SubResource( 3 )
 text = "Exit"
+
+[node name="LoadGameModal" parent="." instance=ExtResource( 5 )]
+unique_name_in_owner = true
+visible = false

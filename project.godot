@@ -34,6 +34,7 @@ config/icon="res://icon.png"
 
 Console="*res://addons/quentincaffeino/console/src/Console.tscn"
 CSharpConsole="*res://addons/quentincaffeino/console-csharp/src/Console.cs"
+LoadState="*res://game/LoadState.cs"
 
 [editor_plugins]
 

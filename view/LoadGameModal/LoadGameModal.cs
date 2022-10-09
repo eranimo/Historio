@@ -2,8 +2,7 @@ using Godot;
 using System.Linq;
 
 public class LoadGameModal : Control {
-	private GameView gameView;
-	private SaveService saveService;
+	private SaveManager saveManager;
 	private VBoxContainer saveList;
 	private VBoxContainer saveEntryList;
 	private Label noSavedGamesText;
@@ -16,8 +15,7 @@ public class LoadGameModal : Control {
 	private SavedGameMetadata currentSavedGame;
 
 	public override void _Ready() {
-		gameView = (GameView) GetTree().Root.GetNode("GameView");
-		saveService = gameView.game.state.GetElement<SaveService>();
+		saveManager = new SaveManager();
 
 		var closeButton = (TextureButton) GetNode("%CloseButton");
 		closeButton.Connect("pressed", this, nameof(handleClose));
@@ -41,7 +39,7 @@ public class LoadGameModal : Control {
 	}
 
 	private void update() {
-		var savedGames = saveService.GetSaves();
+		var savedGames = saveManager.GetSaves();
 
 		foreach (var child in saveList.GetChildren()) {
 			((Node) child).QueueFree();
@@ -53,6 +51,7 @@ public class LoadGameModal : Control {
 		foreach (SavedGameMetadata savedGame in savedGames) {
 			var latestSave = savedGame.saves.OrderByDescending(i => i.saveDate).First();
 			var listItem = (LoadSaveListItem) LoadSaveListItem.Instance();
+			GD.PrintS(listItem);
 			saveList.AddChild(listItem);
 			listItem.CountryName = latestSave.countryName;
 			listItem.LastSaveDate = latestSave.saveDate.ToString();
@@ -91,20 +90,20 @@ public class LoadGameModal : Control {
 	}
 
 	private void deleteSave(SavedGameMetadata savedGame) {
-		saveService.DeleteSavedGame(savedGame);
+		saveManager.DeleteSavedGame(savedGame);
 		update();
 	}
 
 	private void deleteSaveEntry(SavedGameMetadata savedGame, SavedGameEntryMetadata entry) {
-		saveService.DeleteSave(savedGame, entry);
+		saveManager.DeleteSave(savedGame, entry);
 		update();
 	}
 
 	private void loadSave(SavedGameMetadata savedGame, SavedGameEntryMetadata saveEntry) {
-		gameView.game.state.Send(new LoadGameTrigger {
-			savedGame = savedGame,
-			saveEntry = saveEntry,
-		});
+		var loadState = (LoadState) GetTree().Root.GetNode("LoadState");
+		loadState.savedGame = savedGame;
+		loadState.saveEntry = saveEntry;
+		GetTree().ChangeScene("res://scenes/GameView/GameView.tscn");
 	}
 
 	public override void _UnhandledInput(InputEvent @event) {

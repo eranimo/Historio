@@ -6,20 +6,20 @@ public class SaveSystem : ISystem {
 			return;
 		}
 		var game = this.GetElement<Game>();
-		var saveService = this.GetElement<SaveService>();
+		var saveManager = this.GetElement<SaveManager>();
 		var gameManager = this.GetElement<GameManager>();
 
 		foreach (var e in this.Receive<SaveGameTrigger>()) {
 			var saveData = new SaveData();
 			saveData.Save(this);
-			saveService.SaveGame(game, saveData, e.entry);
+			saveManager.SaveGame(game, saveData, e.entry);
 		}
 
 		foreach (var e in this.Receive<LoadGameTrigger>()) {
-			var saveEntry = saveService.LoadGame(e.savedGame, e.saveEntry);
+			var saveEntry = saveManager.LoadGame(e.savedGame, e.saveEntry);
 			game.date.SetDay(saveEntry.metadata.dayTicks);
-			// gameManager.Reset();
 			saveEntry.saveData.Load(this);
+			game.HandleGameLoaded();
 		}
 	}
 }

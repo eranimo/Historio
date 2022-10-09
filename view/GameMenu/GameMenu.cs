@@ -3,28 +3,26 @@ using System;
 
 public class GameMenu : Control {
 	private GameView gameView;
-	private Button continueButton;
-	private Button exitButton;
-	private Button loadGameButton;
-	private Button saveGameButton;
 	private LoadGameModal loadGameModal;
 	private SaveGameModal saveGameModal;
 
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
 
-		continueButton = (Button) GetNode("%ContinueButton");
-		exitButton = (Button) GetNode("%ExitGameButton");
-		loadGameButton = (Button) GetNode("%LoadGameButton");
-		saveGameButton = (Button) GetNode("%SaveGameButton");
-
 		loadGameModal = (LoadGameModal) GetNode("%LoadGameModal");
 		saveGameModal = (SaveGameModal) GetNode("%SaveGameModal");
+
+		var continueButton = (Button) GetNode("%ContinueButton");
+		var exitButton = (Button) GetNode("%ExitGameButton");
+		var loadGameButton = (Button) GetNode("%LoadGameButton");
+		var saveGameButton = (Button) GetNode("%SaveGameButton");
+		var mainMenuButton = (Button) GetNode("%MainMenuButton");
 
 		continueButton.Connect("pressed", this, nameof(handleContinuePressed));
 		exitButton.Connect("pressed", this, nameof(handleExitPressed));
 		loadGameButton.Connect("pressed", this, nameof(handleLoadPressed));
 		saveGameButton.Connect("pressed", this, nameof(handleSavePressed));
+		mainMenuButton.Connect("pressed", this, nameof(handleMainMenu));
 	}
 
 	public void ShowMenu() {
@@ -63,6 +61,11 @@ public class GameMenu : Control {
 
 	private void handleSavePressed() {
 		saveGameModal.OpenModal();
+	}
+
+	private void handleMainMenu() {
+		GetTree().Paused = false;
+		GetTree().ChangeScene("res://scenes/MainMenu/MainMenu.tscn");
 	}
 
 	public override void _Process(float delta) {

@@ -56,6 +56,9 @@ public class Game {
 
 	public SavedGameMetadata savedGame { get; set; }
 
+	public delegate void GameLoaded();
+	public event GameLoaded OnGameLoaded;
+
 	public Game() {
 		this.date = new GameDate(0);
 		this.manager = new GameManager();
@@ -75,6 +78,10 @@ public class Game {
 
 	public IObservable<GameDate> GameDateChanged { get => gameDateChanged; }
 	public IObservable<GameSpeed> Speed { get => speed; }
+
+	public void Init() {
+		manager.Init();
+	}
 
 	public void Process(float delta, bool force = false) {
 		manager.Process(delta);
@@ -156,6 +163,10 @@ public class Game {
 		} else if (speed.Value == GameSpeed.Fast) {
 			speed.OnNext(GameSpeed.Slow);
 		}
+	}
+
+	public void HandleGameLoaded() {
+		OnGameLoaded?.Invoke();
 	}
 
 }

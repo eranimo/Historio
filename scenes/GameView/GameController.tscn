@@ -332,7 +332,7 @@ margin_bottom = 15.0
 custom_colors/default_color = Color( 0.87451, 0.87451, 0.87451, 1 )
 bbcode_enabled = true
 bbcode_text = "The [color=white]Tribe[/color] of Atlasi"
-text = "The [color=white]Tribe[/color] of Atlasi"
+text = "The Tribe of Atlasi"
 fit_content_height = true
 scroll_active = false
 

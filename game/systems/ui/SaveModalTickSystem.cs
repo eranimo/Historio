@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-public class SaveGameModalTickSystem : ISystem {
+public class SaveModalTickSystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {

@@ -14,6 +14,14 @@ public struct GameMapInput {
 	public bool isShiftModifier;
 }
 
+public static class ConsoleExtensions {
+	public static CommandBuilder RemoveCommand(this Console console, string name) {
+		var _console = console.GetTree().Root.GetNode<CanvasLayer>("Console");
+		Godot.Object consoleCommand = _console.Call("remove_command", name) as Godot.Object;
+		return new CommandBuilder(consoleCommand);
+	}
+}
+
 public class GameController : Control {
 	public Game game;
 
@@ -45,6 +53,10 @@ public class GameController : Control {
 
 
 		var console = GetTree().Root.GetNode<Console>("CSharpConsole");
+
+		console.RemoveCommand("next_day");
+		console.RemoveCommand("observe");
+		console.RemoveCommand("play");
 
 		console.AddCommand("next_day", this, nameof(handleNextDay))
 			.SetDescription("Processes the next day in the game")

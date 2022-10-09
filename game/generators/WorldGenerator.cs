@@ -3,6 +3,7 @@ using Godot;
 using System.Collections.Generic;
 
 
+[Serializable]
 public class WorldOptions {
 	public WorldSize Size = WorldSize.Small;
 	public int Sealevel = 140;
@@ -15,6 +16,7 @@ public enum WorldSize {
 	Large = 2,
 }
 
+[Serializable]
 public class WorldData {
 	public Hex worldSize;
 	public WorldOptions options;

@@ -28,7 +28,10 @@ public class DebugDaySystem : ISystem {
 public class GameManager {
 	public RelEcs.World state;
 
-	// systems that run when the game starts (either initially or when loading a game)
+	// runs when game is starts (before scene is loaded)
+	SystemGroup initSystems = new SystemGroup();
+
+	// systems that run when the game starts (scene is loaded)
 	SystemGroup startSystems = new SystemGroup();
 
 	// runs every day (depending on game speed)
@@ -53,8 +56,6 @@ public class GameManager {
 	private PhysicsDelta physicsDelta;
 
 	public GameManager() {
-		setup();
-
 		daySystems
 			.Add(new ActionDaySystem())
 			.Add(new MovementDaySystem())
@@ -64,6 +65,9 @@ public class GameManager {
 		playSystems
 			.Add(new MovementTweenPlaySystem())
 			.Add(new ViewStatePlaySystem());
+
+		initSystems
+			.Add(new SaveSystem());
 	
 		startSystems
 			.Add(new ViewStateStartSystem())
@@ -82,10 +86,8 @@ public class GameManager {
 
 		menuSystems
 			.Add(new SaveSystem())
-			.Add(new SaveGameModalTickSystem());
-	}
+			.Add(new SaveModalTickSystem());
 
-	private void setup() {
 		world = new WorldService(this);
 		state = new RelEcs.World();
 		state.AddElement(new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5)));
@@ -99,11 +101,11 @@ public class GameManager {
 		state.AddElement(new PathfindingService(this));
 		state.AddElement(new Factories(this));
 		state.AddElement(new BiotaService(this));
-		state.AddElement(new SaveService(this));
+		state.AddElement(new SaveManager());
 	}
 
-	public void Reset() {
-		setup();
+	public void Init() {
+		initSystems.Run(state);
 	}
 
 	// called when game starts

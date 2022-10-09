@@ -138,12 +138,11 @@ custom_constants/separation = 10
 
 [node name="NoSelectedSave" type="VBoxContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/Control"]
 unique_name_in_owner = true
-visible = false
 margin_right = 472.0
 margin_bottom = 59.0
 size_flags_horizontal = 3
 
-[node name="NoSelectedSave" type="Label" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/Control/NoSelectedSave"]
+[node name="NoSelectedSaveLabel" type="Label" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/Control/NoSelectedSave"]
 margin_right = 472.0
 margin_bottom = 14.0
 text = "Select a saved game from the left to view saves."

@@ -95,6 +95,7 @@ public class TileData {
 	}
 }
 
+[Serializable]
 public class TileViewState {
 	public Dictionary<Entity, ViewState> countriesToViewStates = new Dictionary<Entity, ViewState>();
 }

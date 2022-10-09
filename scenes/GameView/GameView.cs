@@ -17,6 +17,7 @@ public class GameView : Control {
 	public bool isConsoleToggled { get; private set; }
 
 	public GameCamera camera;
+	private LoadState loadState;
 
 	public override void _Ready() {
 		desc = (Label) GetNode("LoadingDisplay/MarginContainer/VBoxContainer/Desc");
@@ -25,30 +26,70 @@ public class GameView : Control {
 		var gameControllerScene = (PackedScene) ResourceLoader.Load("res://scenes/GameView/GameController.tscn");
 		GameController = (GameController) gameControllerScene.Instance();
 
+		var console = GetTree().Root.GetNode<CanvasLayer>("Console");
+		console.Connect("toggled", this, nameof(handleConsoleToggle));
+
+		loadState = (LoadState) GetTree().Root.GetNode("LoadState");
+
+		if (loadState.savedGame is null) {
+			GD.PrintS("(GameView) new game");
+			handleNewGame(); 
+		} else {
+			GD.PrintS("(GameView) load game");
+			handleLoadGame();
+		}
+	}
+
+	private void handleLoadGame() {
+		var watch = System.Diagnostics.Stopwatch.StartNew();
+		game = new Game();
+		GameController.game = game;
+		game.state.Send(new LoadGameTrigger {
+			savedGame = loadState.savedGame,
+			saveEntry = loadState.saveEntry,
+		});
+
+		game.OnGameLoaded += () => {
+			onGameLoaded();
+			GD.PrintS($"(GameView) on game loaded: {watch.ElapsedMilliseconds}ms");
+		};
+
+		game.Init();
+
+		desc.Text = "Loading game";
+		progress.Value = 0;
+		loadState.savedGame = null;
+		loadState.saveEntry = null;
+	}
+
+	private void onGameLoaded() {
+		desc.Text = "Loaded game";
+		progress.Value = 100;
+		CallDeferred("add_child", GameController);
+	}
+
+	private void handleNewGame() {
 		var options = new GameOptions();
 		generatorThread = new GameGeneratorThread(
 			options,
-			new GeneratorProgress(OnGeneratorProgress),
-			new GameGeneratedCallback(OnGameGenerated)
+			new GeneratorProgress(onGeneratorProgress),
+			new GameGeneratedCallback(onGameGenerated)
 		);
 		generatorThread.game = new Game();
 		var t = new System.Threading.Thread(generatorThread.Generate);
 		t.Start();
-
-		var console = GetTree().Root.GetNode<CanvasLayer>("Console");
-		console.Connect("toggled", this, nameof(handleConsoleToggle));
 	}
 
 	private void handleConsoleToggle(bool toggled) {
 		isConsoleToggled = toggled;
 	}
 
-	private void OnGeneratorProgress(string label, int value) {
+	private void onGeneratorProgress(string label, int value) {
 		desc.Text = label;
 		progress.Value = value;
 	}
 
-	private void OnGameGenerated() {
+	private void onGameGenerated() {
 		GD.PrintS("Game generated");
 		game = generatorThread.game;
 
@@ -61,8 +102,10 @@ public class GameView : Control {
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 		GameController.game = game;
+
+		game.Init();
 		CallDeferred("add_child", GameController);
-		GD.PrintS($"GameController init: {watch.ElapsedMilliseconds}ms");
+		GD.PrintS($"(GameView) on game generated: {watch.ElapsedMilliseconds}ms");
 	}
 
 	public override void _Input(InputEvent @event) {

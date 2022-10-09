@@ -46,14 +46,31 @@ public class SerializedEntity {
 }
 
 [Serializable]
+public class SerializedTile {
+	public Location location;
+	public TileData tileData;
+	public Dictionary<int, ViewState> countriesToViewStates;
+}
+
+[Serializable]
+public class SerializedWorld {
+	public WorldData worldData;
+	public List<SerializedTile> tiles = new List<SerializedTile>();
+}
+
+[Serializable]
 public class SaveData {
 	public Dictionary<int, SerializedEntity> entities = new Dictionary<int, SerializedEntity>();
+	public int playerCountryID;
+	public SerializedWorld world;
 
 	public void Save(ISystem system) {
 		var persisted = system.QueryBuilder<Entity>().Has<Persisted>().Build();
 
+		playerCountryID = system.GetElement<Player>().playerCountry.Identity.Id;
+
 		foreach (var entity in persisted) {
-			Godot.GD.PrintS(entity);
+			// Godot.GD.PrintS("Entity", entity);
 			var serializedEntity = new SerializedEntity { id = entity.Identity.Id };
 			foreach (var (type, obj) in system.GetComponents(entity)) {
 				if (type.Type == entity.GetType()) {
@@ -62,14 +79,14 @@ public class SaveData {
 				if (obj is Godot.Node) {
 					throw new Exception("Cannot serialize Godot Nodes");
 				} else if (type.IsRelation) {
-					Godot.GD.PrintS("\tRelation:", type.Type, type.Identity.Id);
+					// Godot.GD.PrintS("\tRelation:", type.Type, type.Identity.Id);
 					serializedEntity.relations.Add(new SerializedRelation {
 						type = type.Type,
 						relation = obj,
 						entity = type.Identity.Id
 					});
 				} else {
-					Godot.GD.PrintS("\tComponent:", type.Type, obj);
+					// Godot.GD.PrintS("\tComponent:", type.Type, obj);
 					serializedEntity.components.Add(new SerializedComponent {
 						type = type.Type,
 						component = obj
@@ -77,6 +94,21 @@ public class SaveData {
 				}
 			}
 			entities[serializedEntity.id] = serializedEntity;
+		}
+
+		world = new SerializedWorld();
+		world.worldData = system.GetElement<WorldData>();
+		var tiles = system.Query<Location, TileViewState, TileData>();
+		foreach (var (loc, tileViewState, tileData) in tiles) {
+			var countriesToViewStates = new Dictionary<int, ViewState>();
+			foreach (var (entity, viewState) in tileViewState.countriesToViewStates) {
+				countriesToViewStates[entity.Identity.Id] = viewState;
+			}
+			world.tiles.Add(new SerializedTile {
+				location = loc,
+				tileData = tileData,
+				countriesToViewStates = countriesToViewStates,
+			});
 		}
 	}
 
@@ -89,14 +121,11 @@ public class SaveData {
 			system.Despawn(e);
 		}
 
+		// find methods
 		var addMethods = typeof(EntityBuilder)
 			.GetMethods(BindingFlags.Instance | BindingFlags.Public)
 			.Where(x => x.Name == "Add");
-		foreach (var method in addMethods) {
-			Godot.GD.PrintS("method", method.ToString());
-			Godot.GD.PrintS("\t generic args", String.Join(",", method.GetParameters().Select(x => x.ToString())));
-			Godot.GD.PrintS("\t generic args", String.Join(",", method.GetParameters().Select(x => x.ParameterType.IsGenericParameter)));
-		}
+
 		var addMethodRelation = addMethods
 			.Single(x => x.IsGenericMethodDefinition
 				&& x.GetParameters().Length == 1
@@ -114,10 +143,12 @@ public class SaveData {
 			);
 
 	
+		// spawn components
 		foreach (var (entityID, serializedEntity) in entities) {
 			newEntities[entityID] = system.Spawn().Id();
 		}
 
+		// add components on entities
 		foreach (var (entityID, serializedEntity) in entities) {
 			var builder = system.On(newEntities[entityID]);
 			foreach (var item in serializedEntity.components) {
@@ -135,24 +166,45 @@ public class SaveData {
 				}
 			}
 		}
+
+		// add player
+		system.AddElement<Player>(new Player {
+			playerCountry = newEntities[playerCountryID],
+		});
+
+		// deserialize world
+		system.AddElement<WorldData>(world.worldData);
+		foreach (var tile in world.tiles) {
+			var tileViewState = new TileViewState();
+			foreach (var (entityID, viewState) in tile.countriesToViewStates) {
+				var country = newEntities[entityID];
+				tileViewState.countriesToViewStates[country] = viewState;
+			}
+			system.Spawn()
+				.Add(tile.location)
+				.Add(tile.tileData)
+				.Add(tileViewState);
+		}
+
+
+		// setup after load
+		system.GetElement<PathfindingService>().setup();
 	}
 }
 
 /**
-SaveSystem represents a save system where each saved game represents multiple saves.
+SaveManager represents a save system where each saved game represents multiple saves.
 	- each "save game" is stored in a folder under the "saved_games" folder
 	- each save game folder has:
 		- "save.sav" file, a serialized SavedGame struct
 		- "saves" dir, holding files that are serialized SavedGameData structs
 */
-public class SaveService {
-	private GameManager manager;
+public class SaveManager {
 	private BinaryFormatter formatter;
 	private readonly string SAVE_GAME_FOLDER = "user://saved_games";
 	private readonly string SAVE_METADATA_FILENAME = "metadata.dat";
 
-	public SaveService(GameManager manager) {
-		this.manager = manager;
+	public SaveManager() {
 		formatter = new BinaryFormatter();
 	}
 
@@ -176,6 +228,8 @@ public class SaveService {
 		} catch (UnauthorizedAccessException) {
 			return saves;
 		}
+
+		Godot.GD.PrintS("Saves", saves);
 
 		return saves;
 	}
