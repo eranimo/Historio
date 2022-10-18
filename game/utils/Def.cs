@@ -1,11 +1,15 @@
 using System;
 using System.Reflection;
 using Godot;
+using MessagePack;
 using Newtonsoft.Json;
 
-[Serializable]
+[MessagePackObject]
 public class Def {
+	[Key(0)]
 	public string type { get; set; }
+
+	[Key(1)]
 	public string id { get; set; }
 }
 

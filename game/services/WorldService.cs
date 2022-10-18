@@ -7,7 +7,7 @@ public class WorldService {
 	private readonly GameManager manager;
 	public List<Entity> tiles = new List<Entity>();
 	private Dictionary<Hex, Entity> tileByHex;
-	private Point size;
+	private Hex size;
 	private Dictionary<Entity, Entity[]> neighbors = new Dictionary<Entity, Entity[]>();
 	private Dictionary<Entity, HashSet<Entity>> entitiesByTile = new Dictionary<Entity, HashSet<Entity>>();
 
@@ -15,17 +15,12 @@ public class WorldService {
 		this.manager = manager;
 	}
 
-	public void initWorld(Point size) {
+	public void initWorld(Hex size) {
 		this.size = size;
 		tileByHex = new Dictionary<Hex, Entity>();
 	}
 
-	public void AddTile(Hex coord, TileData tileData) {
-		var tile = manager.Spawn()
-			.Add<Location>(new Location { hex = coord })
-			.Add<TileData>(tileData)
-			.Add(new TileViewState())
-			.Id();
+	public void AddTile(Hex coord, Entity tile) {
 		tileByHex.Add(coord, tile);
 		tiles.Add(tile);
 	}

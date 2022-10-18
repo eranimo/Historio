@@ -1,10 +1,13 @@
 using System;
 using System.Linq;
 using Godot;
+using MessagePack;
 
-[Serializable]
+[MessagePackObject]
 public class ActionQueue {
+	[Key(0)]
 	public Action currentAction;
+	[Key(1)]
 	public Queue<Action> actions = new Queue<Action>();
 }
 
@@ -47,8 +50,10 @@ public enum ActionStatus {
 	Finished, // action finished, will be removed
 }
 
-[Serializable]
+[Union(0, typeof(MovementAction))]
+[MessagePackObject]
 public abstract class Action {
+	[Key(0)]
 	public ActionStatus status;
 
 	public Action(Entity owner) {
@@ -78,7 +83,9 @@ public abstract class Action {
 	}
 }
 
+[MessagePackObject]
 public class MovementAction : Action {
+	[Key(1)]
 	public Hex target;
 
 	public MovementAction(

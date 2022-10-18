@@ -1,10 +1,16 @@
 using System;
 using System.Collections.Generic;
 using Godot;
+using MessagePack;
+using MessagePack.Formatters;
 
-[Serializable]
+[MessagePackObject]
 public class CountryData {
+	[Key(0)]
 	public string name;
+
+	[MessagePackFormatter(typeof(ColorFormatter))]
+	[Key(1)]
 	public Color color;
 }
 

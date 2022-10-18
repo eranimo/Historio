@@ -1,25 +1,30 @@
 using System;
 using System.Collections.Generic;
+using MessagePack;
 using RelEcs;
 
 
-[Serializable]
+[MessagePackObject]
 public class UnitType : Def {
+	[Key(2)]
 	public string name { get; set; }
+
+	[Key(3)]
 	public string spritePath { get; set; }
 }
 
-[Serializable]
+[MessagePackObject]
 public class UnitData {
+	[Key(0)]
 	public UnitType type;
 }
 
 // relation on Unit to Country
-[Serializable]
+[MessagePackObject]
 public class UnitCountry {}
 
 // Relation on entity to Country
-[Serializable]
+[MessagePackObject]
 public class UnitCountryOwner {}
 
 

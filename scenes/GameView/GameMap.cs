@@ -114,7 +114,11 @@ public class GameMap : Node2D {
 		hoverHex.Hide();
 		mapBorders.RenderMap(this);
 
-		drawWorld();
+		foreach (Entity tile in game.manager.world.tiles) {
+			drawTile(tile);
+		}
+		rivers.RenderRivers();
+
 		tileUpdates.Subscribe((Entity tile) => this.drawTile(tile));
 	}
 
@@ -125,13 +129,6 @@ public class GameMap : Node2D {
 	public void centerCameraOnTile(Entity tile) {
 		var hex = gameView.game.manager.Get<Location>(tile).hex;
 		centerCamera(layout.HexToPixel(hex).ToVector());
-	}
-
-	private void drawWorld() {
-		foreach (Entity tile in game.manager.world.tiles) {
-			drawTile(tile);
-		}
-		rivers.RenderRivers();
 	}
 
 	public void SetSelectedTile(Entity tile) {

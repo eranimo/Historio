@@ -1,8 +1,8 @@
+using MessagePack;
 using RelEcs;
 using System;
 using System.Collections.Generic;
 
-[Serializable]
 public enum ViewState {
 	Unexplored,
 	Unobserved,

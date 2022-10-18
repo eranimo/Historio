@@ -7,6 +7,7 @@ public class Rivers : Node2D {
 	
 	private GameView gameView;
 	private Layout layout;
+	private bool shouldRender = false;
 
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
@@ -14,11 +15,16 @@ public class Rivers : Node2D {
 	}
 
 	public void RenderRivers() {
+		shouldRender = true;
 		Update();
 	}
 
 	public override void _Draw() {
 		base._Draw();
+
+		if (!shouldRender) {
+			return;
+		}
 
 		foreach (Hex hex in gameView.game.manager.world.Hexes) {
 			var tileData = gameView.game.manager.world.GetTileData(hex);

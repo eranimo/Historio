@@ -1,9 +1,9 @@
 using System;
 using Godot;
 using System.Collections.Generic;
+using MessagePack;
 
-
-[Serializable]
+[MessagePackObject(keyAsPropertyName: true)]
 public class WorldOptions {
 	public WorldSize Size = WorldSize.Small;
 	public int Sealevel = 140;
@@ -16,9 +16,11 @@ public enum WorldSize {
 	Large = 2,
 }
 
-[Serializable]
+[MessagePackObject]
 public class WorldData {
+	[Key(0)]
 	public Hex worldSize;
+	[Key(1)]
 	public WorldOptions options;
 }
 
@@ -45,7 +47,8 @@ public class WorldGenerator : IGeneratorStep {
 		var temperatureNoise = new WorldNoise(this.TileWidth, this.TileHeight, options.Seed * 2);
 		var rainfallNoise = new WorldNoise(this.TileWidth, this.TileHeight, options.Seed * 3);
 
-		manager.world.initWorld(new Point(TileWidth, TileHeight));
+		var worldSize = new Hex(TileWidth, TileHeight);
+		manager.world.initWorld(worldSize);
 
 		var tiles = new Dictionary<Hex, TileData>();
 
@@ -105,15 +108,22 @@ public class WorldGenerator : IGeneratorStep {
 		GD.PrintS("(WorldGenerator) river generation", riverSegments);
 
 
-		foreach (var (hex, tile) in tiles) {
-			manager.world.AddTile(hex, tile);
+		foreach (var (hex, tileData) in tiles) {
+			manager.world.AddTile(
+				hex,
+				manager.Spawn()
+					.Add<Location>(new Location { hex = hex, })
+					.Add<TileData>(tileData)
+					.Add(new TileViewState())
+					.Id()
+			);
 		}
 
 		GD.PrintS($"(WorldGenerator) Added {manager.world.tiles.Count} tiles");
 		manager.state.GetElement<PathfindingService>().setup();
 
 		manager.state.AddElement<WorldData>(new WorldData {
-			worldSize = new Hex(TileWidth, TileHeight),
+			worldSize = worldSize,
 			options = worldOptions,
 		});
 	}

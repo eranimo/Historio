@@ -4,6 +4,39 @@ using System;
 using System.Reactive.Subjects;
 using System.Linq;
 
+
+public class GameGeneratorThread {
+	private readonly GameOptions options;
+	public event Progress OnProgress;
+	public event Done OnDone;
+
+	public delegate void Progress(string label, int value);
+	public delegate void Done();
+
+	public Game game;
+
+	public GameGeneratorThread(GameOptions options) {
+		this.options = options;
+	}
+
+	public void Generate() {
+		var watch = System.Diagnostics.Stopwatch.StartNew();
+
+		OnProgress.Invoke("Generating world", 0);
+		new WorldGenerator().Generate(options, game.manager);
+
+		OnProgress.Invoke("Generating countries", 50);
+		new CountryGenerator().Generate(options, game.manager);
+
+		OnProgress.Invoke("Finished game generation", 100);
+
+		GD.PrintS($"GameGeneratorThread: {watch.ElapsedMilliseconds}ms");
+		if (OnDone != null) {
+			OnDone.Invoke();
+		}
+	}
+}
+
 public class GameView : Control {
 	private Label desc;
 	private ProgressBar progress;
@@ -40,74 +73,6 @@ public class GameView : Control {
 		}
 	}
 
-	private void handleLoadGame() {
-		var watch = System.Diagnostics.Stopwatch.StartNew();
-		game = new Game();
-		GameController.game = game;
-		game.state.Send(new LoadGameTrigger {
-			savedGame = loadState.savedGame,
-			saveEntry = loadState.saveEntry,
-		});
-
-		game.OnGameLoaded += () => {
-			onGameLoaded();
-			GD.PrintS($"(GameView) on game loaded: {watch.ElapsedMilliseconds}ms");
-		};
-
-		game.Init();
-
-		desc.Text = "Loading game";
-		progress.Value = 0;
-		loadState.savedGame = null;
-		loadState.saveEntry = null;
-	}
-
-	private void onGameLoaded() {
-		desc.Text = "Loaded game";
-		progress.Value = 100;
-		CallDeferred("add_child", GameController);
-	}
-
-	private void handleNewGame() {
-		var options = new GameOptions();
-		generatorThread = new GameGeneratorThread(
-			options,
-			new GeneratorProgress(onGeneratorProgress),
-			new GameGeneratedCallback(onGameGenerated)
-		);
-		generatorThread.game = new Game();
-		var t = new System.Threading.Thread(generatorThread.Generate);
-		t.Start();
-	}
-
-	private void handleConsoleToggle(bool toggled) {
-		isConsoleToggled = toggled;
-	}
-
-	private void onGeneratorProgress(string label, int value) {
-		desc.Text = label;
-		progress.Value = value;
-	}
-
-	private void onGameGenerated() {
-		GD.PrintS("Game generated");
-		game = generatorThread.game;
-
-		// generate new SavedGame
-		var countryName = game.manager.Get<CountryData>(game.state.GetElement<Player>().playerCountry).name;
-		var countryNameSafe = System.IO.Path.GetInvalidFileNameChars().Aggregate(countryName, (f, c) => f.Replace(c, '_'));
-		var rng = new Godot.RandomNumberGenerator();
-		var saveName = $"{countryNameSafe}-{rng.RandiRange(1, 10000)}";
-		game.savedGame = new SavedGameMetadata { name = saveName };
-
-		var watch = System.Diagnostics.Stopwatch.StartNew();
-		GameController.game = game;
-
-		game.Init();
-		CallDeferred("add_child", GameController);
-		GD.PrintS($"(GameView) on game generated: {watch.ElapsedMilliseconds}ms");
-	}
-
 	public override void _Input(InputEvent @event) {
 		base._Input(@event);
 
@@ -132,5 +97,76 @@ public class GameView : Control {
 			GameController.GameMenu.ShowMenu();
 			GetTree().SetInputAsHandled();
 		}
+	}
+
+	private void handleConsoleToggle(bool toggled) {
+		isConsoleToggled = toggled;
+	}
+
+	/*
+	LOAD GAME
+	*/
+	private void handleLoadGame() {
+		var watch = System.Diagnostics.Stopwatch.StartNew();
+		game = new Game();
+		GameController.game = game;
+		game.state.Send(new LoadGameTrigger {
+			savedGame = loadState.savedGame,
+			saveEntry = loadState.saveEntry,
+		});
+
+		game.OnGameLoaded += (SavedGameEntry entry) => {
+			onGameLoaded(entry);
+			GD.PrintS($"(GameView) on game loaded: {watch.ElapsedMilliseconds}ms");
+		};
+
+		game.Init();
+
+		desc.Text = "Loading game";
+		progress.Value = 0;
+		loadState.savedGame = null;
+		loadState.saveEntry = null;
+	}
+
+	private void onGameLoaded(SavedGameEntry entry) {
+		desc.Text = "Loaded game";
+		progress.Value = 100;
+		CallDeferred("add_child", GameController);
+	}
+
+	/*
+	NEW GAME
+	*/
+	private void handleNewGame() {
+		var options = new GameOptions();
+		generatorThread = new GameGeneratorThread(options);
+		generatorThread.OnProgress += (string label, int value) => {
+			desc.Text = label;
+			progress.Value = value;
+		};
+		generatorThread.OnDone += onGameGenerated;
+
+		generatorThread.game = new Game();
+		var t = new System.Threading.Thread(generatorThread.Generate);
+		t.Start();
+	}
+
+	private void onGameGenerated() {
+		GD.PrintS("Game generated");
+		game = generatorThread.game;
+
+		// generate new SavedGame
+		var countryName = game.manager.Get<CountryData>(game.state.GetElement<Player>().playerCountry).name;
+		var countryNameSafe = System.IO.Path.GetInvalidFileNameChars().Aggregate(countryName, (f, c) => f.Replace(c, '_'));
+		var rng = new Godot.RandomNumberGenerator();
+		var saveName = $"{countryNameSafe}-{rng.RandiRange(1, 10000)}";
+		game.savedGame = new SavedGameMetadata { name = saveName };
+
+		var watch = System.Diagnostics.Stopwatch.StartNew();
+		GameController.game = game;
+
+		game.Init();
+		CallDeferred("add_child", GameController);
+		GD.PrintS($"(GameView) on game generated: {watch.ElapsedMilliseconds}ms");
 	}
 }

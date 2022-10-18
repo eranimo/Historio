@@ -18,28 +18,6 @@ public interface IGeneratorStep {
 	void Generate(GameOptions options, GameManager manager);
 }
 
-public class GameGenerator {
-	public GameOptions options;
-	private GameManager manager;
-	public Subject<(string, int)> progress = new Subject<(string, int)>();
-
-	public GameGenerator(
-		GameOptions gameOptions,
-		GameManager manager
-	) {
-		this.options = gameOptions;
-		this.manager = manager;
-	}
-
-	public void Generate() {
-		progress.OnNext(("Generating world", 0));
-		new WorldGenerator().Generate(options, manager);
-		progress.OnNext(("Generating countries", 50));
-		new CountryGenerator().Generate(options, manager);
-		progress.OnNext(("Finished world generation", 100));
-	}
-}
-
 /*
 - Handles play state, speed, and game date
 - contains GameManager
@@ -56,7 +34,7 @@ public class Game {
 
 	public SavedGameMetadata savedGame { get; set; }
 
-	public delegate void GameLoaded();
+	public delegate void GameLoaded(SavedGameEntry entry);
 	public event GameLoaded OnGameLoaded;
 
 	public Game() {
@@ -165,8 +143,8 @@ public class Game {
 		}
 	}
 
-	public void HandleGameLoaded() {
-		OnGameLoaded?.Invoke();
+	public void HandleGameLoaded(SavedGameEntry entry) {
+		OnGameLoaded?.Invoke(entry);
 	}
 
 }

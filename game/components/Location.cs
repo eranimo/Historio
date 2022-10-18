@@ -1,7 +1,9 @@
 using System;
 using Godot;
+using MessagePack;
 
-[Serializable]
+[MessagePackObject]
 public class Location {
+	[Key(0)]
 	public Hex hex;
 }

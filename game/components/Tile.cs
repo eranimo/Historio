@@ -3,6 +3,7 @@ using RelEcs;
 using System.Reactive.Subjects;
 using System.Collections.Generic;
 using Godot;
+using MessagePack;
 
 public static class Tile {
 	public enum BiomeType {
@@ -31,23 +32,23 @@ public enum TileSideFeature {
 	StreamFord,
 }
 
-[Serializable]
+[MessagePackObject]
 public class TileData {
-	public float height;
-	public float temperature;
-	public float rainfall;
+	[Key(0)] public float height;
+	[Key(1)] public float temperature;
+	[Key(2)] public float rainfall;
 
-	public Tile.BiomeType biome;
-	public Tile.TerrainType terrain;
-	public Tile.FeatureType feature;
+	[Key(3)] public Tile.BiomeType biome;
+	[Key(4)] public Tile.TerrainType terrain;
+	[Key(5)] public Tile.FeatureType feature;
 
-	public Dictionary<HexDirection, bool> riverSegments = new Dictionary<HexDirection, bool>();
+	[Key(6)] public Dictionary<HexDirection, bool> riverSegments = new Dictionary<HexDirection, bool>();
 
-	public float soilFertility = 1000f;
-	public float plantSpace = 5000f;
-	public float plantSpaceUsed = 0f;
-	public float animalSpace = 1000f;
-	public float animalSpaceUsed = 0f;
+	[Key(8)] public float soilFertility = 1000f;
+	[Key(9)] public float plantSpace = 5000f;
+	[Key(10)] public float plantSpaceUsed = 0f;
+	[Key(11)] public float animalSpace = 1000f;
+	[Key(12)] public float animalSpaceUsed = 0f;
 
 	public int? GetTerrainTilesetIndex() {
 		switch (biome) {
@@ -67,12 +68,14 @@ public class TileData {
 		return null;
 	}
 
+	[IgnoreMember]
 	public bool IsLand {
 		get {
 			return biome != Tile.BiomeType.Ocean && biome != Tile.BiomeType.Coast;
 		}
 	}
 
+	[IgnoreMember]
 	public float movementCost {
 		get {
 			return 5f;
@@ -95,19 +98,19 @@ public class TileData {
 	}
 }
 
-[Serializable]
 public class TileViewState {
 	public Dictionary<Entity, ViewState> countriesToViewStates = new Dictionary<Entity, ViewState>();
 }
 
 // Added to entities with Hex components to propagate areas where that country is "observing" a tile
-[Serializable]
+[MessagePackObject]
 public class ViewStateNode {
+	[Key(0)]
 	public int range;
 }
 
 // relation on entity that has a ViewStateNode to Country entity
-[Serializable]
+[MessagePackObject]
 public class ViewStateOwner {}
 
 

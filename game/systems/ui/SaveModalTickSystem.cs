@@ -22,6 +22,7 @@ public class SaveModalTickSystem : ISystem {
 			var player = this.GetElement<Player>();
 			var gameDate = this.GetElement<GameDate>();
 			var countryName = this.GetComponent<CountryData>(player.playerCountry).name;
+			var worldData = this.GetElement<WorldData>();
 
 			var nameSanitized = System.IO.Path.GetInvalidFileNameChars().Aggregate(e.name, (f, c) => f.Replace(c, '_'));
 			var entry = new SavedGameEntryMetadata {

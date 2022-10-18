@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Godot;
+using MessagePack;
 
 public enum HexDirection {
 	SouthEast = 0,
@@ -242,15 +243,22 @@ public struct FractionalCubeCoord {
 
 }
 
-[Serializable]
+[MessagePackObject]
 public class Hex {
 	public Hex() {}
+
+	[SerializationConstructor]
 	public Hex(int col, int row) {
 		this.col = col;
 		this.row = row;
 	}
+
+	[Key(0)]
 	public readonly int col;
+
+	[Key(1)]
 	public readonly int row;
+
 	static public int EVEN = 1;
 	static public int ODD = -1;
 

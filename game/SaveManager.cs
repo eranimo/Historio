@@ -3,65 +3,91 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
+using MessagePack;
 
-[Serializable]
+[MessagePackObject]
 public class SavedGameMetadata {
+	[Key(0)]
 	public string name; // directory filename
+	[Key(1)]
 	public List<SavedGameEntryMetadata> saves = new List<SavedGameEntryMetadata>();
 }
 
-[Serializable]
+[MessagePackObject]
 public class SavedGameEntryMetadata {
+	[Key(0)]
 	public string name; // also filename
+	[Key(1)]
 	public string saveName;
+	[Key(2)]
 	public string countryName;
+	[Key(3)]
 	public int dayTicks;
+	[Key(4)]
 	public DateTime saveDate;
 }
 
-[Serializable]
+[MessagePackObject]
 public class SavedGameEntry {
+	[Key(0)]
 	public SavedGameEntryMetadata metadata;
+	[Key(1)]
 	public SaveData saveData;
 }
 
-[Serializable]
+[MessagePackObject]
 public class SerializedComponent {
+	[Key(0)]
 	public Type type;
+	[Key(1)]
 	public object component;
 }
 
-[Serializable]
+[MessagePackObject]
 public class SerializedRelation {
+	[Key(0)]
 	public Type type;
+	[Key(1)]
 	public object relation;
+	[Key(2)]
 	public int entity;
 }
 
-[Serializable]
+[MessagePackObject]
 public class SerializedEntity {
+	[Key(0)]
 	public int id;
+	[Key(1)]
 	public List<SerializedComponent> components = new List<SerializedComponent>();
+	[Key(2)]
 	public List<SerializedRelation> relations = new List<SerializedRelation>();
 }
 
-[Serializable]
-public class SerializedTile {
-	public Location location;
+[MessagePackObject]
+public struct SerializedTile {
+	[Key(0)]
+	public Hex hex;
+	[Key(1)]
 	public TileData tileData;
+	[Key(2)]
 	public Dictionary<int, ViewState> countriesToViewStates;
 }
 
-[Serializable]
-public class SerializedWorld {
+[MessagePackObject]
+public struct SerializedWorld {
+	[Key(0)]
 	public WorldData worldData;
-	public List<SerializedTile> tiles = new List<SerializedTile>();
+	[Key(1)]
+	public List<SerializedTile> tiles;
 }
 
-[Serializable]
+[MessagePackObject]
 public class SaveData {
+	[Key(0)]
 	public Dictionary<int, SerializedEntity> entities = new Dictionary<int, SerializedEntity>();
+	[Key(1)]
 	public int playerCountryID;
+	[Key(2)]
 	public SerializedWorld world;
 
 	public void Save(ISystem system) {
@@ -96,8 +122,10 @@ public class SaveData {
 			entities[serializedEntity.id] = serializedEntity;
 		}
 
-		world = new SerializedWorld();
-		world.worldData = system.GetElement<WorldData>();
+		world = new SerializedWorld {
+			worldData = system.GetElement<WorldData>(),
+			tiles = new List<SerializedTile>(),
+		};
 		var tiles = system.Query<Location, TileViewState, TileData>();
 		foreach (var (loc, tileViewState, tileData) in tiles) {
 			var countriesToViewStates = new Dictionary<int, ViewState>();
@@ -105,7 +133,7 @@ public class SaveData {
 				countriesToViewStates[entity.Identity.Id] = viewState;
 			}
 			world.tiles.Add(new SerializedTile {
-				location = loc,
+				hex = loc.hex,
 				tileData = tileData,
 				countriesToViewStates = countriesToViewStates,
 			});
@@ -151,19 +179,29 @@ public class SaveData {
 		// add components on entities
 		foreach (var (entityID, serializedEntity) in entities) {
 			var builder = system.On(newEntities[entityID]);
-			foreach (var item in serializedEntity.components) {
-				var addMethodG = addMethodComponent.MakeGenericMethod(new Type[] { item.type });
-				addMethodG.Invoke(builder, new object[] { item.component });
-			}
-			foreach (var item in serializedEntity.relations) {
-				var entity = newEntities[item.entity];
-				if (item.relation is null) {
-					var addMethodG = addMethodRelation.MakeGenericMethod(new Type[] { item.type });
-					addMethodG.Invoke(builder, new object[] { entity });
-				} else {
-					var addMethodG = addMethodRelationWithData.MakeGenericMethod(new Type[] { item.type });
-					addMethodG.Invoke(builder, new object[] { item.relation, entity });
+			try {
+				foreach (var item in serializedEntity.components) {
+					var addMethodG = addMethodComponent.MakeGenericMethod(new Type[] { item.type });
+					// TODO: figure out why I need to create a new instance of the object and copy over the properties
+					var comp = Activator.CreateInstance(item.type);
+					foreach (var prop in comp.GetType().GetProperties()) {
+						prop.SetValue(comp, item.component.GetType().GetProperty(prop.Name));
+					}
+					addMethodG.Invoke(builder, new object[] { comp });
 				}
+				foreach (var item in serializedEntity.relations) {
+					var entity = newEntities[item.entity];
+					if (item.relation is null) {
+						var addMethodG = addMethodRelation.MakeGenericMethod(new Type[] { item.type });
+						addMethodG.Invoke(builder, new object[] { entity });
+					} else {
+						var addMethodG = addMethodRelationWithData.MakeGenericMethod(new Type[] { item.type });
+						addMethodG.Invoke(builder, new object[] { item.relation, entity });
+					}
+				}
+			} catch (Exception err) {
+				Godot.GD.PrintS($"(SaveManager) Failed to load entity ({entityID})");
+				Godot.GD.PrintErr(err);
 			}
 		}
 
@@ -174,16 +212,20 @@ public class SaveData {
 
 		// deserialize world
 		system.AddElement<WorldData>(world.worldData);
+		var worldService = system.GetElement<WorldService>();
+		worldService.initWorld(world.worldData.worldSize);
 		foreach (var tile in world.tiles) {
 			var tileViewState = new TileViewState();
 			foreach (var (entityID, viewState) in tile.countriesToViewStates) {
 				var country = newEntities[entityID];
 				tileViewState.countriesToViewStates[country] = viewState;
 			}
-			system.Spawn()
-				.Add(tile.location)
+			var entity = system.Spawn()
+				.Add(new Location { hex = tile.hex })
 				.Add(tile.tileData)
-				.Add(tileViewState);
+				.Add(tileViewState).Id();
+
+			worldService.AddTile(tile.hex, entity);
 		}
 
 
@@ -200,13 +242,9 @@ SaveManager represents a save system where each saved game represents multiple s
 		- "saves" dir, holding files that are serialized SavedGameData structs
 */
 public class SaveManager {
-	private BinaryFormatter formatter;
 	private readonly string SAVE_GAME_FOLDER = "user://saved_games";
 	private readonly string SAVE_METADATA_FILENAME = "metadata.dat";
 
-	public SaveManager() {
-		formatter = new BinaryFormatter();
-	}
 
 	public List<SavedGameMetadata> GetSaves() {
 		var saves = new List<SavedGameMetadata>();
@@ -220,7 +258,7 @@ public class SaveManager {
 				try {
 					var path = Path.Combine(name, SAVE_METADATA_FILENAME);
 					var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-					SavedGameMetadata savedGame = (SavedGameMetadata) formatter.Deserialize(stream);
+					SavedGameMetadata savedGame = MessagePackSerializer.Deserialize<SavedGameMetadata>(stream);
 					saves.Add(savedGame);
 					stream.Close();
 				} catch (FileNotFoundException) {};
@@ -239,11 +277,12 @@ public class SaveManager {
 		Directory.CreateDirectory(Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}"));
 		var path = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}/{SAVE_METADATA_FILENAME}");
 		var stream = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-		formatter.Serialize(stream, savedGame);
+		MessagePackSerializer.Serialize(stream, savedGame);
 		stream.Close();
 	}
 
 	public void SaveGame(Game game, SaveData saveData, SavedGameEntryMetadata saveMetadata) {
+		var watch = System.Diagnostics.Stopwatch.StartNew();
 		// add metadata for new save
 		var saveDate = DateTime.Now;
 		game.savedGame.saves.Add(saveMetadata);
@@ -261,10 +300,17 @@ public class SaveManager {
 			metadata = saveMetadata,
 			saveData = saveData
 		};
-		
+
 		var stream = new FileStream(saveEntryPath, FileMode.Create, FileAccess.Write, FileShare.None);
-		formatter.Serialize(stream, saveEntry);
-		Godot.GD.PrintS("(SaveService) Saved game save at", saveEntryPath);
+		MessagePackSerializer.Serialize(stream, saveEntry);
+
+		// JSON debugging
+		var p = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{game.savedGame.name}/saves/{saveMetadata.name}.json");
+		var s = new FileStream(p, FileMode.Create, FileAccess.Write, FileShare.None);
+		var textWriter = new StreamWriter(s);
+		MessagePackSerializer.SerializeToJson(textWriter, saveEntry);
+
+		Godot.GD.PrintS($"(SaveService) Saved game save at {saveEntryPath} in {watch.ElapsedMilliseconds}ms");
 		stream.Close();
 	}
 
@@ -287,11 +333,12 @@ public class SaveManager {
 	}
 
 	public SavedGameEntry LoadGame(SavedGameMetadata savedGame, SavedGameEntryMetadata saveMetadata) {
+		var watch = System.Diagnostics.Stopwatch.StartNew();
 		var saveFilePath = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{savedGame.name}/saves/{saveMetadata.name}.sav");
-		Godot.GD.PrintS("(SaveService) Loading game save at", saveFilePath);
 		var stream = new FileStream(saveFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-		SavedGameEntry saveGameEntry = (SavedGameEntry) formatter.Deserialize(stream);
+		SavedGameEntry saveGameEntry = MessagePackSerializer.Deserialize<SavedGameEntry>(stream);
 		stream.Close();
+		Godot.GD.PrintS($"(SaveService) Loading game save at {saveFilePath} in {watch.ElapsedMilliseconds}ms");
 		return saveGameEntry;
 	}
 }
