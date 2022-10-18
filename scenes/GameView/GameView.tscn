@@ -60,6 +60,7 @@ text = "Starting Game"
 align = 1
 
 [node name="Desc" type="Label" parent="LoadingDisplay/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 65.0
 margin_right = 270.0
 margin_bottom = 80.0
@@ -68,6 +69,7 @@ text = "Retictulating Splines"
 align = 1
 
 [node name="ProgressBar" type="ProgressBar" parent="LoadingDisplay/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 margin_top = 84.0
 margin_right = 270.0
 margin_bottom = 105.0

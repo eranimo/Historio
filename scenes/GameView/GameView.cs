@@ -53,8 +53,8 @@ public class GameView : Control {
 	private LoadState loadState;
 
 	public override void _Ready() {
-		desc = (Label) GetNode("LoadingDisplay/MarginContainer/VBoxContainer/Desc");
-		progress = (ProgressBar) GetNode("LoadingDisplay/MarginContainer/VBoxContainer/ProgressBar");
+		desc = (Label) GetNode("%Desc");
+		progress = (ProgressBar) GetNode("%ProgressBar");
 
 		var gameControllerScene = (PackedScene) ResourceLoader.Load("res://scenes/GameView/GameController.tscn");
 		GameController = (GameController) gameControllerScene.Instance();
@@ -71,6 +71,11 @@ public class GameView : Control {
 			GD.PrintS("(GameView) load game");
 			handleLoadGame();
 		}
+	}
+
+	public override void _ExitTree() {
+		base._ExitTree();
+		GameController.QueueFree();
 	}
 
 	public override void _Input(InputEvent @event) {
@@ -114,24 +119,20 @@ public class GameView : Control {
 			savedGame = loadState.savedGame,
 			saveEntry = loadState.saveEntry,
 		});
+		desc.Text = "Loading game";
+		progress.Value = 0;
+
 
 		game.OnGameLoaded += (SavedGameEntry entry) => {
-			onGameLoaded(entry);
 			GD.PrintS($"(GameView) on game loaded: {watch.ElapsedMilliseconds}ms");
+			desc.Text = "Loaded game";
+			progress.Value = 100;
+			CallDeferred("add_child", GameController);
 		};
 
 		game.Init();
-
-		desc.Text = "Loading game";
-		progress.Value = 0;
 		loadState.savedGame = null;
 		loadState.saveEntry = null;
-	}
-
-	private void onGameLoaded(SavedGameEntry entry) {
-		desc.Text = "Loaded game";
-		progress.Value = 100;
-		CallDeferred("add_child", GameController);
 	}
 
 	/*

@@ -103,7 +103,12 @@ public class LoadGameModal : Control {
 		var loadState = (LoadState) GetTree().Root.GetNode("LoadState");
 		loadState.savedGame = savedGame;
 		loadState.saveEntry = saveEntry;
-		GetTree().ChangeScene("res://scenes/GameView/GameView.tscn");
+		GetTree().Paused = false;
+		if (GetTree().CurrentScene.Name == "GameView") { 
+			GetTree().ReloadCurrentScene();
+		} else {
+			GetTree().ChangeScene("res://scenes/GameView/GameView.tscn");
+		}
 	}
 
 	public override void _UnhandledInput(InputEvent @event) {
