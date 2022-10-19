@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using RelEcs;
 using System;
 using Godot;
+using System.Linq;
 
 public class PhysicsDelta {
 	public float delta;
@@ -22,6 +23,28 @@ public class DebugDaySystem : ISystem {
 
 	public void Run() {
 		this.GetElement<GameController>().PrintStrayNodes();
+	}
+}
+
+public static class QueryExtensions {
+	public static int Count<T>(this Query<T> query) where T : class {
+		int c = 0;
+		foreach (var item in query) {
+			c++;
+		}
+		return c;
+	}
+}
+
+public class DebugStartSystem : ISystem {
+	public RelEcs.World World { get; set; }
+
+	public void Run() {
+		GD.PrintS("(DebugStartSystem) entity counts:");
+		
+		GD.PrintS("\t Tiles:", this.Query<TileData>().Count());
+		GD.PrintS("\t Countries:", this.Query<CountryData>().Count());
+		GD.PrintS("\t Units:", this.Query<UnitData>().Count());
 	}
 }
 
@@ -70,6 +93,7 @@ public class GameManager {
 			.Add(new SaveSystem());
 	
 		startSystems
+			.Add(new DebugStartSystem())
 			.Add(new ViewStateStartSystem())
 			.Add(new PlayerStartSystem());
 
