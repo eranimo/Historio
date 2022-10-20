@@ -98,10 +98,6 @@ public class TileData {
 	}
 }
 
-public class TileViewState {
-	public Dictionary<Entity, ViewState> countriesToViewStates = new Dictionary<Entity, ViewState>();
-}
-
 // Added to entities with Hex components to propagate areas where that country is "observing" a tile
 [MessagePackObject]
 public class ViewStateNode {
@@ -122,4 +118,21 @@ public class ViewStateNodeUpdated {
 // trigger when Country view state is updated
 public class ViewStateUpdated {
 	public Entity country;
+}
+
+public enum ViewState {
+	Unexplored,
+	Unobserved,
+	Observed,
+}
+
+public static class ViewStateMethods {
+	public static int GetTileMapTile(this ViewState tileViewState) {
+		if (tileViewState == ViewState.Unexplored) {
+			return 0;
+		} else if (tileViewState == ViewState.Unobserved) {
+			return 1;
+		}
+		return -1;
+	}
 }

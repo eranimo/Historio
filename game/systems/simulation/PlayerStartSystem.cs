@@ -5,14 +5,14 @@ public class PlayerStartSystem : ISystem {
 		var gameMap = this.GetElement<GameMap>();
 		// center the game map on the player's capital settlement
 		var player = this.GetElement<Player>();
-		var capitals = this.QueryBuilder<Entity, SettlementData>().Has<CapitalSettlement>(player.playerCountry).Build();
-		foreach (var (capital, settlementData) in capitals) {
-			var tilesInSettlement = this.QueryBuilder<Location>().Has<SettlementTile>(capital).Build();
-			var hexes = new List<Hex>();
-			foreach (var location in tilesInSettlement) {
-				hexes.Add(location.hex);
-			}
-			gameMap.centerCamera(gameMap.layout.Centroid(hexes).ToVector());
+		var playerOwnedTiles = this.QueryBuilder<Location>()
+			.Has<CountryTile>(player.playerCountry)
+			.Build();
+		var hexes = new List<Hex>();
+		foreach (var location in playerOwnedTiles) {
+			hexes.Add(location.hex);
 		}
+		Godot.GD.PrintS("(PlayerStartSystem) Center on player country territory");
+		gameMap.centerCamera(gameMap.layout.Centroid(hexes).ToVector());
 	}
 }

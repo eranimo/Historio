@@ -114,7 +114,6 @@ public class WorldGenerator : IGeneratorStep {
 				manager.Spawn()
 					.Add<Location>(new Location { hex = hex, })
 					.Add<TileData>(tileData)
-					.Add(new TileViewState())
 					.Id()
 			);
 		}

@@ -88,21 +88,25 @@ public class CountryGenerator : IGeneratorStep {
 			var capitalName = nameFactory.GetName();
 			var capitalData = new SettlementData {
 				name = capitalName,
-				ownerCountry = country,
 			};
 			var capital = manager.Spawn()
 				.Add<SettlementData>(capitalData)
-				.Add<CapitalSettlement>(new CapitalSettlement(), country)
+				.Add<CapitalSettlement>(country)
+				.Add<SettlementOwner>(country)
 				.Id();
 
 			foreach (var tile in territoryHexes) {
-				manager.On(tile)
-					.Add(new CountryTile(), country)
-					.Add(new SettlementTile(), capital)
+				var hex = manager.Get<Location>(tile).hex;
+				var countryTile = manager.Spawn()
+					.Add(new Location { hex = hex })
 					.Add(new ViewStateNode { range = 3 })
-					.Add<ViewStateOwner>(country);
-				manager.state.Send(new TileBorderUpdate { settlement = capital, tile = tile });
-				manager.state.Send(new ViewStateNodeUpdated { entity = tile });
+					.Add<CountryTile>(country)
+					.Add<ViewStateOwner>(country)
+					.Add<CountryTileSettlement>(capital)
+					.Id();
+
+				manager.state.Send(new SettlementBorderUpdated { settlement = capital, countryTile = countryTile });
+				manager.state.Send(new ViewStateNodeUpdated { entity = countryTile });
 			}
 		}
 	}

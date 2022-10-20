@@ -63,174 +63,216 @@ public class SerializedEntity {
 	public List<SerializedRelation> relations = new List<SerializedRelation>();
 }
 
-[MessagePackObject]
-public struct SerializedTile {
-	[Key(0)]
-	public Hex hex;
-	[Key(1)]
-	public TileData tileData;
-	[Key(2)]
-	public Dictionary<int, ViewState> countriesToViewStates;
+[MessagePack.Union(0, typeof(SerializedWorld))]
+[MessagePack.Union(1, typeof(SerializedCountries))]
+public abstract class SerializedState {
+	public abstract void Save(ISystem system);
+	public abstract void Load(ISystem system);
 }
 
 [MessagePackObject]
-public struct SerializedWorld {
+public class SerializedWorld : SerializedState {
+	[MessagePackObject]
+	public struct SerializedTile {
+		[Key(0)]
+		public Hex hex;
+
+		[Key(1)]
+		public TileData tileData;
+	}
+
 	[Key(0)]
 	public WorldData worldData;
+
 	[Key(1)]
-	public List<SerializedTile> tiles;
+	public List<SerializedTile> tiles = new List<SerializedTile>();
+
+	public override void Save(ISystem system) {
+		worldData = system.GetElement<WorldData>();
+		var query = system.Query<Location, TileData>();
+		foreach (var (loc, tileData) in query) {
+			tiles.Add(new SerializedTile {
+				hex = loc.hex,
+				tileData = tileData,
+			});
+		}
+	}
+
+	public override void Load(ISystem system) {
+		system.AddElement<WorldData>(worldData);
+		var worldService = system.GetElement<WorldService>();
+		worldService.initWorld(worldData.worldSize);
+		foreach (var tile in tiles) {
+			var entity = system.Spawn()
+				.Add(new Location { hex = tile.hex })
+				.Add(tile.tileData)
+				.Id();
+
+			worldService.AddTile(tile.hex, entity);
+		}
+
+		system.GetElement<PathfindingService>().setup();
+	}
+}
+
+[MessagePackObject]
+public class SerializedCountries : SerializedState {
+	[MessagePackObject]
+	public class SerializedCountry {
+		[Key(0)]
+		public CountryData countryData;
+	}
+
+	[MessagePackObject]
+	public class SerializedCountryTile {
+		[Key(0)]
+		public int ownerCountry;
+
+		[Key(1)]
+		public ViewStateNode viewStateNode;
+
+		[Key(2)]
+		public Location location;
+
+		[Key(3)]
+		public int ownerSettlement;
+	}
+
+	[MessagePackObject]
+	public class SerializedSettlement {
+		[Key(0)]
+		public int ownerCountry;
+
+		[Key(1)]
+		public SettlementData settlementData;
+
+		[Key(2)]
+		public bool isCapital;
+	}
+
+	[Key(0)]
+	public int playerCountry;
+
+	[Key(1)]
+	public Dictionary<int, SerializedCountry> countries = new Dictionary<int, SerializedCountry>();
+
+	[Key(2)]
+	public Dictionary<int, SerializedSettlement> settlements = new Dictionary<int, SerializedSettlement>();
+	
+	[Key(3)]
+	public Dictionary<int, SerializedCountryTile> countryTiles = new Dictionary<int, SerializedCountryTile>();
+
+	
+
+	public override void Save(ISystem system) {
+		countries.Clear();
+		var player = system.GetElement<Player>();
+		foreach (var (country, countryData) in system.Query<Entity, CountryData>()) {
+			// serialize Countries
+			countries[country.Identity.Id] = new SerializedCountry {
+				countryData = countryData,
+			};
+
+			// serialize Settlements
+			var settlementQuery = system
+				.QueryBuilder<Entity, SettlementData>()
+				.Has<SettlementOwner>(country)
+				.Build();
+
+			foreach (var (settlement, settlementData) in settlementQuery) {
+				settlements[settlement.Identity.Id] = new SerializedSettlement {
+					ownerCountry = country.Identity.Id,
+					settlementData = settlementData,
+					isCapital = system.HasComponent<CapitalSettlement>(settlement),
+				};
+			}
+			
+			// serialize Settlement Tiles
+			var tilesQuery = system
+				.QueryBuilder<Entity, ViewStateNode, Location>()
+				.Has<CountryTile>(country)
+				.Build();
+
+			foreach (var (countryTile, viewStateNode, location) in tilesQuery) {
+				countryTiles[countryTile.Identity.Id] = new SerializedCountryTile {
+					ownerCountry = country.Identity.Id,
+					viewStateNode = viewStateNode,
+					location = location,
+					ownerSettlement = system.GetTarget<CountryTileSettlement>(countryTile).Identity.Id,
+				};
+			}
+
+		}
+		playerCountry = player.playerCountry.Identity.Id;
+	}
+
+	public override void Load(ISystem system) {
+		var world = system.GetElement<WorldService>();
+		var countries = new Dictionary<int, Entity>();
+		var settlements = new Dictionary<int, Entity>();
+		foreach (var (countryID, country) in this.countries) {
+			var entity = system.Spawn()
+				.Add(country.countryData)
+				.Id();
+			countries[countryID] = entity;
+
+			system.Send(new CountryAdded { country = entity });
+		}
+
+		system.AddElement<Player>(new Player {
+			playerCountry = countries[playerCountry],
+		});
+
+		foreach (var (settlementID, settlement) in this.settlements) {
+			var country = countries[settlement.ownerCountry];
+			var entity = system.Spawn()
+				.Add(settlement.settlementData)
+				.Add<SettlementOwner>(country);
+			if (settlement.isCapital) {
+				entity.Add<CapitalSettlement>();
+			}
+			settlements[settlementID] = entity.Id();
+		}
+		
+		foreach (var (countryTileID, countryTile) in this.countryTiles) {
+			var country = countries[countryTile.ownerCountry];
+			var settlement = settlements[countryTile.ownerSettlement];
+			var tile = world.GetTile(countryTile.location.hex);
+			var entity = system.Spawn()
+				.Add(countryTile.location)
+				.Add(countryTile.viewStateNode)
+				.Add<CountryTile>(country)
+				.Add<ViewStateOwner>(country)
+				.Add<CountryTileSettlement>(settlement)
+				.Id();
+
+			system.Send(new SettlementBorderUpdated {
+				settlement = settlement,
+				countryTile = entity,
+			});
+			system.Send(new ViewStateNodeUpdated { entity = entity });
+		}
+	}
 }
 
 [MessagePackObject]
 public class SaveData {
 	[Key(0)]
-	public Dictionary<int, SerializedEntity> entities = new Dictionary<int, SerializedEntity>();
-	[Key(1)]
-	public int playerCountryID;
-	[Key(2)]
-	public SerializedWorld world;
+	public List<SerializedState> state = new List<SerializedState> {
+		new SerializedWorld(),
+		new SerializedCountries(),
+	};
 
 	public void Save(ISystem system) {
-		var persisted = system.QueryBuilder<Entity>().Has<Persisted>().Build();
-
-		playerCountryID = system.GetElement<Player>().playerCountry.Identity.Id;
-
-		foreach (var entity in persisted) {
-			// Godot.GD.PrintS("Entity", entity);
-			var serializedEntity = new SerializedEntity { id = entity.Identity.Id };
-			foreach (var (type, obj) in system.GetComponents(entity)) {
-				if (type.Type == entity.GetType()) {
-					continue;
-				}
-				if (obj is Godot.Node) {
-					throw new Exception("Cannot serialize Godot Nodes");
-				} else if (type.IsRelation) {
-					// Godot.GD.PrintS("\tRelation:", type.Type, type.Identity.Id);
-					serializedEntity.relations.Add(new SerializedRelation {
-						type = type.Type,
-						relation = obj,
-						entity = type.Identity.Id
-					});
-				} else {
-					// Godot.GD.PrintS("\tComponent:", type.Type, obj);
-					serializedEntity.components.Add(new SerializedComponent {
-						type = type.Type,
-						component = obj
-					});
-				}
-			}
-			entities[serializedEntity.id] = serializedEntity;
-		}
-
-		world = new SerializedWorld {
-			worldData = system.GetElement<WorldData>(),
-			tiles = new List<SerializedTile>(),
-		};
-		var tiles = system.Query<Location, TileViewState, TileData>();
-		foreach (var (loc, tileViewState, tileData) in tiles) {
-			var countriesToViewStates = new Dictionary<int, ViewState>();
-			foreach (var (entity, viewState) in tileViewState.countriesToViewStates) {
-				countriesToViewStates[entity.Identity.Id] = viewState;
-			}
-			world.tiles.Add(new SerializedTile {
-				hex = loc.hex,
-				tileData = tileData,
-				countriesToViewStates = countriesToViewStates,
-			});
+		foreach (var serializedState in state) {
+			serializedState.Save(system);
 		}
 	}
 
 	public void Load(ISystem system) {
-		var newEntities = new Dictionary<int, Entity>();
-
-		// remove all entities
-		var persisted = system.QueryBuilder<Entity>().Has<Persisted>().Build();
-		foreach (var e in persisted) {
-			system.Despawn(e);
+		foreach (var serializedState in state) {
+			serializedState.Load(system);
 		}
-
-		// find methods
-		var addMethods = typeof(EntityBuilder)
-			.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-			.Where(x => x.Name == "Add");
-
-		var addMethodRelation = addMethods
-			.Single(x => x.IsGenericMethodDefinition
-				&& x.GetParameters().Length == 1
-				&& x.GetParameters()[0].ParameterType == typeof(Entity)
-			);
-		var addMethodRelationWithData = addMethods
-			.Single(x => x.IsGenericMethodDefinition
-				&& x.GetParameters().Length == 2
-				&& x.GetParameters()[1].ParameterType == typeof(Entity)
-			);
-		var addMethodComponent = addMethods
-			.Single(x => x.IsGenericMethodDefinition
-				&& x.GetParameters().Length == 1
-				&& x.GetParameters()[0].ParameterType.IsGenericParameter
-			);
-
-	
-		// spawn components
-		foreach (var (entityID, serializedEntity) in entities) {
-			newEntities[entityID] = system.Spawn().Id();
-		}
-
-		// add components on entities
-		foreach (var (entityID, serializedEntity) in entities) {
-			var builder = system.On(newEntities[entityID]);
-			try {
-				foreach (var item in serializedEntity.components) {
-					var addMethodG = addMethodComponent.MakeGenericMethod(new Type[] { item.type });
-					// TODO: figure out why I need to create a new instance of the object and copy over the properties
-					var comp = Activator.CreateInstance(item.type);
-					foreach (var prop in comp.GetType().GetProperties()) {
-						prop.SetValue(comp, item.component.GetType().GetProperty(prop.Name));
-					}
-					addMethodG.Invoke(builder, new object[] { comp });
-				}
-				foreach (var item in serializedEntity.relations) {
-					var entity = newEntities[item.entity];
-					if (item.relation is null) {
-						var addMethodG = addMethodRelation.MakeGenericMethod(new Type[] { item.type });
-						addMethodG.Invoke(builder, new object[] { entity });
-					} else {
-						var addMethodG = addMethodRelationWithData.MakeGenericMethod(new Type[] { item.type });
-						addMethodG.Invoke(builder, new object[] { item.relation, entity });
-					}
-				}
-			} catch (Exception err) {
-				Godot.GD.PrintS($"(SaveManager) Failed to load entity ({entityID})");
-				Godot.GD.PrintErr(err);
-			}
-		}
-
-		// add player
-		system.AddElement<Player>(new Player {
-			playerCountry = newEntities[playerCountryID],
-		});
-
-		// deserialize world
-		system.AddElement<WorldData>(world.worldData);
-		var worldService = system.GetElement<WorldService>();
-		worldService.initWorld(world.worldData.worldSize);
-		foreach (var tile in world.tiles) {
-			var tileViewState = new TileViewState();
-			foreach (var (entityID, viewState) in tile.countriesToViewStates) {
-				var country = newEntities[entityID];
-				tileViewState.countriesToViewStates[country] = viewState;
-			}
-			var entity = system.Spawn()
-				.Add(new Location { hex = tile.hex })
-				.Add(tile.tileData)
-				.Add(tileViewState).Id();
-
-			worldService.AddTile(tile.hex, entity);
-		}
-
-
-		// setup after load
-		system.GetElement<PathfindingService>().setup();
 	}
 }
 
@@ -305,10 +347,10 @@ public class SaveManager {
 		MessagePackSerializer.Serialize(stream, saveEntry);
 
 		// JSON debugging
-		var p = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{game.savedGame.name}/saves/{saveMetadata.name}.json");
-		var s = new FileStream(p, FileMode.Create, FileAccess.Write, FileShare.None);
-		var textWriter = new StreamWriter(s);
-		MessagePackSerializer.SerializeToJson(textWriter, saveEntry);
+		// var p = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{game.savedGame.name}/saves/{saveMetadata.name}.json");
+		// var s = new FileStream(p, FileMode.Create, FileAccess.Write, FileShare.None);
+		// var textWriter = new StreamWriter(s);
+		// MessagePackSerializer.SerializeToJson(textWriter, saveEntry);
 
 		Godot.GD.PrintS($"(SaveService) Saved game save at {saveEntryPath} in {watch.ElapsedMilliseconds}ms");
 		stream.Close();

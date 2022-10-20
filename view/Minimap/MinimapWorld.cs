@@ -14,6 +14,7 @@ public class MinimapWorld : Control  {
 
 	public override void _Ready() {
 		MinimapCanvas = (ColorRect) GetNode("MinimapCanvas");
+		MinimapCanvas.Material = ResourceLoader.Load<ShaderMaterial>("res://view/Minimap/MinimapCanvasShader.tres");
 		MinimapIndicator = (MinimapIndicator) GetNode("MinimapIndicator");
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
 
@@ -70,16 +71,15 @@ public class MinimapWorld : Control  {
 		hexColorsImage.Lock();
 
 		var player = game.manager.state.GetElement<Player>();
-		var mapViewState = game.manager.state.GetElement<ViewStateService>();
-		var playerViewState = mapViewState.getViewState(player.playerCountry);
+		var playerCountry = game.manager.Get<CountryData>(player.playerCountry);
 
 		foreach (Entity tile in game.manager.world.tiles) {
 			var hex = gameView.game.manager.Get<Location>(tile).hex;
 			var color = gameView.game.manager.Get<TileData>(tile).GetMinimapColor();
-			var tileViewState = playerViewState.get(tile);
-			if (tileViewState == ViewState.Unobserved) {
+			if (playerCountry.observedHexes.Contains(hex)) {
+			} else if (playerCountry.exploredHexes.Contains(hex)) {
 				color = color.Darkened(UNOBSERVED_DARKEN_AMOUNT);
-			} else if (tileViewState == ViewState.Unexplored) {
+			} else {
 				color = COLOR_UNEXPLORED;
 			}
 			hexColorsImage.SetPixel(hex.col, hex.row, color);

@@ -7,40 +7,53 @@ public class ViewStatePlaySystem : ISystem {
 
 	public void Run() {
 		var gameMap = this.GetElement<GameMap>();
-		var mapViewState = this.GetElement<ViewStateService>();
 		var player = this.GetElement<Player>();
 
-		foreach (var e in this.Receive<CountryAdded>()) {
-			mapViewState.add(e.country);
-		}
-
-		// TODO: remove view state when country removed
-
-		var changedCountryTiles = new Dictionary<Entity, List<Entity>>();
+		var changedCountries = new HashSet<Entity>();
 		
 		foreach (var e in this.Receive<ViewStateNodeUpdated>()) {
-			var viewStateNode = this.GetComponent<ViewStateNode>(e.entity);
 			var viewStateOwner = this.GetTarget<ViewStateOwner>(e.entity);
-			mapViewState.getViewState(viewStateOwner).addNodeEntity(e.entity);
-			if (changedCountryTiles.ContainsKey(viewStateOwner)) {
-				changedCountryTiles[viewStateOwner].Add(e.entity);
-			} else {
-				changedCountryTiles.Add(viewStateOwner, new List<Entity> { e.entity });
-			}
+			changedCountries.Add(viewStateOwner);
 		}
 
-		foreach (var (country, changedTiles) in changedCountryTiles) {
-			GD.PrintS($"(ViewStatePlaySystem) updating view state for Country {this.GetComponent<CountryData>(country).name}");
-			var countryViewState = mapViewState.getViewState(country);
-			countryViewState.CalculateChanged(changedTiles);
+		foreach (var country in changedCountries) {
+			var countryData = this.GetComponent<CountryData>(country);
+			GD.PrintS($"(ViewStatePlaySystem) updating view state for Country {countryData.name}");
+			
+			var viewStateNodes = this.QueryBuilder().Has<ViewStateNode>().Has<ViewStateOwner>(country).Build();
+
+			countryData.observedHexes.Clear();
+			foreach (var entity in viewStateNodes) {
+				var viewStateNode = this.GetComponent<ViewStateNode>(entity);
+				var location = this.GetComponent<Location>(entity);
+				var hexes = getTilesInRange(location.hex, viewStateNode.range);
+				countryData.exploredHexes.UnionWith(hexes);
+				countryData.observedHexes.UnionWith(hexes);
+			}
+
 			if (player.playerCountry == country) {
-				foreach (var tile in countryViewState.exploredTiles) {
-					var location = this.GetComponent<Location>(tile);
-					var tileViewState = countryViewState.get(tile);
-					gameMap.viewState.SetCell(location.hex.col, location.hex.row, tileViewState.GetTileMapTile());
+				foreach (var hex in countryData.exploredHexes) {
+					gameMap.viewState.SetCell(hex.col, hex.row, ViewState.Unobserved.GetTileMapTile());
+				}
+
+				foreach (var hex in countryData.observedHexes) {
+					gameMap.viewState.SetCell(hex.col, hex.row, ViewState.Observed.GetTileMapTile());
 				}
 			}
+
+			this.Send(new ViewStateUpdated { country = country });
 		}
+	}
+
+	public HashSet<Hex> getTilesInRange(Hex hex, int range) {
+		var world = this.GetElement<WorldService>();
+		var results = new HashSet<Hex> { hex };
+		foreach (var surroundingHex in hex.Bubble(range)) {
+			if (world.IsValidTile(surroundingHex)) {
+				results.Add(surroundingHex);
+			}
+		}
+		return results;
 	}
 }
 

@@ -30,6 +30,7 @@ public class MapBorders : Polygon2D {
 
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
+		this.Material = ResourceLoader.Load<ShaderMaterial>("res://scenes/GameView/MapBordersShaderMaterial.tres");
 	}
 
 	private Hex worldSize => gameMap.game.state.GetElement<WorldData>().worldSize;
@@ -65,7 +66,8 @@ public class MapBorders : Polygon2D {
 		
 		foreach (var (hex, territory) in updates) {
 			var settlementData = gameView.game.manager.Get<SettlementData>(territory);
-			var color = gameView.game.manager.Get<CountryData>(settlementData.ownerCountry).color;
+			var settlementOwner = gameView.game.manager.GetTarget<SettlementOwner>(territory);
+			var color = gameView.game.manager.Get<CountryData>(settlementOwner).color;
 			int id;
 			if (activeTerritoryEntities.ContainsKey(territory)) {
 				id = activeTerritoryEntities[territory];
@@ -89,7 +91,8 @@ public class MapBorders : Polygon2D {
 
 		foreach (var (hex, territory) in updates) {
 			var settlementData = gameView.game.manager.Get<SettlementData>(territory);
-			var color = gameView.game.manager.Get<CountryData>(settlementData.ownerCountry).color;
+			var settlementOwner = gameView.game.manager.GetTarget<SettlementOwner>(territory);
+			var color = gameView.game.manager.Get<CountryData>(settlementOwner).color;
 			int id;
 			if (activeTerritoryEntities.ContainsKey(territory)) {
 				id = activeTerritoryEntities[territory];

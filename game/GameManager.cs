@@ -44,6 +44,8 @@ public class DebugStartSystem : ISystem {
 		
 		GD.PrintS("\t Tiles:", this.Query<TileData>().Count());
 		GD.PrintS("\t Countries:", this.Query<CountryData>().Count());
+		GD.PrintS("\t Settlements:", this.Query<SettlementData>().Count());
+		GD.PrintS("\t Country Tiles:", this.Query<CountryTile>().Count());
 		GD.PrintS("\t Units:", this.Query<UnitData>().Count());
 	}
 }
@@ -115,7 +117,6 @@ public class GameManager {
 		world = new WorldService(this);
 		state = new RelEcs.World();
 		state.AddElement(new Layout(new Point(16.666, 16.165), new Point(16 + .5, 18 + .5)));
-		state.AddElement(new ViewStateService(this));
 		physicsDelta = new PhysicsDelta();
 		state.AddElement(physicsDelta);
 		state.AddElement(this);
@@ -134,12 +135,16 @@ public class GameManager {
 
 	// called when game starts
 	public void Start(GameDate date) {
-		state.AddElement<GameDate>(date);
-		Godot.GD.PrintS("(GameManager) start");
-		startSystems.Run(state);
-		tickSystems.Run(state);
-		playSystems.Run(state);
-		renderSystems.Run(state);
+		try {
+			state.AddElement<GameDate>(date);
+			Godot.GD.PrintS("(GameManager) start");
+			startSystems.Run(state);
+			tickSystems.Run(state);
+			playSystems.Run(state);
+			renderSystems.Run(state);
+		} catch (Exception err) {
+			GD.PrintErr("Error starting game: ", err);
+		}
 	}
 
 	// called when game stops
@@ -193,6 +198,10 @@ public class GameManager {
 	public T Get<T>(Entity entity, Type type) where T : class {
 		var typeIdentity = state.GetTypeIdentity(type);
 		return state.GetComponent<T>(entity.Identity, typeIdentity);
+	}
+
+	public Entity GetTarget<T>(Entity entity) where T : class {
+		return state.GetTarget<T>(entity.Identity);
 	}
 
 	public EntityBuilder Spawn() {

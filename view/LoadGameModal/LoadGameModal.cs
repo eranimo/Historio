@@ -51,7 +51,6 @@ public class LoadGameModal : Control {
 		foreach (SavedGameMetadata savedGame in savedGames) {
 			var latestSave = savedGame.saves.OrderByDescending(i => i.saveDate).First();
 			var listItem = (LoadSaveListItem) LoadSaveListItem.Instance();
-			GD.PrintS(listItem);
 			saveList.AddChild(listItem);
 			listItem.CountryName = latestSave.countryName;
 			listItem.LastSaveDate = latestSave.saveDate.ToString();
@@ -100,10 +99,12 @@ public class LoadGameModal : Control {
 	}
 
 	private void loadSave(SavedGameMetadata savedGame, SavedGameEntryMetadata saveEntry) {
+		GD.PrintS("Load game modal change scene");
+		GetTree().Paused = false;
 		var loadState = (LoadState) GetTree().Root.GetNode("LoadState");
 		loadState.savedGame = savedGame;
 		loadState.saveEntry = saveEntry;
-		GetTree().Paused = false;
+
 		if (GetTree().CurrentScene.Name == "GameView") { 
 			GetTree().ReloadCurrentScene();
 		} else {

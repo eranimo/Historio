@@ -49,8 +49,11 @@ public class GameController : Control {
 		GamePanel = (GamePanel) GetNode("GamePanel");
 		GameMenu = (GameMenu) GetNode("%GameMenu");
 
-		game.Start();
-
+		try {
+			game.Start();
+		} catch (Exception err) {
+			GD.PrintErr("Error starting game:", err);
+		}
 
 		var console = GetTree().Root.GetNode<Console>("CSharpConsole");
 

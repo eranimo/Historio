@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class MultiMap<K, V> {
+public class MultiMap<K, V> : IEnumerable<(K, List<V>)> {
 	private Dictionary<K, List<V>> dict = new Dictionary<K, List<V>>();
 
 	public void Add(K key, V value) {
@@ -15,6 +16,18 @@ public class MultiMap<K, V> {
 			list = new List<V>();
 			list.Add(value);
 			this.dict[key] = list;
+		}
+	}
+
+	public IEnumerator<(K, List<V>)> GetEnumerator() {
+		foreach (var key in Keys) {
+			yield return (key, dict[key]);
+		}
+	}
+
+	IEnumerator IEnumerable.GetEnumerator() {
+		foreach (var key in Keys) {
+			yield return (key, dict[key]);
 		}
 	}
 

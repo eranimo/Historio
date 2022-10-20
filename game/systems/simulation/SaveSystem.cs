@@ -19,6 +19,7 @@ public class SaveSystem : ISystem {
 
 		foreach (var e in this.Receive<LoadGameTrigger>()) {
 			var watch = System.Diagnostics.Stopwatch.StartNew();
+			Godot.GD.PrintS($"(SaveSystem) Starting game load");
 			var saveEntry = saveManager.LoadGame(e.savedGame, e.saveEntry);
 			game.date.SetDay(saveEntry.metadata.dayTicks);
 			saveEntry.saveData.Load(this);

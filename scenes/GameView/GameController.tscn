@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=2]
+[gd_scene load_steps=38 format=2]
 
 [ext_resource path="res://assets/terrain.tres" type="TileSet" id=1]
 [ext_resource path="res://assets/features.tres" type="TileSet" id=2]
@@ -9,7 +9,6 @@
 [ext_resource path="res://assets/grid-ui.tres" type="TileSet" id=7]
 [ext_resource path="res://scenes/GameView/GameController.cs" type="Script" id=8]
 [ext_resource path="res://scenes/GameView/MapBorders.cs" type="Script" id=9]
-[ext_resource path="res://scenes/GameView/MapBordersShader.tres" type="Shader" id=10]
 [ext_resource path="res://assets/viewstate.png" type="Texture" id=11]
 [ext_resource path="res://scenes/GameView/GameViewport.cs" type="Script" id=12]
 [ext_resource path="res://scenes/GameView/MapLabels.cs" type="Script" id=13]
@@ -25,17 +24,6 @@
 [ext_resource path="res://assets/theme.tres" type="Theme" id=23]
 [ext_resource path="res://view/Minimap/Minimap.tscn" type="PackedScene" id=24]
 [ext_resource path="res://view/GameMenu/GameMenu.tscn" type="PackedScene" id=25]
-
-[sub_resource type="ShaderMaterial" id=2]
-shader = ExtResource( 10 )
-shader_param/hexSize = null
-shader_param/gridSize = null
-shader_param/containerSize = null
-shader_param/gradientEnabled = true
-shader_param/territoryBorderThickness = 1.0
-shader_param/territoryGradientThickness = 6.0
-shader_param/territoryGradientOpacity = 0.6
-shader_param/selectedTerritory = null
 
 [sub_resource type="NoiseTexture" id=3]
 
@@ -159,7 +147,6 @@ format = 1
 script = ExtResource( 20 )
 
 [node name="MapBorders" type="Polygon2D" parent="GameViewport/Viewport/GameMap"]
-material = SubResource( 2 )
 texture = SubResource( 3 )
 script = ExtResource( 9 )
 

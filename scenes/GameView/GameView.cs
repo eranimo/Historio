@@ -113,6 +113,7 @@ public class GameView : Control {
 	*/
 	private void handleLoadGame() {
 		var watch = System.Diagnostics.Stopwatch.StartNew();
+		GD.PrintS("(GameView) handle load game");
 		game = new Game();
 		GameController.game = game;
 		game.state.Send(new LoadGameTrigger {
