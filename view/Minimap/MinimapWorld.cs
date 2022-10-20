@@ -21,6 +21,12 @@ public class MinimapWorld : Control  {
 		gameView.game.state.AddElement<MinimapWorld>(this);
 	}
 
+	public override void _ExitTree() {
+		base._ExitTree();
+		GD.PrintS("Unload material MinimapWorld");
+		MinimapCanvas.Material.Dispose();
+	}
+
 	public void UpdateMinimap() {
 		if (game is null) {
 			return;

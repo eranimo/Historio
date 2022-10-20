@@ -21,6 +21,7 @@ region = Rect2( 15, 0, 15, 15 )
 font_data = ExtResource( 2 )
 
 [node name="LoadGameModal" type="Control"]
+pause_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
 rect_pivot_offset = Vector2( -452, -49 )

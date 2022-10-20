@@ -35,39 +35,12 @@ public class SavedGameEntry {
 	public SaveData saveData;
 }
 
-[MessagePackObject]
-public class SerializedComponent {
-	[Key(0)]
-	public Type type;
-	[Key(1)]
-	public object component;
-}
-
-[MessagePackObject]
-public class SerializedRelation {
-	[Key(0)]
-	public Type type;
-	[Key(1)]
-	public object relation;
-	[Key(2)]
-	public int entity;
-}
-
-[MessagePackObject]
-public class SerializedEntity {
-	[Key(0)]
-	public int id;
-	[Key(1)]
-	public List<SerializedComponent> components = new List<SerializedComponent>();
-	[Key(2)]
-	public List<SerializedRelation> relations = new List<SerializedRelation>();
-}
-
 [MessagePack.Union(0, typeof(SerializedWorld))]
 [MessagePack.Union(1, typeof(SerializedCountries))]
+[MessagePack.Union(2, typeof(SerializedUnits))]
 public abstract class SerializedState {
 	public abstract void Save(ISystem system);
-	public abstract void Load(ISystem system);
+	public abstract void Load(ISystem system, ref LoadData loadData);
 }
 
 [MessagePackObject]
@@ -98,7 +71,7 @@ public class SerializedWorld : SerializedState {
 		}
 	}
 
-	public override void Load(ISystem system) {
+	public override void Load(ISystem system, ref LoadData loadData) {
 		system.AddElement<WorldData>(worldData);
 		var worldService = system.GetElement<WorldService>();
 		worldService.initWorld(worldData.worldSize);
@@ -162,8 +135,6 @@ public class SerializedCountries : SerializedState {
 	[Key(3)]
 	public Dictionary<int, SerializedCountryTile> countryTiles = new Dictionary<int, SerializedCountryTile>();
 
-	
-
 	public override void Save(ISystem system) {
 		countries.Clear();
 		var player = system.GetElement<Player>();
@@ -206,37 +177,39 @@ public class SerializedCountries : SerializedState {
 		playerCountry = player.playerCountry.Identity.Id;
 	}
 
-	public override void Load(ISystem system) {
+	public override void Load(ISystem system, ref LoadData loadData) {
 		var world = system.GetElement<WorldService>();
-		var countries = new Dictionary<int, Entity>();
-		var settlements = new Dictionary<int, Entity>();
+
+		// deserialize Countries
 		foreach (var (countryID, country) in this.countries) {
 			var entity = system.Spawn()
 				.Add(country.countryData)
 				.Id();
-			countries[countryID] = entity;
+			loadData.countries[countryID] = entity;
 
 			system.Send(new CountryAdded { country = entity });
 		}
 
 		system.AddElement<Player>(new Player {
-			playerCountry = countries[playerCountry],
+			playerCountry = loadData.countries[playerCountry],
 		});
 
+		// deserialize Settlements
 		foreach (var (settlementID, settlement) in this.settlements) {
-			var country = countries[settlement.ownerCountry];
+			var country = loadData.countries[settlement.ownerCountry];
 			var entity = system.Spawn()
 				.Add(settlement.settlementData)
 				.Add<SettlementOwner>(country);
 			if (settlement.isCapital) {
 				entity.Add<CapitalSettlement>();
 			}
-			settlements[settlementID] = entity.Id();
+			loadData.settlements[settlementID] = entity.Id();
 		}
 		
+		// deserialize Country Tiles
 		foreach (var (countryTileID, countryTile) in this.countryTiles) {
-			var country = countries[countryTile.ownerCountry];
-			var settlement = settlements[countryTile.ownerSettlement];
+			var country = loadData.countries[countryTile.ownerCountry];
+			var settlement = loadData.settlements[countryTile.ownerSettlement];
 			var tile = world.GetTile(countryTile.location.hex);
 			var entity = system.Spawn()
 				.Add(countryTile.location)
@@ -250,9 +223,80 @@ public class SerializedCountries : SerializedState {
 				settlement = settlement,
 				countryTile = entity,
 			});
+			loadData.countryTiles[countryTileID] = entity;
 			system.Send(new ViewStateNodeUpdated { entity = entity });
 		}
 	}
+}
+
+[MessagePackObject]
+public class SerializedUnits : SerializedState {
+	[MessagePackObject]
+	public class SerializedUnit {
+		[Key(0)]
+		public UnitData unitData;
+
+		[Key(1)]
+		public Location location;
+
+		[Key(2)]
+		public ActionQueue actionQueue;
+		
+		[Key(3)]
+		public Movement movement;
+
+		[Key(4)]
+		public ViewStateNode viewStateNode;
+
+		[Key(5)]
+		public int ownerCountry;
+	}
+
+	[Key(0)]
+	private Dictionary<int, SerializedUnit> units = new Dictionary<int, SerializedUnit>();
+
+	public override void Save(ISystem system) {
+		var unitQuery = system.Query<Entity, UnitData, Location, ActionQueue, Movement, ViewStateNode>();
+
+		foreach (var (entity, unitData, location, actionQueue, movement, viewStateNode) in unitQuery) {
+			units[entity.Identity.Id] = new SerializedUnit {
+				unitData = unitData,
+				location = location,
+				actionQueue = actionQueue,
+				movement = movement,
+				viewStateNode = viewStateNode,
+				ownerCountry = system.GetTarget<UnitCountry>(entity).Identity.Id,
+			};
+		}
+		Godot.GD.PrintS($"Saved {units.Count} units");
+	}
+
+	public override void Load(ISystem system, ref LoadData loadData) {
+		Godot.GD.PrintS($"Loaded {units.Count} units");
+		foreach (var (unitID, serializedUnit) in units) {
+			var entity = system.Spawn()
+				.Add(serializedUnit.unitData)
+				.Add(serializedUnit.location)
+				.Add(serializedUnit.actionQueue)
+				.Add(serializedUnit.movement)
+				.Add(serializedUnit.viewStateNode)
+				.Add<UnitCountry>(loadData.countries[serializedUnit.ownerCountry])
+				.Add<ViewStateOwner>(loadData.countries[serializedUnit.ownerCountry])
+				.Id();
+			loadData.units[unitID] = entity;
+
+			system.Send(new UnitAdded { unit = entity });
+			system.Send(new ViewStateNodeUpdated { entity = entity });
+		}
+		Godot.GD.PrintS($"Deserialized {loadData.units.Count} units");
+	}
+}
+
+public class LoadData {
+	public Dictionary<int, Entity> countries = new Dictionary<int, Entity>();
+	public Dictionary<int, Entity> settlements = new Dictionary<int, Entity>();
+	public Dictionary<int, Entity> countryTiles = new Dictionary<int, Entity>();
+	public Dictionary<int, Entity> units = new Dictionary<int, Entity>();
 }
 
 [MessagePackObject]
@@ -261,6 +305,7 @@ public class SaveData {
 	public List<SerializedState> state = new List<SerializedState> {
 		new SerializedWorld(),
 		new SerializedCountries(),
+		new SerializedUnits()
 	};
 
 	public void Save(ISystem system) {
@@ -270,8 +315,14 @@ public class SaveData {
 	}
 
 	public void Load(ISystem system) {
+		var loadData = new LoadData();
 		foreach (var serializedState in state) {
-			serializedState.Load(system);
+			try {
+				serializedState.Load(system, ref loadData);
+			} catch (Exception err) {
+				Godot.GD.PrintErr($"(SaveData) Failed to load state {serializedState.GetType().Name}");
+				Godot.GD.PrintErr(err);
+			}
 		}
 	}
 }

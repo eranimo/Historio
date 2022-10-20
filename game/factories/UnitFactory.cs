@@ -8,12 +8,12 @@ public class UnitFactory : Factory {
 	) {
 		var unit = Spawn()
 			.Add(new UnitData { type = unitType })
-			.Add<UnitCountry>(ownerCountry)
 			.Add(new Location { hex = hex })
 			.Add(new ActionQueue())
 			.Add(new Movement())
 			.Add(new ViewStateNode { range = 2 })
 			.Add<ViewStateOwner>(ownerCountry)
+			.Add<UnitCountry>(ownerCountry)
 			.Add<Persisted>()
 			.Id();
 

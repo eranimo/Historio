@@ -33,6 +33,12 @@ public class MapBorders : Polygon2D {
 		this.Material = ResourceLoader.Load<ShaderMaterial>("res://scenes/GameView/MapBordersShaderMaterial.tres");
 	}
 
+	public override void _ExitTree() {
+		base._ExitTree();
+		GD.PrintS("Unload material MapBorders");
+		this.Material.Dispose();
+	}
+
 	private Hex worldSize => gameMap.game.state.GetElement<WorldData>().worldSize;
 
 	public void RenderMap(GameMap gameMap) {
