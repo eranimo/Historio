@@ -23,7 +23,6 @@ public class MinimapWorld : Control  {
 
 	public override void _ExitTree() {
 		base._ExitTree();
-		GD.PrintS("Unload material MinimapWorld");
 		MinimapCanvas.Material.Dispose();
 	}
 

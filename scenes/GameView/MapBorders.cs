@@ -35,7 +35,6 @@ public class MapBorders : Polygon2D {
 
 	public override void _ExitTree() {
 		base._ExitTree();
-		GD.PrintS("Unload material MapBorders");
 		this.Material.Dispose();
 	}
 

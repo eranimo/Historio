@@ -105,7 +105,8 @@ public class LoadGameModal : Control {
 		loadState.savedGame = savedGame;
 		loadState.saveEntry = saveEntry;
 
-		GetTree().CurrentScene.QueueFree();	
+		GetTree().CurrentScene.QueueFree();
+		GetTree().ChangeScene("res://scenes/GameView/GameView.tscn");
 	}
 
 	public override void _UnhandledInput(InputEvent @event) {
@@ -114,14 +115,5 @@ public class LoadGameModal : Control {
 			Hide();
 			GetTree().SetInputAsHandled();
 		}
-	}
-
-	public override void _ExitTree() {
-		base._ExitTree();
-		GD.PrintS("Load!!!");
-		// var gameView = ((PackedScene) GD.Load("res://scenes/GameView/GameView.tscn")).Instance();
-		// GetTree().Root.AddChild(gameView);
-		// GetTree().CurrentScene = gameView;
-		GetTree().ChangeScene("res://scenes/GameView/GameView.tscn");
 	}
 }
