@@ -12,8 +12,10 @@ public class UnitPanel : GamePanelView {
 
 	public override void _Ready() {
 		base._Ready();
-		if (!state.HasElement<UnitPanel>()) {
+		if (!state.HasElement<TilePanel>()) {
 			state.AddElement(this);
+		} else {
+			state.ReplaceElement(this);
 		}
 
 		unitPositionLabel = GetNode<Label>("UnitInfo/Content/Details/DetailRow/UnitPosition");

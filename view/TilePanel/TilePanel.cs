@@ -11,6 +11,8 @@ public class TilePanel : GamePanelView {
 		base._Ready();
 		if (!state.HasElement<TilePanel>()) {
 			state.AddElement(this);
+		} else {
+			state.ReplaceElement(this);
 		}
 
 		locationLabel = (Label) GetNode("TabContainer/Details/Container/Values/Location");

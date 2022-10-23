@@ -116,8 +116,8 @@ public class GameManager {
 		daySystems
 			.Add(new ActionDaySystem())
 			.Add(new MovementDaySystem())
-			.Add(new DebugDaySystem())
-			.Add(new BiotaDaySystem());
+			.Add(new DebugDaySystem());
+			// .Add(new BiotaDaySystem());
 		
 		playSystems
 			.Add(new MovementTweenPlaySystem());
