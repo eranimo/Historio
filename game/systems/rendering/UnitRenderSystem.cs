@@ -24,6 +24,7 @@ public class UnitRenderSystem : ISystem {
 			unitIcon.UnitType = unitData.type;
 			unitIcon.Position = gameMap.layout.HexToPixel(location.hex).ToVector();
 			unitIcons.Add(e.unit, unitIcon);
+			this.On(e.unit).Add(unitIcon);
 			gameMap.spriteContainer.AddChild(unitIcon);
 		}
 
