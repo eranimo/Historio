@@ -29,6 +29,8 @@ _global_script_class_icons={
 config/name="Historio"
 run/main_scene="res://scenes/GameView/GameView.tscn"
 config/icon="res://icon.png"
+debug=false
+debug/debug_mode=true
 
 [autoload]
 

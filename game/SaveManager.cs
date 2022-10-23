@@ -253,13 +253,13 @@ public class SerializedUnits : SerializedState {
 	}
 
 	[Key(0)]
-	private Dictionary<int, SerializedUnit> units = new Dictionary<int, SerializedUnit>();
+	public Dictionary<int, SerializedUnit> units = new Dictionary<int, SerializedUnit>();
 
 	public override void Save(ISystem system) {
 		var unitQuery = system.Query<Entity, UnitData, Location, ActionQueue, Movement, ViewStateNode>();
 
 		foreach (var (entity, unitData, location, actionQueue, movement, viewStateNode) in unitQuery) {
-			units[entity.Identity.Id] = new SerializedUnit {
+			var serializedUnit = new SerializedUnit {
 				unitData = unitData,
 				location = location,
 				actionQueue = actionQueue,
@@ -267,6 +267,7 @@ public class SerializedUnits : SerializedState {
 				viewStateNode = viewStateNode,
 				ownerCountry = system.GetTarget<UnitCountry>(entity).Identity.Id,
 			};
+			units[entity.Identity.Id] = serializedUnit;
 		}
 		Godot.GD.PrintS($"Saved {units.Count} units");
 	}
@@ -302,28 +303,25 @@ public class LoadData {
 [MessagePackObject]
 public class SaveData {
 	[Key(0)]
-	public List<SerializedState> state = new List<SerializedState> {
-		new SerializedWorld(),
-		new SerializedCountries(),
-		new SerializedUnits()
-	};
+	public SerializedWorld world = new SerializedWorld();
+
+	[Key(1)]
+	public SerializedCountries countries = new SerializedCountries();
+
+	[Key(2)]
+	public SerializedUnits units = new SerializedUnits();
 
 	public void Save(ISystem system) {
-		foreach (var serializedState in state) {
-			serializedState.Save(system);
-		}
+		world.Save(system);
+		countries.Save(system);
+		units.Save(system);
 	}
 
 	public void Load(ISystem system) {
 		var loadData = new LoadData();
-		foreach (var serializedState in state) {
-			try {
-				serializedState.Load(system, ref loadData);
-			} catch (Exception err) {
-				Godot.GD.PrintErr($"(SaveData) Failed to load state {serializedState.GetType().Name}");
-				Godot.GD.PrintErr(err);
-			}
-		}
+		world.Load(system, ref loadData);
+		countries.Load(system, ref loadData);
+		units.Load(system, ref loadData);
 	}
 }
 
@@ -398,10 +396,15 @@ public class SaveManager {
 		MessagePackSerializer.Serialize(stream, saveEntry);
 
 		// JSON debugging
-		// var p = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{game.savedGame.name}/saves/{saveMetadata.name}.json");
-		// var s = new FileStream(p, FileMode.Create, FileAccess.Write, FileShare.None);
-		// var textWriter = new StreamWriter(s);
-		// MessagePackSerializer.SerializeToJson(textWriter, saveEntry);
+		var saveJSON = (object item, string key) => {
+			var p = Godot.ProjectSettings.GlobalizePath($"{SAVE_GAME_FOLDER}/{game.savedGame.name}/saves/{saveMetadata.name} - {key}.json");
+			var s = new FileStream(p, FileMode.Create, FileAccess.Write, FileShare.None);
+			var textWriter = new StreamWriter(s);
+			MessagePackSerializer.SerializeToJson(textWriter, item);
+		};
+		saveJSON(saveData.countries, "countries");
+		saveJSON(saveData.world, "world");
+		saveJSON(saveData.units, "units");
 
 		Godot.GD.PrintS($"(SaveService) Saved game save at {saveEntryPath} in {watch.ElapsedMilliseconds}ms");
 		stream.Close();
