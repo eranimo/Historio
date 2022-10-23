@@ -12,7 +12,7 @@ public class UnitPanel : GamePanelView {
 
 	public override void _Ready() {
 		base._Ready();
-		if (!state.HasElement<TilePanel>()) {
+		if (!state.HasElement<UnitPanel>()) {
 			state.AddElement(this);
 		} else {
 			state.ReplaceElement(this);
