@@ -51,12 +51,12 @@ public enum ActionStatus {
 }
 
 [Union(0, typeof(MovementAction))]
-[MessagePackObject]
 public abstract class Action {
 	[Key(0)]
 	public ActionStatus status;
 
-	public Action(Entity owner) {
+	[SerializationConstructor]
+	public Action() {
 		this.status = ActionStatus.Inactive;
 	}
 
@@ -87,13 +87,6 @@ public abstract class Action {
 public class MovementAction : Action {
 	[Key(1)]
 	public Hex target;
-
-	public MovementAction(
-		Entity owner,
-		Hex target
-	) : base(owner) {
-		this.target = target;
-	}
 
 	public override bool CanPerform(ISystem system, Entity owner) {
 		return system.HasComponent<Movement>(owner)

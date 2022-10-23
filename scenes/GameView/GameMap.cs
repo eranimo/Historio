@@ -67,20 +67,18 @@ public class GameMap : Node2D {
 			} else if (mapInput.type == GameMapInputType.RightClick) {
 				var selectedUnit = gameView.GameController.currentUnit;
 				if (selectedUnit is not null) {
+					var action = new MovementAction { target = mapInput.hex };
 					if (mapInput.isShiftModifier) {
 						GD.PrintS("Queued movement to", mapInput.hex);
-						game.manager.state.Send(new ActionQueueAdd {
-							owner = selectedUnit,
-							action = new MovementAction(selectedUnit, mapInput.hex)
-						});
 					} else {
 						GD.PrintS("Set movement to", mapInput.hex);
 						game.manager.state.Send(new ActionQueueClear { owner = selectedUnit });
-						game.manager.state.Send(new ActionQueueAdd {
-							owner = selectedUnit,
-							action = new MovementAction(selectedUnit, mapInput.hex)
-						});
 					}
+
+					game.manager.state.Send(new ActionQueueAdd {
+						owner = selectedUnit,
+						action = action
+					});
 				}
 			}
 		});
