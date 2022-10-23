@@ -76,18 +76,26 @@ public class MinimapWorld : Control  {
 		hexColorsImage.Lock();
 
 		var player = game.manager.state.GetElement<Player>();
-		var playerCountry = game.manager.Get<CountryData>(player.playerCountry);
-
-		foreach (Entity tile in game.manager.world.tiles) {
-			var hex = gameView.game.manager.Get<Location>(tile).hex;
-			var color = gameView.game.manager.Get<TileData>(tile).GetMinimapColor();
-			if (playerCountry.observedHexes.Contains(hex)) {
-			} else if (playerCountry.exploredHexes.Contains(hex)) {
-				color = color.Darkened(UNOBSERVED_DARKEN_AMOUNT);
-			} else {
-				color = COLOR_UNEXPLORED;
+		
+		if (player.playerCountry is null) {
+			foreach (Entity tile in game.manager.world.tiles) {
+				var hex = gameView.game.manager.Get<Location>(tile).hex;
+				var color = gameView.game.manager.Get<TileData>(tile).GetMinimapColor();
+				hexColorsImage.SetPixel(hex.col, hex.row, color);
 			}
-			hexColorsImage.SetPixel(hex.col, hex.row, color);
+		} else {
+			var playerCountry = game.manager.Get<CountryData>(player.playerCountry);
+			foreach (Entity tile in game.manager.world.tiles) {
+				var hex = gameView.game.manager.Get<Location>(tile).hex;
+				var color = gameView.game.manager.Get<TileData>(tile).GetMinimapColor();
+				if (playerCountry.observedHexes.Contains(hex)) {
+				} else if (playerCountry.exploredHexes.Contains(hex)) {
+					color = color.Darkened(UNOBSERVED_DARKEN_AMOUNT);
+				} else {
+					color = COLOR_UNEXPLORED;
+				}
+				hexColorsImage.SetPixel(hex.col, hex.row, color);
+			}
 		}
 
 		hexColorsImage.Unlock();

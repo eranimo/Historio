@@ -9,9 +9,17 @@ public class MinimapRenderSystem : ISystem {
 
 		foreach (var action in this.Receive<ViewStateUpdated>()) {
 			if (action.country == player.playerCountry) {
-				GD.PrintS("(MinimapRenderSystem) view state updated, updating minimap");
-				minimapWorld.updateMap();
+				updateMap(minimapWorld, player);
 			}
 		}
+
+		foreach (var action in this.Receive<PlayerChanged>()) {
+			updateMap(minimapWorld, player);
+		}
+	}
+
+	private static void updateMap(MinimapWorld minimapWorld, Player player) {
+		GD.PrintS("(MinimapRenderSystem) updating minimap");
+		minimapWorld.updateMap();
 	}
 }

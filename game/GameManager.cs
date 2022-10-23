@@ -132,15 +132,15 @@ public class GameManager {
 		renderSystems
 			.Add(new SpriteRenderSystem())
 			.Add(new UnitRenderSystem())
-			.Add(new BorderRenderSystem())
-			.Add(new MinimapRenderSystem());
+			.Add(new BorderRenderSystem());
 		
 		tickSystems
 			.Add(new DebugTickSystem())
 			.Add(new UnitPanelTickSystem())
 			.Add(new ActionTickSystem())
 			.Add(new UnitPathTickSystem())
-			.Add(new ViewStateSystem());
+			.Add(new ViewStateSystem())
+			.Add(new MinimapRenderSystem());
 
 		menuSystems
 			.Add(new SaveSystem())
