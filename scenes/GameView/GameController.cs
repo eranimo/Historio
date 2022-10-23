@@ -3,6 +3,18 @@ using System;
 using System.Reactive.Subjects;
 
 
+
+// console triggers
+public class DebugObserve {
+}
+
+public class DebugPlay {
+	public string countryName;
+}
+
+public class DebugListCountries {}
+
+
 public enum GameMapInputType {
 	LeftClick,
 	RightClick,
@@ -14,13 +26,22 @@ public struct GameMapInput {
 	public bool isShiftModifier;
 }
 
-public static class ConsoleExtensions {
+public static class CommandBuilderExtensions {
 	public static CommandBuilder RemoveCommand(this Console console, string name) {
 		var _console = console.GetTree().Root.GetNode<CanvasLayer>("Console");
 		Godot.Object consoleCommand = _console.Call("remove_command", name) as Godot.Object;
 		return new CommandBuilder(consoleCommand);
 	}
 }
+
+public static class ConsoleExtensions {
+	public static void WriteLine(this Console console, string text) {
+		var _console = console.GetTree().Root.GetNode<CanvasLayer>("Console");
+		Godot.Object consoleCommand = _console.Call("write_line", text) as Godot.Object;
+	}
+}
+
+public class GameStart {} 
 
 public class GameController : Control {
 	public Game game;
@@ -50,12 +71,13 @@ public class GameController : Control {
 		GameMenu = (GameMenu) GetNode("%GameMenu");
 
 		try {
+			game.state.Send(new GameStart());
 			game.Start();
 		} catch (Exception err) {
 			GD.PrintErr("Error starting game:", err);
 		}
 
-		var console = GetTree().Root.GetNode<Console>("CSharpConsole");
+		console = GetTree().Root.GetNode<Console>("CSharpConsole");
 
 		console.RemoveCommand("next_day");
 		console.RemoveCommand("observe");
@@ -71,7 +93,11 @@ public class GameController : Control {
 
 		console.AddCommand("play", this, nameof(handlePlay))
 			.SetDescription("Play as as the specified country")
-			.AddArgument("country_id", Variant.Type.Int)
+			.AddArgument("country_name", Variant.Type.String)
+			.Register();
+
+		console.AddCommand("list_countries", this, nameof(handleListCountries))
+			.SetDescription("List all countries in the game")
 			.Register();
 	}
 
@@ -84,6 +110,8 @@ public class GameController : Control {
 		}
 	}
 
+	public Console console { get; private set; }
+
 	private void handleNextDay() {
 		for (int i = 0; i <= game.speedTicks; i++) {
 			game.Process(1f, true);
@@ -91,12 +119,15 @@ public class GameController : Control {
 	}
 
 	private void handleObserve() {
-		game.state.GetElement<Player>().playerCountry = null;
-		game.state.Send(new PlayerChanged());
+		game.state.Send(new DebugObserve());
 	}
 
-	private void handlePlay(int country_id) {
-		GD.PrintS("Play as", country_id);
+	private void handlePlay(string countryName) {
+		game.state.Send(new DebugPlay { countryName = countryName });
+	}
+
+	private void handleListCountries() {
+		game.state.Send(new DebugListCountries());
 	}
 
 	public override void _Process(float delta) {

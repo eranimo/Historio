@@ -50,6 +50,38 @@ public class DebugStartSystem : ISystem {
 	}
 }
 
+public class DebugTickSystem : ISystem {
+	public RelEcs.World World { get; set; }
+
+	public void Run() {
+		foreach (var e in this.Receive<DebugObserve>()) {
+			this.GetElement<Player>().playerCountry = null;
+			this.Send(new PlayerChanged());
+		}
+
+		foreach (var e in this.Receive<DebugPlay>()) {
+			var countries = this.Query<Entity, CountryData>();
+			foreach (var (country, countryData) in countries) {
+				if (countryData.name == e.countryName) {
+					GD.PrintS("Play as", e.countryName);
+					this.GetElement<Player>().playerCountry = country;
+					this.Send(new PlayerChanged());
+					break;
+				}
+			}
+		}
+
+		foreach (var e in this.Receive<DebugListCountries>()) {
+			var countries = this.Query<CountryData>();
+			var countryList = new List<string>();
+			foreach (var countryData in countries) {
+				countryList.Add(countryData.name);
+			}
+			this.GetElement<GameController>().console.WriteLine(String.Join(", ", countryList));
+		}
+	} 
+}
+
 public class GameManager {
 	public RelEcs.World state;
 
@@ -88,16 +120,14 @@ public class GameManager {
 			.Add(new BiotaDaySystem());
 		
 		playSystems
-			.Add(new MovementTweenPlaySystem())
-			.Add(new ViewStatePlaySystem());
+			.Add(new MovementTweenPlaySystem());
 
 		initSystems
 			.Add(new SaveSystem());
 	
 		startSystems
 			.Add(new DebugStartSystem())
-			.Add(new ViewStateStartSystem())
-			.Add(new PlayerStartSystem());
+			.Add(new GameMapTickSystem());
 
 		renderSystems
 			.Add(new SpriteRenderSystem())
@@ -106,9 +136,11 @@ public class GameManager {
 			.Add(new MinimapRenderSystem());
 		
 		tickSystems
+			.Add(new DebugTickSystem())
 			.Add(new UnitPanelTickSystem())
 			.Add(new ActionTickSystem())
-			.Add(new UnitPathTickSystem());
+			.Add(new UnitPathTickSystem())
+			.Add(new ViewStateSystem());
 
 		menuSystems
 			.Add(new SaveSystem())

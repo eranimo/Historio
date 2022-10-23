@@ -1,9 +1,19 @@
-public class PlayerStartSystem : ISystem {
+// center the game map on the player's capital settlement
+public class GameMapTickSystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
+		foreach (var e in this.Receive<GameStart>()) {
+			centerOnPlayerCountry();
+		}
+
+		foreach (var e in this.Receive<PlayerChanged>()) {
+			centerOnPlayerCountry();
+		}
+	}
+
+	private void centerOnPlayerCountry() {
 		var gameMap = this.GetElement<GameMap>();
-		// center the game map on the player's capital settlement
 		var player = this.GetElement<Player>();
 		var playerOwnedTiles = this.QueryBuilder<Location>()
 			.Has<CountryTile>(player.playerCountry)
@@ -12,7 +22,7 @@ public class PlayerStartSystem : ISystem {
 		foreach (var location in playerOwnedTiles) {
 			hexes.Add(location.hex);
 		}
-		Godot.GD.PrintS("(PlayerStartSystem) Center on player country territory");
+		Godot.GD.PrintS("(GameMapTickSystem) Center on player country");
 		gameMap.centerCamera(gameMap.layout.Centroid(hexes).ToVector());
 	}
 }

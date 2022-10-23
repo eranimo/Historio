@@ -90,7 +90,7 @@ size_flags_vertical = 3
 
 [node name="SaveList" type="VBoxContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/Saves"]
 unique_name_in_owner = true
-margin_right = 472.0
+margin_right = 171.0
 margin_bottom = 14.0
 size_flags_horizontal = 3
 
