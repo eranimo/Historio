@@ -130,6 +130,7 @@ public class GameManager {
 			.Add(new GameMapTickSystem());
 
 		renderSystems
+			.Add(new MapModeSystem())
 			.Add(new SpriteRenderSystem())
 			.Add(new UnitRenderSystem())
 			.Add(new BorderRenderSystem());

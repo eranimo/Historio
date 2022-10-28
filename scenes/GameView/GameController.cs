@@ -77,6 +77,26 @@ public class GameController : Control {
 			GD.PrintErr("Error starting game:", err);
 		}
 
+		// setup map mode dropdown
+		var mapModeDropdown = GetNode<OptionButton>("%MapModeDropdown");
+		PopupMenu popupMenu = mapModeDropdown.GetPopup();
+		foreach (var (mapMode, index) in MapModes.List.WithIndex()) {
+			popupMenu.AddItem(mapMode.Name, index);
+		}
+		mapModeDropdown.Connect("item_selected", this, nameof(handleMapModeSelect));
+		MapModes.CurrentMapMode.Subscribe((MapMode mapMode) => {
+			mapModeDropdown.Select(MapModes.List.IndexOf(mapMode));
+		});
+
+		setupConsole();
+	}
+
+	private void handleMapModeSelect(int index) {
+		var mapMode = MapModes.List[index];
+		MapModes.CurrentMapMode.OnNext(mapMode);
+	}
+
+	private void setupConsole() {
 		console = GetTree().Root.GetNode<Console>("CSharpConsole");
 
 		console.RemoveCommand("next_day");

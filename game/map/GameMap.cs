@@ -19,6 +19,13 @@ public class GameMap : Node2D {
 	private Rivers rivers;
 	private Sprite selectionHex;
 	private Sprite hoverHex;
+	public MapBorders mapBorders;
+	private MapOverlay mapOverlay;
+	public Node2D spriteContainer;
+	public MapLabels mapLabels;
+	public SettlementLabels settlementLabels;
+	public TileMap viewState;
+	private GameView gameView;
 
 	// subject events
 	private Subject<Entity> tileUpdates = new Subject<Entity>();
@@ -26,32 +33,22 @@ public class GameMap : Node2D {
 	private Subject<Entity> clickedTile = new Subject<Entity>();
 	private Subject<Entity> hoveredTile = new Subject<Entity>();
 
-	// public BehaviorSubject<Entity> selectedHex = new BehaviorSubject<Entity>(null);
-
-	private bool is_placing = false;
-
-	public MapBorders mapBorders;
-	public Node2D spriteContainer;
-	public MapLabels mapLabels;
-	public SettlementLabels settlementLabels;
-	public TileMap viewState;
-	private GameView gameView;
-
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
 		GD.PrintS("(GameMap) ready");
-		camera = (GameCamera) GetNode<GameCamera>("GameCamera");
-		terrain = (TileMap) GetNode<TileMap>("Terrain");
-		features = (TileMap) GetNode<TileMap>("Features");
-		grid = (TileMap) GetNode<TileMap>("Grid");
-		rivers = (Rivers) GetNode<Rivers>("Rivers");
-		selectionHex = (Sprite) GetNode<Sprite>("SelectionHex");
-		hoverHex = (Sprite) GetNode<Sprite>("HoverHex");
-		spriteContainer = (Node2D) GetNode<Node2D>("SpriteContainer");
-		mapBorders = (MapBorders) GetNode<MapBorders>("MapBorders");
-		mapLabels = (MapLabels) GetNode<MapLabels>("MapLabels");
-		settlementLabels = (SettlementLabels) GetNode<SettlementLabels>("SettlementLabels");
-		viewState = (TileMap) GetNode<TileMap>("ViewState");
+		camera = GetNode<GameCamera>("GameCamera");
+		terrain = GetNode<TileMap>("Terrain");
+		features = GetNode<TileMap>("Features");
+		grid = GetNode<TileMap>("Grid");
+		rivers = GetNode<Rivers>("Rivers");
+		selectionHex = GetNode<Sprite>("SelectionHex");
+		hoverHex = GetNode<Sprite>("HoverHex");
+		spriteContainer = GetNode<Node2D>("SpriteContainer");
+		mapBorders = GetNode<MapBorders>("MapBorders");
+		mapOverlay = GetNode<MapOverlay>("MapOverlay");
+		mapLabels = GetNode<MapLabels>("MapLabels");
+		settlementLabels = GetNode<SettlementLabels>("SettlementLabels");
+		viewState = GetNode<TileMap>("ViewState");
 
 		gameView.GameController.gameMapInputSubject.Subscribe((GameMapInput mapInput) => {
 			if (mapInput.type == GameMapInputType.LeftClick) {
@@ -111,6 +108,12 @@ public class GameMap : Node2D {
 		selectionHex.Hide();
 		hoverHex.Hide();
 		mapBorders.RenderMap(this);
+		mapOverlay.SetupMap(this);
+
+		MapModes.CurrentMapMode.Subscribe((MapMode mapMode) => {
+			mapOverlay.UpdateMap();
+		});
+
 
 		foreach (Entity tile in game.manager.world.tiles) {
 			drawTile(tile);
