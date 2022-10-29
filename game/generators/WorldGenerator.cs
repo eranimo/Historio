@@ -55,8 +55,8 @@ public class WorldGenerator : IGeneratorStep {
 		for (var x = 0; x < this.TileWidth; x++) {
 			for (var y = 0; y < this.TileHeight; y++) {
 				var height = heightNoise.Get(x, y) * 255;
-				var temperature = temperatureNoise.Get(x, y);
-				var rainfall = rainfallNoise.Get(x, y);
+				var temperature = temperatureNoise.Get(x, y) * 255;
+				var rainfall = rainfallNoise.Get(x, y) * 255;
 				var coordLong = ((x / (double) this.TileWidth) * 360) - 180;
 				var coordLat = ((-y / (double) this.TileHeight) * 180) + 90;
 

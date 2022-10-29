@@ -127,11 +127,10 @@ public class GameMap : Node2D {
 			settlementLabels.Visible = isClose;
 			mapLabels.Visible = isClose;
 			mapBorders.Visible = isClose;
-			terrain.Visible = isClose;
+			// terrain.Visible = isClose;
 			features.Visible = isClose;
 			spriteContainer.Visible = isClose;
-
-			mapOverlay.SelfModulate = Color.ColorN("white", zoom > 1.0 ? 1f : 0.5f);
+			// mapOverlay.SelfModulate = Color.ColorN("white", zoom > 1.0 ? 1f : 0.5f);
 		});
 	}
 

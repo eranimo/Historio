@@ -60,11 +60,15 @@ public class MapOverlay : Polygon2D {
 		foreach (Entity tile in gameMap.game.manager.world.tiles) {
 			var loc = gameView.game.manager.Get<Location>(tile);
 			MapMode mapMode = MapModes.CurrentMapMode.Value;
-			if (mapMode.HasColor(loc.hex)) {
-				var color = mapMode.GetColor(loc.hex);
-				hexColorsImage.SetPixel(loc.hex.col, loc.hex.row, color);
-			} else {
+			if (mapMode.Overlay is null) {
 				hexColorsImage.SetPixel(loc.hex.col, loc.hex.row, NO_COLOR);
+			} else {
+				if (mapMode.Overlay.HasColor(loc.hex)) {
+					var color = mapMode.Overlay.GetColor(loc.hex);
+					hexColorsImage.SetPixel(loc.hex.col, loc.hex.row, color);
+				} else {
+					hexColorsImage.SetPixel(loc.hex.col, loc.hex.row, NO_COLOR);
+				}
 			}
 		}
 
