@@ -20,6 +20,7 @@ public class MapMode {
 
 	public string Name => name;
 	public MapModeOverlay Overlay => overlay;
+	public bool ShowRivers => showRivers;
 }
 
 public class MapModeOverlay {
@@ -57,7 +58,8 @@ public static class MapModes {
 	);
 	public static MapMode rainfall = new MapMode(
 		name: "Rainfall",
-		overlay: new MapModeOverlay(new ColorMap("ocean"))
+		overlay: new MapModeOverlay(new ColorMap("ocean")),
+		showRivers: true
 	);
 
 	public static List<MapMode> List = new List<MapMode> {

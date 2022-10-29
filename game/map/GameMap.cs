@@ -123,15 +123,26 @@ public class GameMap : Node2D {
 		tileUpdates.Subscribe((Entity tile) => this.drawTile(tile));
 
 		gameView.zoom.Subscribe((float zoom) => {
-			var isClose = zoom < 1f;
-			settlementLabels.Visible = isClose;
-			mapLabels.Visible = isClose;
-			mapBorders.Visible = isClose;
-			// terrain.Visible = isClose;
-			features.Visible = isClose;
-			spriteContainer.Visible = isClose;
-			// mapOverlay.SelfModulate = Color.ColorN("white", zoom > 1.0 ? 1f : 0.5f);
+			calculateMapMode();
 		});
+
+		MapModes.CurrentMapMode.Subscribe((MapMode mapMode) => {
+			calculateMapMode();
+		});
+		calculateMapMode();
+	}
+
+	private void calculateMapMode() {
+		var zoom = gameView.zoom.Value;
+		var isClose = zoom < 1f;
+		settlementLabels.Visible = isClose;
+		mapLabels.Visible = isClose;
+		mapBorders.Visible = isClose;
+		// terrain.Visible = isClose;
+		features.Visible = isClose;
+		spriteContainer.Visible = isClose;
+		rivers.Visible = MapModes.CurrentMapMode.Value.ShowRivers && zoom < 2f;
+		// mapOverlay.SelfModulate = Color.ColorN("white", zoom > 1.0 ? 1f : 0.5f);
 	}
 
 	public void centerCamera(Vector2 vec) {
