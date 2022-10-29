@@ -12,9 +12,7 @@ public class MapModeSystem : ISystem {
 
 		foreach (var (location, tileData) in tiles) {
 			float v = tileData.height / 255f;
-			// MapModes.terrain.SetColor(location.hex, Color.FromHsv(0f, 1f, v));
 			var color = terrainColorMap[v].ToGodot();
-			GD.PrintS(color);
 			MapModes.terrain.SetColor(location.hex, color);
 		}
 	}

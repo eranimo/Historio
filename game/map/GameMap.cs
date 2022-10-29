@@ -36,19 +36,19 @@ public class GameMap : Node2D {
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
 		GD.PrintS("(GameMap) ready");
-		camera = GetNode<GameCamera>("GameCamera");
-		terrain = GetNode<TileMap>("Terrain");
-		features = GetNode<TileMap>("Features");
-		grid = GetNode<TileMap>("Grid");
-		rivers = GetNode<Rivers>("Rivers");
-		selectionHex = GetNode<Sprite>("SelectionHex");
-		hoverHex = GetNode<Sprite>("HoverHex");
-		spriteContainer = GetNode<Node2D>("SpriteContainer");
-		mapBorders = GetNode<MapBorders>("MapBorders");
-		mapOverlay = GetNode<MapOverlay>("MapOverlay");
-		mapLabels = GetNode<MapLabels>("MapLabels");
-		settlementLabels = GetNode<SettlementLabels>("SettlementLabels");
-		viewState = GetNode<TileMap>("ViewState");
+		camera = GetNode<GameCamera>("%GameCamera");
+		terrain = GetNode<TileMap>("%Terrain");
+		features = GetNode<TileMap>("%Features");
+		grid = GetNode<TileMap>("%Grid");
+		rivers = GetNode<Rivers>("%Rivers");
+		selectionHex = GetNode<Sprite>("%SelectionHex");
+		hoverHex = GetNode<Sprite>("%HoverHex");
+		spriteContainer = GetNode<Node2D>("%SpriteContainer");
+		mapBorders = GetNode<MapBorders>("%MapBorders");
+		mapOverlay = GetNode<MapOverlay>("%MapOverlay");
+		mapLabels = GetNode<MapLabels>("%MapLabels");
+		settlementLabels = GetNode<SettlementLabels>("%SettlementLabels");
+		viewState = GetNode<TileMap>("%ViewState");
 
 		gameView.GameController.gameMapInputSubject.Subscribe((GameMapInput mapInput) => {
 			if (mapInput.type == GameMapInputType.LeftClick) {
@@ -121,6 +121,18 @@ public class GameMap : Node2D {
 		rivers.RenderRivers();
 
 		tileUpdates.Subscribe((Entity tile) => this.drawTile(tile));
+
+		gameView.zoom.Subscribe((float zoom) => {
+			var isClose = zoom < 1f;
+			settlementLabels.Visible = isClose;
+			mapLabels.Visible = isClose;
+			mapBorders.Visible = isClose;
+			terrain.Visible = isClose;
+			features.Visible = isClose;
+			spriteContainer.Visible = isClose;
+
+			mapOverlay.SelfModulate = Color.ColorN("white", zoom > 1.0 ? 1f : 0.5f);
+		});
 	}
 
 	public void centerCamera(Vector2 vec) {
