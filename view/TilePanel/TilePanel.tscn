@@ -39,68 +39,131 @@ custom_constants/margin_top = 10
 custom_constants/margin_left = 10
 custom_constants/margin_bottom = 10
 
-[node name="Container" type="HBoxContainer" parent="TabContainer/Details"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Details"]
 margin_left = 10.0
 margin_top = 10.0
 margin_right = 1012.0
 margin_bottom = 564.0
 
-[node name="Labels" type="VBoxContainer" parent="TabContainer/Details/Container"]
+[node name="Container" type="HBoxContainer" parent="TabContainer/Details/HBoxContainer"]
 margin_right = 499.0
 margin_bottom = 554.0
 size_flags_horizontal = 3
 
-[node name="LocationLabel" type="Label" parent="TabContainer/Details/Container/Labels"]
-margin_right = 499.0
+[node name="Labels" type="VBoxContainer" parent="TabContainer/Details/HBoxContainer/Container"]
+margin_right = 247.0
+margin_bottom = 554.0
+size_flags_horizontal = 3
+
+[node name="LocationLabel" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Labels"]
+margin_right = 247.0
 margin_bottom = 14.0
 text = "Location:"
 
-[node name="BiomeLabel" type="Label" parent="TabContainer/Details/Container/Labels"]
+[node name="BiomeLabel" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Labels"]
 margin_top = 18.0
-margin_right = 499.0
+margin_right = 247.0
 margin_bottom = 32.0
 text = "Biome Type:"
 
-[node name="TerrainTypeLabel" type="Label" parent="TabContainer/Details/Container/Labels"]
+[node name="TerrainTypeLabel" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Labels"]
 margin_top = 36.0
-margin_right = 499.0
+margin_right = 247.0
 margin_bottom = 50.0
 text = "Terrain Type:"
 
-[node name="FeatureLabel" type="Label" parent="TabContainer/Details/Container/Labels"]
+[node name="FeatureLabel" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Labels"]
 margin_top = 54.0
-margin_right = 499.0
+margin_right = 247.0
 margin_bottom = 68.0
 text = "Feature Type:"
 
-[node name="Values" type="VBoxContainer" parent="TabContainer/Details/Container"]
+[node name="Values" type="VBoxContainer" parent="TabContainer/Details/HBoxContainer/Container"]
+margin_left = 251.0
+margin_right = 499.0
+margin_bottom = 554.0
+size_flags_horizontal = 3
+
+[node name="Location" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Values"]
+unique_name_in_owner = true
+margin_right = 248.0
+margin_bottom = 14.0
+text = "(0, 0)"
+
+[node name="Biome" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Values"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 248.0
+margin_bottom = 32.0
+text = "Temperate"
+
+[node name="Terrain" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Values"]
+unique_name_in_owner = true
+margin_top = 36.0
+margin_right = 248.0
+margin_bottom = 50.0
+text = "Plains"
+
+[node name="Feature" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Values"]
+unique_name_in_owner = true
+margin_top = 54.0
+margin_right = 248.0
+margin_bottom = 68.0
+text = "Forest"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Details/HBoxContainer"]
 margin_left = 503.0
 margin_right = 1002.0
 margin_bottom = 554.0
 size_flags_horizontal = 3
 
-[node name="Location" type="Label" parent="TabContainer/Details/Container/Values"]
-margin_right = 499.0
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Details/HBoxContainer/HBoxContainer"]
+margin_right = 247.0
+margin_bottom = 554.0
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer"]
+margin_right = 247.0
 margin_bottom = 14.0
-text = "(0, 0)"
+text = "Height:"
 
-[node name="Biome" type="Label" parent="TabContainer/Details/Container/Values"]
+[node name="Label2" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer"]
 margin_top = 18.0
-margin_right = 499.0
+margin_right = 247.0
 margin_bottom = 32.0
-text = "Temperate"
+text = "Temperature:"
 
-[node name="Terrain" type="Label" parent="TabContainer/Details/Container/Values"]
+[node name="Label3" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer"]
 margin_top = 36.0
-margin_right = 499.0
+margin_right = 247.0
 margin_bottom = 50.0
-text = "Plains"
+text = "Rainfall:"
 
-[node name="Feature" type="Label" parent="TabContainer/Details/Container/Values"]
-margin_top = 54.0
+[node name="VBoxContainer2" type="VBoxContainer" parent="TabContainer/Details/HBoxContainer/HBoxContainer"]
+margin_left = 251.0
 margin_right = 499.0
-margin_bottom = 68.0
-text = "Forest"
+margin_bottom = 554.0
+size_flags_horizontal = 3
+
+[node name="Height" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+margin_right = 248.0
+margin_bottom = 14.0
+text = "0"
+
+[node name="Temperature" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 18.0
+margin_right = 248.0
+margin_bottom = 32.0
+text = "0"
+
+[node name="Rainfall" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 36.0
+margin_right = 248.0
+margin_bottom = 50.0
+text = "0"
 
 [node name="Resources" type="MarginContainer" parent="TabContainer"]
 visible = false

@@ -6,6 +6,9 @@ public class TilePanel : GamePanelView {
 	private Label biomeLabel;
 	private Label terrainLabel;
 	private Label featureLabel;
+	private Label heightLabel;
+	private Label temperatureLabel;
+	private Label rainfallLabel;
 
 	public override void _Ready() {
 		base._Ready();
@@ -15,10 +18,14 @@ public class TilePanel : GamePanelView {
 			state.ReplaceElement(this);
 		}
 
-		locationLabel = (Label) GetNode("TabContainer/Details/Container/Values/Location");
-		biomeLabel = (Label) GetNode("TabContainer/Details/Container/Values/Biome");
-		terrainLabel = (Label) GetNode("TabContainer/Details/Container/Values/Terrain");
-		featureLabel = (Label) GetNode("TabContainer/Details/Container/Values/Feature");
+		locationLabel = (Label) GetNode("%Location");
+		biomeLabel = (Label) GetNode("%Biome");
+		terrainLabel = (Label) GetNode("%Terrain");
+		featureLabel = (Label) GetNode("%Feature");
+
+		heightLabel = (Label) GetNode("%Height");
+		temperatureLabel = (Label) GetNode("%Temperature");
+		rainfallLabel = (Label) GetNode("%Rainfall");
 
 		UpdateView(gamePanel.CurrentPanel.Value.entity);
 	}
@@ -33,6 +40,10 @@ public class TilePanel : GamePanelView {
 		biomeLabel.Text = tileData.biome.ToString();
 		terrainLabel.Text = tileData.terrain.ToString();
 		featureLabel.Text = tileData.feature.ToString();
+
+		heightLabel.Text = tileData.height.ToString();
+		temperatureLabel.Text = tileData.temperature.ToString();
+		rainfallLabel.Text = tileData.rainfall.ToString();
 	}
 
 	public override void ResetView(Entity entity) {
