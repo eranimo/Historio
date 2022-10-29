@@ -72,11 +72,11 @@ public class WorldGenerator : IGeneratorStep {
 				} else if (tileData.height < worldOptions.Sealevel) {
 					tileData.biome = Tile.BiomeType.Coast;
 				} else {
-					if (tileData.temperature < 0.10) {
+					if (tileData.temperature < 25) {
 						tileData.biome = Tile.BiomeType.Arctic;
-					} else if (tileData.temperature < 0.70) {
+					} else if (tileData.temperature < 178) {
 						tileData.biome = Tile.BiomeType.Temperate;
-						if (tileData.rainfall > 0.5) {
+						if (tileData.rainfall > 127) {
 							tileData.feature = Tile.FeatureType.Forest;
 						} else {
 							tileData.feature = Tile.FeatureType.Grassland;

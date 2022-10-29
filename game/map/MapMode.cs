@@ -46,7 +46,8 @@ public class MapModeOverlay {
 
 public static class MapModes {
 	public static MapMode political = new MapMode(
-		name: "Political"
+		name: "Political",
+		showRivers: true
 	);
 	public static MapMode terrain = new MapMode(
 		name: "Terrain",
