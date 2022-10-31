@@ -141,6 +141,7 @@ public class GameMap : Node2D {
 		// terrain.Visible = isClose;
 		features.Visible = isClose;
 		spriteContainer.Visible = isClose;
+		grid.Visible = isClose;
 		rivers.Visible = MapModes.CurrentMapMode.Value.ShowRivers && zoom < 2f;
 		// mapOverlay.SelfModulate = Color.ColorN("white", zoom > 1.0 ? 1f : 0.5f);
 	}
