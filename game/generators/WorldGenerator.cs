@@ -8,7 +8,7 @@ using PriorityQueues;
 [MessagePackObject(keyAsPropertyName: true)]
 public class WorldOptions {
 	public WorldSize Size = WorldSize.Small;
-	public int Sealevel = 140;
+	public int SeaLevel = 140;
 	public double AxialTilt = 23.45;
 }
 
@@ -75,10 +75,31 @@ public class WorldGenerator : IGeneratorStep {
 		}
 
 		// calculate and cache neighbors
-		var neighbors = new Dictionary<Hex, List<Hex>>();
+		var neighbors = new Dictionary<Hex, HashSet<Hex>>();
 		foreach (var hex in tiles.Keys) {
-			neighbors[hex] = hex.Neighbors().Where(hex => tiles.ContainsKey(hex)).ToList();
+			neighbors[hex] = hex.Neighbors().Where(hex => tiles.ContainsKey(hex)).ToHashSet();
 		}
+
+		// fill oceans but keep depressions
+		var oceans = new HashSet<Hex>();
+		var oceanQueue = new Stack<Hex>(worldSize.row * worldSize.col);
+		oceanQueue.Push(new Hex(0, 0));
+		oceanQueue.Push(new Hex(worldSize.col - 1, 0));
+		oceanQueue.Push(new Hex(0, worldSize.row - 1));
+		oceanQueue.Push(new Hex(worldSize.col - 1, worldSize.row - 1));
+		while (oceanQueue.Count > 0) {
+			var item = oceanQueue.Pop();
+			if (tiles[item].height <= worldOptions.SeaLevel) {
+				oceans.Add(item);
+
+				foreach (var neighbor in neighbors[item]) {
+					if (!oceans.Contains(neighbor)) {
+						oceanQueue.Push(neighbor);
+					}
+				}
+			}
+		}
+		GD.PrintS($"(WorldGenerator) Number of ocean tiles: {oceans.Count}");
 
 		// fill depressions with lakes
 		var open = new BinaryPriorityQueue<Hex>((a, b) => tiles[a].waterHeight.CompareTo(tiles[b].waterHeight));
@@ -135,10 +156,12 @@ public class WorldGenerator : IGeneratorStep {
 
 		// decide biomes
 		foreach (var (hex, tileData) in tiles) {
-			if (tileData.height < worldOptions.Sealevel - 10) {
-				tileData.biome = Tile.BiomeType.Ocean;
-			} else if (tileData.height < worldOptions.Sealevel) {
-				tileData.biome = Tile.BiomeType.Coast;
+			if (oceans.Contains(hex)) {
+				if (tileData.height < worldOptions.SeaLevel - 10) {
+					tileData.biome = Tile.BiomeType.Ocean;
+				} else if (tileData.height < worldOptions.SeaLevel) {
+					tileData.biome = Tile.BiomeType.Coast;
+				}
 			} else {
 				if (tileData.temperature < 25) {
 					tileData.biome = Tile.BiomeType.Arctic;
@@ -154,7 +177,8 @@ public class WorldGenerator : IGeneratorStep {
 				}
 
 				if (tileData.waterHeight > tileData.height) {
-					tileData.biome = Tile.BiomeType.Lake;
+					tileData.biome = Tile.BiomeType.Freshwater;
+					tileData.feature = Tile.FeatureType.Lake;
 				}
 			}
 		}

@@ -12,7 +12,7 @@ public static class Tile {
 		Temperate,
 		Desert,
 		Arctic,
-		Lake,
+		Freshwater,
 	}
 
 	public enum TerrainType {
@@ -25,6 +25,8 @@ public static class Tile {
 		Grassland,
 		Forest,
 		Jungle,
+		Lake,
+		River,
 	}
 }
 
@@ -60,7 +62,7 @@ public class TileData {
 			case Tile.BiomeType.Temperate: return 2;
 			case Tile.BiomeType.Desert: return 3;
 			case Tile.BiomeType.Arctic: return 4;
-			case Tile.BiomeType.Lake: return 5;
+			case Tile.BiomeType.Freshwater: return 5;
 			default: return null;
 		}
 	}
@@ -97,6 +99,8 @@ public class TileData {
 			return new Color("#d1c075");
 		} else if (biome == Tile.BiomeType.Arctic) {
 			return new Color("#dce0e3");
+		} else if (biome == Tile.BiomeType.Freshwater) {
+			return new Color("#0091eb");
 		}
 		return new Color("#000000");
 	}
