@@ -14,5 +14,6 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 		<PackageReference Include="MessagePack" Version="2.4.35" />
 		<PackageReference Include="ar1st0crat.SciColorMaps" Version="1.0.2" />
+		<PackageReference Include="PriorityQueues" Version="2.0.2" />
 	</ItemGroup>
 </Project>

@@ -12,6 +12,7 @@ public static class Tile {
 		Temperate,
 		Desert,
 		Arctic,
+		Lake,
 	}
 
 	public enum TerrainType {
@@ -50,6 +51,8 @@ public class TileData {
 	[Key(11)] public float animalSpace = 1000f;
 	[Key(12)] public float animalSpaceUsed = 0f;
 
+	[Key(13)] public float waterHeight;
+
 	public int? GetTerrainTilesetIndex() {
 		switch (biome) {
 			case Tile.BiomeType.Ocean: return 0;
@@ -57,6 +60,7 @@ public class TileData {
 			case Tile.BiomeType.Temperate: return 2;
 			case Tile.BiomeType.Desert: return 3;
 			case Tile.BiomeType.Arctic: return 4;
+			case Tile.BiomeType.Lake: return 5;
 			default: return null;
 		}
 	}

@@ -1,7 +1,9 @@
 using System;
 using Godot;
+using System.Linq;
 using System.Collections.Generic;
 using MessagePack;
+using PriorityQueues;
 
 [MessagePackObject(keyAsPropertyName: true)]
 public class WorldOptions {
@@ -64,29 +66,52 @@ public class WorldGenerator : IGeneratorStep {
 					height = height,
 					temperature = temperature,
 					rainfall = rainfall,
+					waterHeight = height,
 				};
 				Hex hex = new Hex(x, y);
 
-				if (tileData.height < worldOptions.Sealevel - 10) {
-					tileData.biome = Tile.BiomeType.Ocean;
-				} else if (tileData.height < worldOptions.Sealevel) {
-					tileData.biome = Tile.BiomeType.Coast;
-				} else {
-					if (tileData.temperature < 25) {
-						tileData.biome = Tile.BiomeType.Arctic;
-					} else if (tileData.temperature < 178) {
-						tileData.biome = Tile.BiomeType.Temperate;
-						if (tileData.rainfall > 127) {
-							tileData.feature = Tile.FeatureType.Forest;
-						} else {
-							tileData.feature = Tile.FeatureType.Grassland;
-						}
-					} else {
-						tileData.biome = Tile.BiomeType.Desert;
-					}
-				}
-
 				tiles.Add(hex, tileData);
+			}
+		}
+
+		// calculate and cache neighbors
+		var neighbors = new Dictionary<Hex, List<Hex>>();
+		foreach (var hex in tiles.Keys) {
+			neighbors[hex] = hex.Neighbors().Where(hex => tiles.ContainsKey(hex)).ToList();
+		}
+
+		// fill depressions with lakes
+		var open = new BinaryPriorityQueue<Hex>((a, b) => tiles[a].waterHeight.CompareTo(tiles[b].waterHeight));
+		var pit = new Queue<Hex>();
+		var closed = new HashSet<Hex>();
+		foreach (var (hex, tileData) in tiles) {
+			if (
+				hex.col == 0 || hex.row == 0 ||
+				hex.col == (worldSize.col - 1) || hex.row == (worldSize.row - 1)
+			) {
+				open.Enqueue(hex);
+				closed.Add(hex);
+			}
+		}
+		while (!open.IsEmpty() || pit.Count > 0) {
+			Hex item;
+			if (pit.Count > 0) {
+				item = pit.Dequeue();
+			} else {
+				item = open.Dequeue();
+			}
+			foreach (var neighbor in neighbors[item]) {
+				if (closed.Contains(neighbor)) {
+					continue;
+				}
+				closed.Add(neighbor);
+				var waterHeight = tiles[item].waterHeight;
+				if (tiles[neighbor].height <= waterHeight) {
+					tiles[neighbor].waterHeight = waterHeight;
+					pit.Enqueue(neighbor);
+				} else {
+					open.Enqueue(neighbor);
+				}
 			}
 		}
 
@@ -105,17 +130,41 @@ public class WorldGenerator : IGeneratorStep {
 				}
 			}
 		}
+
 		GD.PrintS("(WorldGenerator) river generation", riverSegments);
 
+		// decide biomes
+		foreach (var (hex, tileData) in tiles) {
+			if (tileData.height < worldOptions.Sealevel - 10) {
+				tileData.biome = Tile.BiomeType.Ocean;
+			} else if (tileData.height < worldOptions.Sealevel) {
+				tileData.biome = Tile.BiomeType.Coast;
+			} else {
+				if (tileData.temperature < 25) {
+					tileData.biome = Tile.BiomeType.Arctic;
+				} else if (tileData.temperature < 178) {
+					tileData.biome = Tile.BiomeType.Temperate;
+					if (tileData.rainfall > 127) {
+						tileData.feature = Tile.FeatureType.Forest;
+					} else {
+						tileData.feature = Tile.FeatureType.Grassland;
+					}
+				} else {
+					tileData.biome = Tile.BiomeType.Desert;
+				}
+
+				if (tileData.waterHeight > tileData.height) {
+					tileData.biome = Tile.BiomeType.Lake;
+				}
+			}
+		}
 
 		foreach (var (hex, tileData) in tiles) {
-			manager.world.AddTile(
-				hex,
-				manager.Spawn()
-					.Add<Location>(new Location { hex = hex, })
-					.Add<TileData>(tileData)
-					.Id()
-			);
+			Entity tile = manager.Spawn()
+				.Add<Location>(new Location { hex = hex, })
+				.Add<TileData>(tileData)
+				.Id();
+			manager.world.AddTile(hex, tile);
 		}
 
 		GD.PrintS($"(WorldGenerator) Added {manager.world.tiles.Count} tiles");
