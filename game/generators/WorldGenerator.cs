@@ -137,12 +137,11 @@ public class WorldGenerator : IGeneratorStep {
 		while (!open.IsEmpty()) {
 			Hex item = open.Dequeue();
 			foreach (var (dir, neighbor) in neighborsWithDir[item]) {
-				if (closed.Contains(neighbor)) {
-					continue;
+				if (!closed.Contains(neighbor)) {
+					flowDirs[neighbor] = dir.Opposite();
+					closed.Add(neighbor);
+					open.Enqueue(neighbor);
 				}
-				flowDirs[neighbor] = dir.Opposite();
-				closed.Add(neighbor);
-				open.Enqueue(neighbor);
 			}
 		}
 
@@ -205,7 +204,7 @@ public class WorldGenerator : IGeneratorStep {
 					tileData.feature = Tile.FeatureType.Lake;
 				}
 
-				if (riverFlow[hex] >= 1_000) {
+				if (riverFlow[hex] >= 500) {
 					tileData.biome = Tile.BiomeType.Freshwater;
 					tileData.feature = Tile.FeatureType.River;
 				}

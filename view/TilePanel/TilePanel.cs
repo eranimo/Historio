@@ -46,7 +46,7 @@ public class TilePanel : GamePanelView {
 		heightLabel.Text = tileData.height.ToString();
 		temperatureLabel.Text = tileData.temperature.ToString();
 		rainfallLabel.Text = tileData.rainfall.ToString();
-		riverFlowLabel.Text = tileData.riverFlow.ToString();
+		riverFlowLabel.Text = $"{tileData.riverFlow} ({tileData.flowDir.ShortName()})";
 	}
 
 	public override void ResetView(Entity entity) {
