@@ -54,6 +54,8 @@ public class TileData {
 	[Key(12)] public float animalSpaceUsed = 0f;
 
 	[Key(13)] public float waterHeight;
+	[Key(14)] public HexDirection flowDir;
+	[Key(15)] public float riverFlow;
 
 	public int? GetTerrainTilesetIndex() {
 		switch (biome) {

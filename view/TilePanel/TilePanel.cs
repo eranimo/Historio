@@ -9,6 +9,7 @@ public class TilePanel : GamePanelView {
 	private Label heightLabel;
 	private Label temperatureLabel;
 	private Label rainfallLabel;
+	private Label riverFlowLabel;
 
 	public override void _Ready() {
 		base._Ready();
@@ -26,6 +27,7 @@ public class TilePanel : GamePanelView {
 		heightLabel = (Label) GetNode("%Height");
 		temperatureLabel = (Label) GetNode("%Temperature");
 		rainfallLabel = (Label) GetNode("%Rainfall");
+		riverFlowLabel = (Label) GetNode("%RiverFlow");
 
 		UpdateView(gamePanel.CurrentPanel.Value.entity);
 	}
@@ -44,6 +46,7 @@ public class TilePanel : GamePanelView {
 		heightLabel.Text = tileData.height.ToString();
 		temperatureLabel.Text = tileData.temperature.ToString();
 		rainfallLabel.Text = tileData.rainfall.ToString();
+		riverFlowLabel.Text = tileData.riverFlow.ToString();
 	}
 
 	public override void ResetView(Entity entity) {

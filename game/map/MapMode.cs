@@ -62,12 +62,18 @@ public static class MapModes {
 		overlay: new MapModeOverlay(new ColorMap("ocean")),
 		showRivers: true
 	);
+	public static MapMode rivers = new MapMode(
+		name: "Rivers",
+		overlay: new MapModeOverlay(new ColorMap("ocean")),
+		showRivers: true
+	);
 
 	public static List<MapMode> List = new List<MapMode> {
 		political,
 		terrain,
 		temperature,
 		rainfall,
+		rivers,
 	};
 
 	public static BehaviorSubject<MapMode> CurrentMapMode = new BehaviorSubject<MapMode>(MapModes.political);

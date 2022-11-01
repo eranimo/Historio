@@ -5,11 +5,11 @@ public class WorldNoise {
 	public int width;
 	public int height;
 	public int octaves;
-	public int frequency;
+	public float frequency;
 	public float amplitude;
 	private LibNoise.Primitive.ImprovedPerlin noise;
 
-	public WorldNoise(int width, int height, int seed, int octaves = 5, int frequency = 2, float amplitude = 0.5f) {
+	public WorldNoise(int width, int height, int seed, int octaves = 5, float frequency = 2, float amplitude = 0.5f) {
 		this.width = width;
 		this.height = height;
 		this.octaves = octaves;

@@ -41,6 +41,12 @@ public class Layout {
 		return new Point(size.x * Math.Cos(angle), size.y * Math.Sin(angle));
 	}
 
+	public Point HexEdgeMidpoint(HexDirection dir) {
+		var p1 = HexCornerOffset(dir.LeftCorner());
+		var p2 = HexCornerOffset(dir.RightCorner());
+		return Point.FromVector(p1.ToVector().LinearInterpolate(p2.ToVector(), 0.5f));
+	}
+
 	public List<Point> PolygonCorners(CubeCoord h) {
 		List<Point> corners = new List<Point> {};
 		Point center = HexToPixel(h);

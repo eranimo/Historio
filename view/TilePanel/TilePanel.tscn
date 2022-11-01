@@ -139,6 +139,12 @@ margin_right = 247.0
 margin_bottom = 50.0
 text = "Rainfall:"
 
+[node name="Label4" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer"]
+margin_top = 54.0
+margin_right = 247.0
+margin_bottom = 68.0
+text = "River Flow:"
+
 [node name="VBoxContainer2" type="VBoxContainer" parent="TabContainer/Details/HBoxContainer/HBoxContainer"]
 margin_left = 251.0
 margin_right = 499.0
@@ -163,6 +169,13 @@ unique_name_in_owner = true
 margin_top = 36.0
 margin_right = 248.0
 margin_bottom = 50.0
+text = "0"
+
+[node name="RiverFlow" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer2"]
+unique_name_in_owner = true
+margin_top = 54.0
+margin_right = 248.0
+margin_bottom = 68.0
 text = "0"
 
 [node name="Resources" type="MarginContainer" parent="TabContainer"]

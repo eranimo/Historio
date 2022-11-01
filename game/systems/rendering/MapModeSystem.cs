@@ -16,6 +16,7 @@ public class MapModeSystem : ISystem {
 			MapModes.terrain.Overlay.SetValue(location.hex, tileData.height / 255f);
 			MapModes.temperature.Overlay.SetValue(location.hex, tileData.temperature / 255f);
 			MapModes.rainfall.Overlay.SetValue(location.hex, tileData.rainfall / 255f);
+			MapModes.rivers.Overlay.SetValue(location.hex, tileData.riverFlow / 30_000f);
 		}
 	}
 }

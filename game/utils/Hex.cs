@@ -24,11 +24,17 @@ public enum HexCorner {
 	SouthEast = 5,
 }
 
-public class HexSide {
-	private readonly Hex hex;
-	private readonly HexDirection direction;
+public static class HexDirectionExtensions {
+	private static Dictionary<HexDirection, HexDirection> hexOpposites = new Dictionary<HexDirection, HexDirection> {
+		{ HexDirection.SouthEast, HexDirection.NorthWest },
+		{ HexDirection.NorthEast, HexDirection.SouthWest},
+		{ HexDirection.North, HexDirection.South},
+		{ HexDirection.NorthWest, HexDirection.SouthEast},
+		{ HexDirection.SouthWest, HexDirection.NorthEast},
+		{ HexDirection.South, HexDirection.North}
+	};
 
-	private Dictionary<HexDirection, HexCorner[]> directionToCorners = new Dictionary<HexDirection, HexCorner[]> {
+	private static Dictionary<HexDirection, HexCorner[]> directionToCorners = new Dictionary<HexDirection, HexCorner[]> {
 		{ HexDirection.SouthWest, new HexCorner[] { HexCorner.West, HexCorner.SouthWest } },
 		{ HexDirection.NorthWest, new HexCorner[] { HexCorner.NorthWest, HexCorner.West } },
 		{ HexDirection.North, new HexCorner[] { HexCorner.NorthEast, HexCorner.NorthWest } },
@@ -37,27 +43,65 @@ public class HexSide {
 		{ HexDirection.South, new HexCorner[] { HexCorner.SouthWest, HexCorner.SouthEast } },
 	};
 
+	public static HexDirection Opposite(this HexDirection dir) {
+		return hexOpposites[dir];
+	}
+
+	public static HexCorner[] Corners(this HexDirection dir) {
+		return directionToCorners[dir];
+	}
+
+	public static HexCorner LeftCorner(this HexDirection dir) {
+		return directionToCorners[dir][0];
+	}
+
+	public static HexCorner RightCorner(this HexDirection dir) {
+		return directionToCorners[dir][1];
+	}
+}
+
+public class HexSide {
+	private readonly Hex hex;
+	private readonly HexDirection direction;
+
 	public HexSide(Hex hex, HexDirection direction) {
 		this.hex = hex;
 		this.direction = direction;
 	}
 
-	public HexCorner[] Corners {
-		get {
-			return directionToCorners[direction];
+	public override int GetHashCode() {
+		return (hex, direction).GetHashCode();
+	}
+
+	public override bool Equals(object obj) {
+		var side = obj as HexSide;
+		return hex.Equals(side.hex) && direction == side.direction;
+	}
+
+	public static bool operator ==(HexSide hs1, HexSide hs2) {
+		if (((object) hs1) == null || ((object) hs2) == null) {
+			return System.Object.Equals(hs1, hs2);
 		}
+		return hs1.Equals(hs2);
+	}
+
+	public static bool operator !=(HexSide hs1, HexSide hs2) {
+		if (((object) hs1) == null || ((object) hs2) == null) {
+			return System.Object.Equals(hs1, hs2);
+		}
+		return !hs1.Equals(hs2);
+	}
+
+	public HexCorner[] Corners {
+		get { return direction.Corners(); }
 	}
 
 	public HexCorner LeftCorner {
-		get {
-			return directionToCorners[direction][0];
-		}
+		get { return direction.LeftCorner(); }
 	}
 
 	public HexCorner RightCorner {
-		get {
-			return directionToCorners[direction][1];
-		}
+		get { return direction.RightCorner(); }
 	}
 }
 
@@ -305,6 +349,17 @@ public class Hex {
 			Neighbor(HexDirection.NorthWest),
 			Neighbor(HexDirection.SouthWest),
 			Neighbor(HexDirection.South),
+		};
+	}
+
+	public (Hex hex, HexDirection dir)[] NeighborsWithDir() {
+		return new (Hex, HexDirection)[] {
+			(Neighbor(HexDirection.SouthEast), HexDirection.SouthEast),
+			(Neighbor(HexDirection.NorthEast), HexDirection.NorthEast),
+			(Neighbor(HexDirection.North), HexDirection.North),
+			(Neighbor(HexDirection.NorthWest), HexDirection.NorthWest),
+			(Neighbor(HexDirection.SouthWest), HexDirection.SouthWest),
+			(Neighbor(HexDirection.South), HexDirection.South),
 		};
 	}
 
