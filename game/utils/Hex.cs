@@ -52,6 +52,15 @@ public static class HexDirectionExtensions {
 		{ HexDirection.South, new HexCorner[] { HexCorner.SouthWest, HexCorner.SouthEast } },
 	};
 
+	private static Dictionary<HexDirection, HexDirection[]> adjacentDirections = new Dictionary<HexDirection, HexDirection[]> {
+		{ HexDirection.SouthWest, new HexDirection[] { HexDirection.NorthWest, HexDirection.South } },
+		{ HexDirection.NorthWest, new HexDirection[] { HexDirection.North, HexDirection.SouthWest } },
+		{ HexDirection.North, new HexDirection[] { HexDirection.NorthEast, HexDirection.NorthWest } },
+		{ HexDirection.NorthEast, new HexDirection[] { HexDirection.SouthEast, HexDirection.North } },
+		{ HexDirection.SouthEast, new HexDirection[] { HexDirection.South, HexDirection.NorthEast } },
+		{ HexDirection.South, new HexDirection[] { HexDirection.SouthWest, HexDirection.SouthEast } },
+	};
+
 	public static string ShortName(this HexDirection dir) {
 		return shortNames[dir];
 	}
@@ -64,31 +73,44 @@ public static class HexDirectionExtensions {
 		return directionToCorners[dir];
 	}
 
-	public static HexCorner LeftCorner(this HexDirection dir) {
+	public static HexCorner CornerLeft(this HexDirection dir) {
 		return directionToCorners[dir][0];
 	}
 
-	public static HexCorner RightCorner(this HexDirection dir) {
+	public static HexCorner CornerRight(this HexDirection dir) {
 		return directionToCorners[dir][1];
+	}
+
+	public static HexDirection AdjacentLeft(this HexDirection dir) {
+		return adjacentDirections[dir][0];
+	}
+
+	public static HexDirection AdjacentRight(this HexDirection dir) {
+		return adjacentDirections[dir][1];
 	}
 }
 
 public class HexEdge {
-	private readonly Hex hex;
+	private readonly Hex h1;
+	private readonly Hex h2;
 	private readonly HexDirection direction;
 
-	public HexEdge(Hex hex, HexDirection direction) {
-		this.hex = hex;
+	public HexEdge(Hex h1, Hex h2, HexDirection direction) {
+		this.h1 = h1;
+		this.h2 = h2;
 		this.direction = direction;
 	}
 
 	public override int GetHashCode() {
-		return (Hex, Direction).GetHashCode();
+		return h1.GetHashCode() * h2.GetHashCode();
 	}
 
 	public override bool Equals(object obj) {
 		var side = obj as HexEdge;
-		return Hex.Equals(side.Hex) && Direction == side.Direction;
+		return (
+			(H1.Equals(side.H1) && h2.Equals(side.H2)) ||
+			(H1.Equals(side.H2) && H2.Equals(side.H1))
+		);
 	}
 
 	public static bool operator ==(HexEdge hs1, HexEdge hs2) {
@@ -106,7 +128,42 @@ public class HexEdge {
 	}
 
 	public HexDirection Direction => direction;
-	public Hex Hex => hex;
+	public Hex H1 => h1;
+	public Hex H2 => h2;
+
+	public HexEdge Mirror => new HexEdge(h2, h1, direction.Opposite());
+
+	// top right edge
+	public HexEdge E1 {
+		get {
+			HexDirection dir = direction.Opposite().AdjacentRight();
+			return new HexEdge(h1, h2.Neighbor(dir), dir);
+		}
+	}
+
+	// bottom right edge
+	public HexEdge E2 {
+		get {
+			HexDirection dir = direction.AdjacentLeft();
+			return new HexEdge(h1, h1.Neighbor(dir), dir);
+		}
+	}
+
+	// top left edge
+	public HexEdge E3 {
+		get {
+			HexDirection dir = direction.Opposite().AdjacentLeft();
+			return new HexEdge(h1, h1.Neighbor(dir), dir);
+		}
+	}
+
+	// bottom left
+	public HexEdge E4 {
+		get {
+			HexDirection dir = direction.AdjacentRight();
+			return new HexEdge(h1, h1.Neighbor(dir), dir);
+		}
+	}
 }
 
 public struct Point {
@@ -334,7 +391,7 @@ public class Hex {
 	}
 
 	public HexEdge GetEdge(HexDirection direction) {
-		return new HexEdge(this, direction);
+		return new HexEdge(this, Neighbor(direction), direction);
 	}
 
 	public Hex Neighbor(HexDirection direction) {

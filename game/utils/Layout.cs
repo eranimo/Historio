@@ -42,8 +42,8 @@ public class Layout {
 	}
 
 	public Point HexEdgeMidpoint(HexDirection dir) {
-		var p1 = HexCornerOffset(dir.LeftCorner());
-		var p2 = HexCornerOffset(dir.RightCorner());
+		var p1 = HexCornerOffset(dir.CornerLeft());
+		var p2 = HexCornerOffset(dir.CornerRight());
 		return Point.FromVector(p1.ToVector().LinearInterpolate(p2.ToVector(), 0.5f));
 	}
 

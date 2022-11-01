@@ -45,7 +45,7 @@ public class TileData {
 	[Key(4)] public Tile.TerrainType terrain;
 	[Key(5)] public Tile.FeatureType feature;
 
-	[Key(6)] public Dictionary<HexDirection, bool> riverSegments = new Dictionary<HexDirection, bool>();
+	[Key(6)] public Dictionary<HexDirection, bool> streams = new Dictionary<HexDirection, bool>();
 
 	[Key(8)] public float soilFertility = 1000f;
 	[Key(9)] public float plantSpace = 5000f;
