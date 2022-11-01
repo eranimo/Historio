@@ -69,8 +69,8 @@ public class Layout {
     public Point GridDimensions(int cols, int rows) {
 		CubeCoord lastHex = Hex.ToCube(new Hex(cols - 1, rows - 1));
 		var lastHexPoint = HexToPixel(lastHex);
-		double gridWidth = lastHexPoint.x + (HexSize.x / 2);
-		double gridHeight = lastHexPoint.y + (HexSize.y / 2);
+		double gridWidth = lastHexPoint.x + HexSize.x;
+		double gridHeight = lastHexPoint.y + HexSize.y + 4f;
 		return new Point(gridWidth, gridHeight);
 	}
 
