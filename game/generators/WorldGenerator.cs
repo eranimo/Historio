@@ -111,9 +111,55 @@ public class WorldGenerator : IGeneratorStep {
 		}
 		GD.PrintS($"(WorldGenerator) Number of ocean tiles: {oceans.Count}");
 
-		// find flow directions
+		// find lakes
 		var open = new BinaryPriorityQueue<Hex>((a, b) => tiles[a].waterHeight.CompareTo(tiles[b].waterHeight));
 		var closed = new HashSet<Hex>();
+		var pit = new Queue<Hex>();
+		foreach (var (hex, tileData) in tiles) {
+			if (
+				hex.col == 0 || hex.row == 0 ||
+				hex.col == (worldSize.col - 1) || hex.row == (worldSize.row - 1)
+			) {
+				open.Enqueue(hex);
+				closed.Add(hex);
+			}
+		}
+		while (!open.IsEmpty() || pit.Count > 0) {
+			Hex item;
+			if (pit.Count > 0) {
+				item = pit.Dequeue();
+			} else {
+				item = open.Dequeue();
+			}
+
+			var waterHeight = tiles[item].waterHeight;
+
+			foreach (var neighbor in neighbors[item]) {
+				if (closed.Contains(neighbor)) {
+					continue;
+				}
+				closed.Add(neighbor);
+				
+				if (tiles[neighbor].waterHeight <= waterHeight) {
+					tiles[neighbor].waterHeight = waterHeight;
+					pit.Enqueue(neighbor);
+				} else {
+					open.Enqueue(neighbor);
+				}
+			}
+		}
+
+		var lakes = new HashSet<Hex>();
+		foreach (var (hex, tileData) in tiles) {
+			if (!oceans.Contains(hex) && tileData.waterHeight > tileData.height) {
+				lakes.Add(hex);
+			}
+		}
+		GD.PrintS($"(WorldGenerator) Number of lake tiles: {lakes.Count}");
+
+		// find flow directions
+		open = new BinaryPriorityQueue<Hex>((a, b) => tiles[a].waterHeight.CompareTo(tiles[b].waterHeight));
+		closed = new HashSet<Hex>();
 		var flowDirs = new Dictionary<Hex, HexDirection>();
 		foreach (var (hex, tileData) in tiles) {
 			if (
@@ -199,12 +245,10 @@ public class WorldGenerator : IGeneratorStep {
 					tileData.biome = Tile.BiomeType.Desert;
 				}
 
-				if (tileData.waterHeight > tileData.height) {
+				if (lakes.Contains(hex)) {
 					tileData.biome = Tile.BiomeType.Freshwater;
 					tileData.feature = Tile.FeatureType.Lake;
-				}
-
-				if (riverFlow[hex] >= 500) {
+				} else if (riverFlow[hex] >= 500) {
 					tileData.biome = Tile.BiomeType.Freshwater;
 					tileData.feature = Tile.FeatureType.River;
 				}
