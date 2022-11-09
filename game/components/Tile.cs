@@ -57,6 +57,9 @@ public class TileData {
 	[Key(14)] public HexDirection flowDir;
 	[Key(15)] public float riverFlow;
 
+	[Key(16)] public Dictionary<HexDirection, float> streamFlow = new Dictionary<HexDirection, float>();
+
+
 	public int? GetTerrainTilesetIndex() {
 		switch (biome) {
 			case Tile.BiomeType.Ocean: return 0;

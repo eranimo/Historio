@@ -5,6 +5,23 @@ using System.Linq;
 using System.Collections.Generic;
 using Godot;
 
+public class HexGrid {
+	private readonly int cols;
+	private readonly int rows;
+
+	public HexGrid(int cols, int rows) {
+		this.cols = cols;
+		this.rows = rows;
+	}
+
+	public bool IsInside(Hex hex) {
+		return (
+			hex.col == 0 || hex.row == 0 ||
+			hex.col == (cols - 1) || hex.row == (rows - 1)
+		);
+	}
+}
+
 public class Layout {
 	public Layout(Point size, Point origin) {
 		this.size = size;

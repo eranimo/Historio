@@ -25,6 +25,15 @@ public enum HexCorner {
 }
 
 public static class HexDirectionExtensions {
+	private static List<HexDirection> list = new List<HexDirection> {
+		{ HexDirection.SouthEast },
+		{ HexDirection.NorthEast },
+		{ HexDirection.North },
+		{ HexDirection.NorthWest },
+		{ HexDirection.SouthWest },
+		{ HexDirection.South  }
+	};
+
 	private static Dictionary<HexDirection, string> shortNames = new Dictionary<HexDirection, string> {
 		{ HexDirection.SouthEast, "SE" },
 		{ HexDirection.NorthEast, "NE" },
@@ -93,16 +102,29 @@ public static class HexDirectionExtensions {
 public class HexEdge {
 	private readonly Hex h1;
 	private readonly Hex h2;
-	private readonly HexDirection direction;
+	private HexDirection direction;
 
-	public HexEdge(Hex h1, Hex h2, HexDirection direction) {
+	public HexEdge(Hex h1, Hex h2) {
 		this.h1 = h1;
 		this.h2 = h2;
-		this.direction = direction;
+
+		HexDirection? d = null;
+		foreach (var (h, dir) in h1.NeighborsWithDir()) {
+			if (h == h2) {
+				d = dir;
+				break;
+			}
+		}
+		if (d == null) {
+			throw new Exception($"Hexes ${h1} and ${h2} are not neighb");
+		} else {
+			direction = (HexDirection) d;
+		}
 	}
 
 	public override int GetHashCode() {
-		return h1.GetHashCode() * h2.GetHashCode();
+		return h1.GetHashCode() * 31 * h2.GetHashCode();
+		// return (h1.GetHashCode(), h2.GetHashCode()).GetHashCode();
 	}
 
 	public override bool Equals(object obj) {
@@ -111,6 +133,7 @@ public class HexEdge {
 			(H1.Equals(side.H1) && h2.Equals(side.H2)) ||
 			(H1.Equals(side.H2) && H2.Equals(side.H1))
 		);
+		// return H1.Equals(side.H1) && h2.Equals(side.H2);
 	}
 
 	public static bool operator ==(HexEdge hs1, HexEdge hs2) {
@@ -127,17 +150,18 @@ public class HexEdge {
 		return !hs1.Equals(hs2);
 	}
 
-	public HexDirection Direction => direction;
 	public Hex H1 => h1;
 	public Hex H2 => h2;
 
-	public HexEdge Mirror => new HexEdge(h2, h1, direction.Opposite());
+	public HexEdge Mirror => new HexEdge(h2, h1);
+
+	public HexDirection Direction => direction;
 
 	// top right edge
 	public HexEdge E1 {
 		get {
 			HexDirection dir = direction.Opposite().AdjacentRight();
-			return new HexEdge(h1, h2.Neighbor(dir), dir);
+			return new HexEdge(h2, h2.Neighbor(dir));
 		}
 	}
 
@@ -145,7 +169,7 @@ public class HexEdge {
 	public HexEdge E2 {
 		get {
 			HexDirection dir = direction.AdjacentLeft();
-			return new HexEdge(h1, h1.Neighbor(dir), dir);
+			return new HexEdge(h1, h1.Neighbor(dir));
 		}
 	}
 
@@ -153,7 +177,7 @@ public class HexEdge {
 	public HexEdge E3 {
 		get {
 			HexDirection dir = direction.Opposite().AdjacentLeft();
-			return new HexEdge(h1, h1.Neighbor(dir), dir);
+			return new HexEdge(h2, h2.Neighbor(dir));
 		}
 	}
 
@@ -161,8 +185,15 @@ public class HexEdge {
 	public HexEdge E4 {
 		get {
 			HexDirection dir = direction.AdjacentRight();
-			return new HexEdge(h1, h1.Neighbor(dir), dir);
+			return new HexEdge(h1, h1.Neighbor(dir));
 		}
+	}
+
+	public Hex H3 => h1.Neighbor(direction.AdjacentRight());
+	public Hex H4 => h1.Neighbor(direction.AdjacentLeft());
+
+	public override string ToString() {
+		return string.Format("HexEdge({0}, {1}, {2})", this.H1, this.H2, this.direction);
 	}
 }
 
@@ -391,7 +422,29 @@ public class Hex {
 	}
 
 	public HexEdge GetEdge(HexDirection direction) {
-		return new HexEdge(this, Neighbor(direction), direction);
+		return new HexEdge(this, Neighbor(direction));
+	}
+
+	public HexEdge[] Edges() {
+		return new HexEdge[] {
+			GetEdge(HexDirection.SouthEast),
+			GetEdge(HexDirection.NorthEast),
+			GetEdge(HexDirection.North),
+			GetEdge(HexDirection.NorthWest),
+			GetEdge(HexDirection.SouthWest),
+			GetEdge(HexDirection.South),
+		};
+	}
+
+	public (HexEdge edge, HexDirection dir)[] EdgesWithDir() {
+		return new (HexEdge edge, HexDirection dir)[] {
+			(GetEdge(HexDirection.SouthEast), HexDirection.SouthEast),
+			(GetEdge(HexDirection.NorthEast), HexDirection.NorthEast),
+			(GetEdge(HexDirection.North), HexDirection.North),
+			(GetEdge(HexDirection.NorthWest), HexDirection.NorthWest),
+			(GetEdge(HexDirection.SouthWest), HexDirection.SouthWest),
+			(GetEdge(HexDirection.South), HexDirection.South),
+		};
 	}
 
 	public Hex Neighbor(HexDirection direction) {

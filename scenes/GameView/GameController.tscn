@@ -143,6 +143,11 @@ cell_half_offset = 1
 cell_tile_origin = 1
 format = 1
 
+[node name="MapOverlay" type="Polygon2D" parent="GameViewport/Viewport/GameMap"]
+unique_name_in_owner = true
+texture = SubResource( 3 )
+script = ExtResource( 10 )
+
 [node name="Grid" type="TileMap" parent="GameViewport/Viewport/GameMap"]
 unique_name_in_owner = true
 modulate = Color( 1, 1, 1, 0.133333 )
@@ -151,11 +156,6 @@ cell_size = Vector2( 25, 28 )
 cell_custom_transform = Transform2D( 32, 0, 0, 32, 0, 0 )
 cell_half_offset = 1
 format = 1
-
-[node name="MapOverlay" type="Polygon2D" parent="GameViewport/Viewport/GameMap"]
-unique_name_in_owner = true
-texture = SubResource( 3 )
-script = ExtResource( 10 )
 
 [node name="Rivers" type="Node2D" parent="GameViewport/Viewport/GameMap"]
 unique_name_in_owner = true

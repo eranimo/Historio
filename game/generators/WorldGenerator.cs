@@ -29,6 +29,7 @@ public class WorldData {
 public class WorldGenerator : IGeneratorStep {
 	private int TileWidth;
 	private int TileHeight;
+	private HexGrid hexGrid;
 
 	private int GetWorldSize(WorldSize size) {
 		switch (size) {
@@ -45,7 +46,9 @@ public class WorldGenerator : IGeneratorStep {
 		this.TileWidth = size * 2;
 		this.TileHeight = size;
 
-		var heightNoise = new WorldNoise(this.TileWidth, this.TileHeight, options.Seed);
+		hexGrid = new HexGrid(TileWidth, TileHeight);
+
+		var heightNoise = new WorldNoise(this.TileWidth, this.TileHeight, options.Seed, 5, 2.5f);
 		var temperatureNoise = new WorldNoise(this.TileWidth, this.TileHeight, options.Seed * 2);
 		var rainfallNoise = new WorldNoise(this.TileWidth, this.TileHeight, options.Seed * 3, 5, 2.5f);
 
@@ -110,6 +113,7 @@ public class WorldGenerator : IGeneratorStep {
 			}
 		}
 		GD.PrintS($"(WorldGenerator) Number of ocean tiles: {oceans.Count}");
+		GD.PrintS($"(WorldGenerator) Number of land tiles: {tiles.Count - oceans.Count}");
 
 		// find lakes
 		var open = new BinaryPriorityQueue<Hex>((a, b) => tiles[a].waterHeight.CompareTo(tiles[b].waterHeight));
@@ -162,10 +166,7 @@ public class WorldGenerator : IGeneratorStep {
 		closed = new HashSet<Hex>();
 		var flowDirs = new Dictionary<Hex, HexDirection>();
 		foreach (var (hex, tileData) in tiles) {
-			if (
-				hex.col == 0 || hex.row == 0 ||
-				hex.col == (worldSize.col - 1) || hex.row == (worldSize.row - 1)
-			) {
+			if (hexGrid.IsInside(hex)) {
 				open.Enqueue(hex);
 				closed.Add(hex);
 
@@ -216,9 +217,100 @@ public class WorldGenerator : IGeneratorStep {
 				}
 			}
 		}
-		GD.PrintS("(WorldGenerator) river generation");
+		GD.PrintS($"(WorldGenerator) river generation");
+		GD.PrintS($"(WorldGenerator) River Flow\tMin: {riverFlow.Values.Min()} Max: {riverFlow.Values.Max()} Avg: {riverFlow.Values.Average()}");
 
-		GD.PrintS(riverFlow.Values.Min(), riverFlow.Values.Max());
+		var rivers = new HashSet<Hex>();
+		foreach (var hex in tiles.Keys) {
+			if (riverFlow[hex] >= 500) {
+				rivers.Add(hex);
+			}
+		}
+		GD.PrintS($"(WorldGenerator) Number of river tiles: {rivers.Count}");
+
+		// generate streams
+		var validStreamEdges = new HashSet<HexEdge>();
+		var streamFlow = new Dictionary<HexEdge, float>();
+		var streamWater = new Dictionary<HexEdge, float>();
+		var streamHeight = new Dictionary<HexEdge, float>();
+		var streamQueue = new Queue<HexEdge>();
+
+		foreach (var (hex, tileData) in tiles) {
+			foreach (var (dir, neighbor) in neighborsWithDir[hex]) {
+				if (
+					lakes.Contains(hex) || lakes.Contains(neighbor) ||
+					oceans.Contains(hex) || oceans.Contains(neighbor) ||
+					rivers.Contains(hex) || rivers.Contains(neighbor)
+				) {
+					continue;
+				}
+				var edge = hex.GetEdge(dir);
+				if (validStreamEdges.Contains(edge)) {
+					continue;
+				}
+
+				validStreamEdges.Add(edge);
+				var c = 2f;
+				if (tiles.ContainsKey(edge.H3)) {
+					c++;
+				}
+				if (tiles.ContainsKey(edge.H4)) {
+					c++;
+				}
+
+				float v = (
+					tiles[edge.H1].rainfall + tiles[edge.H2].rainfall +
+					(tiles.ContainsKey(edge.H3) ? tiles[edge.H3].rainfall : 0) +
+					(tiles.ContainsKey(edge.H4) ? tiles[edge.H4].rainfall : 0)
+				) / c;
+				float h = (
+					tiles[edge.H1].height + tiles[edge.H2].height +
+					(tiles.ContainsKey(edge.H3) ? tiles[edge.H3].height : 0) +
+					(tiles.ContainsKey(edge.H4) ? tiles[edge.H4].height : 0)
+				) / c;
+				// float h = (tiles[edge.H1].height + tiles[edge.H2].height) / 2f;
+				streamFlow[edge] = v;
+				streamWater[edge] = v;
+				streamHeight[edge] = h;
+				streamQueue.Enqueue(edge);
+			}
+		}
+		GD.PrintS("Valid stream edge count:", validStreamEdges.Count);
+
+		var possibleEdges = new List<(HexEdge, Hex)>();
+		while (streamQueue.Count > 0) {
+			var item = streamQueue.Dequeue();
+			var itemHeight = streamHeight[item];
+			var itemWater = streamWater[item];
+
+			possibleEdges.Clear();
+			if (tiles.ContainsKey(item.H3)) {
+				possibleEdges.Add((item.E3, item.H3));
+				possibleEdges.Add((item.E4, item.H3));
+			} else if (tiles.ContainsKey(item.H4)) {
+				possibleEdges.Add((item.E1, item.H4));
+				possibleEdges.Add((item.E2, item.H4));
+			}
+
+			var validEdges = possibleEdges.FindAll(i => streamHeight.ContainsKey(i.Item1) && streamHeight[i.Item1] < itemHeight);
+
+			if (validEdges.Count == 0) {
+				streamWater[item] = 0;
+				continue;
+			}
+
+			var (downstreamEdge, downstreamHex) = validEdges.MinBy(i => streamHeight[i.Item1]);
+
+			streamWater[downstreamEdge] += itemWater;
+			streamFlow[downstreamEdge] += itemWater;
+			streamWater[item] = 0;
+
+			if (!(rivers.Contains(downstreamHex) || lakes.Contains(downstreamHex) || oceans.Contains(downstreamHex))) {
+				streamQueue.Enqueue(downstreamEdge);
+			}
+		}
+		GD.PrintS($"(WorldGenerator) stream generation");
+		GD.PrintS($"(WorldGenerator) Stream Flow\tMin: {streamFlow.Values.Min()} Max: {streamFlow.Values.Max()} Avg: {streamFlow.Values.Average()}");
 
 		// decide biomes
 		foreach (var (hex, tileData) in tiles) {
@@ -248,9 +340,18 @@ public class WorldGenerator : IGeneratorStep {
 				if (lakes.Contains(hex)) {
 					tileData.biome = Tile.BiomeType.Freshwater;
 					tileData.feature = Tile.FeatureType.Lake;
-				} else if (riverFlow[hex] >= 500) {
+				} else if (rivers.Contains(hex)) {
 					tileData.biome = Tile.BiomeType.Freshwater;
 					tileData.feature = Tile.FeatureType.River;
+				}
+
+				foreach (var (edge, dir) in hex.EdgesWithDir()) {
+					if (streamFlow.ContainsKey(edge)) {
+						tileData.streamFlow[dir] = streamFlow[edge];
+						if (streamFlow[edge] >= 1000) {
+							tileData.streams[edge.Direction] = true;
+						}
+					}
 				}
 			}
 		}
