@@ -1,7 +1,7 @@
 using Godot;
 using System.Linq;
 
-public class LoadGameModal : Control {
+public partial class LoadGameModal : Control {
 	private SaveManager saveManager;
 	private VBoxContainer saveList;
 	private VBoxContainer saveEntryList;
@@ -18,7 +18,7 @@ public class LoadGameModal : Control {
 		saveManager = new SaveManager();
 
 		var closeButton = (TextureButton) GetNode("%CloseButton");
-		closeButton.Connect("pressed", this, nameof(handleClose));
+		closeButton.Connect("pressed",new Callable(this,nameof(handleClose)));
 
 		saveList = (VBoxContainer) GetNode("%SaveList");
 		saveEntryList = (VBoxContainer) GetNode("%SaveEntryList");
@@ -50,7 +50,7 @@ public class LoadGameModal : Control {
 
 		foreach (SavedGameMetadata savedGame in savedGames) {
 			var latestSave = savedGame.saves.OrderByDescending(i => i.saveDate).First();
-			var listItem = (LoadSaveListItem) LoadSaveListItem.Instance();
+			var listItem = (LoadSaveListItem) LoadSaveListItem.Instantiate();
 			saveList.AddChild(listItem);
 			listItem.CountryName = latestSave.countryName;
 			listItem.LastSaveDate = latestSave.saveDate.ToString();
@@ -79,7 +79,7 @@ public class LoadGameModal : Control {
 		}
 
 		foreach (var entry in savedGame.saves) {
-			var listItem = (LoadSaveEntryListItem) LoadSaveEntryListItem.Instance();
+			var listItem = (LoadSaveEntryListItem) LoadSaveEntryListItem.Instantiate();
 			saveEntryList.AddChild(listItem);
 			listItem.SaveEntryName = entry.saveName;
 			listItem.SaveDate = entry.saveDate.ToString();
@@ -106,14 +106,14 @@ public class LoadGameModal : Control {
 		loadState.saveEntry = saveEntry;
 
 		GetTree().CurrentScene.QueueFree();
-		GetTree().ChangeScene("res://scenes/GameView/GameView.tscn");
+		GetTree().ChangeSceneToFile("res://scenes/GameView/GameView.tscn");
 	}
 
 	public override void _UnhandledInput(InputEvent @event) {
 
 		if (@event.IsActionPressed("ui_cancel") && Visible) {
 			Hide();
-			GetTree().SetInputAsHandled();
+			GetViewport().SetInputAsHandled();
 		}
 	}
 }

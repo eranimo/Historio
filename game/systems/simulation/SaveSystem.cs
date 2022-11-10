@@ -1,15 +1,15 @@
-public class SaveSystem : ISystem {
+public partial class SaveSystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
-		if (!this.HasElement<Game>()) {
+		if (!World.HasElement<Game>()) {
 			return;
 		}
-		var game = this.GetElement<Game>();
-		var saveManager = this.GetElement<SaveManager>();
-		var gameManager = this.GetElement<GameManager>();
+		var game = World.GetElement<Game>();
+		var saveManager = World.GetElement<SaveManager>();
+		var gameManager = World.GetElement<GameManager>();
 
-		foreach (var e in this.Receive<SaveGameTrigger>()) {
+		foreach (var e in World.Receive<SaveGameTrigger>(this)) {
 			var watch = System.Diagnostics.Stopwatch.StartNew();
 			var saveData = new SaveData();
 			saveData.Save(this);
@@ -17,7 +17,7 @@ public class SaveSystem : ISystem {
 			saveManager.SaveGame(game, saveData, e.entry);
 		}
 
-		foreach (var e in this.Receive<LoadGameTrigger>()) {
+		foreach (var e in World.Receive<LoadGameTrigger>(this)) {
 			var watch = System.Diagnostics.Stopwatch.StartNew();
 			Godot.GD.PrintS($"(SaveSystem) Starting game load");
 			var saveEntry = saveManager.LoadGame(e.savedGame, e.saveEntry);

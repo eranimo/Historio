@@ -1,6 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://chj6q0qoon21l"]
 
-[sub_resource type="Shader" id=1]
+[sub_resource type="Shader" id="1"]
 code = "shader_type canvas_item;
 // FROM: https://wiki.orx-project.org/en/tutorials/shaders/hexagongrid2
 
@@ -9,7 +9,6 @@ uniform vec2 mapSize;
 uniform vec2 containerSize;
 uniform sampler2D hexColors;
 
-const float PI = 3.14159265358979323846;
 const float SQRT_2 = 1.4142135623730951;
 const float SQRT_3 = 1.73205080757;
 
@@ -116,7 +115,7 @@ void fragment() {
 }"
 
 [resource]
-shader = SubResource( 1 )
-shader_param/gridSize = null
-shader_param/mapSize = null
-shader_param/containerSize = null
+shader = SubResource("1")
+shader_parameter/containerSize = null
+shader_parameter/gridSize = null
+shader_parameter/mapSize = null

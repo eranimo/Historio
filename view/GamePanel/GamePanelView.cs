@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public abstract class GamePanelView : Control {
+public abstract partial class GamePanelView : Control {
 	protected GameView gameView;
 	protected RelEcs.World state;
 	protected GamePanel gamePanel;

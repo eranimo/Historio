@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class LoadSaveListItem : PanelContainer {
+public partial class LoadSaveListItem : PanelContainer {
 	private Label countryName;
 	private Label lastSaveDate;
 
@@ -27,9 +27,9 @@ public class LoadSaveListItem : PanelContainer {
 		countryName = (Label) GetNode("%CountryName");
 		lastSaveDate =  (Label) GetNode("%LastSaveDate");
 
-		GetNode("%SelectButton").Connect("pressed", this, nameof(handleSelect));
-		GetNode("%LoadLatestButton").Connect("pressed", this, nameof(handleLoadLatest));
-		GetNode("%DeleteButton").Connect("pressed", this, nameof(handleDelete));
+		GetNode("%SelectButton").Connect("pressed",new Callable(this,nameof(handleSelect)));
+		GetNode("%LoadLatestButton").Connect("pressed",new Callable(this,nameof(handleLoadLatest)));
+		GetNode("%DeleteButton").Connect("pressed",new Callable(this,nameof(handleDelete)));
 	}
 
 	private void handleSelect() {

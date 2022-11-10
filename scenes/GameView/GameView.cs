@@ -5,7 +5,7 @@ using System.Reactive.Subjects;
 using System.Linq;
 
 
-public class GameGeneratorThread {
+public partial class GameGeneratorThread {
 	private readonly GameOptions options;
 	public event Progress OnProgress;
 	public event Done OnDone;
@@ -37,7 +37,7 @@ public class GameGeneratorThread {
 	}
 }
 
-public class GameView : Control {
+public partial class GameView : Control {
 	private Label desc;
 	private ProgressBar progress;
 	private GameGeneratorThread generatorThread;
@@ -57,10 +57,10 @@ public class GameView : Control {
 		progress = (ProgressBar) GetNode("%ProgressBar");
 
 		var gameControllerScene = (PackedScene) ResourceLoader.Load("res://scenes/GameView/GameController.tscn");
-		GameController = (GameController) gameControllerScene.Instance();
+		GameController = (GameController) gameControllerScene.Instantiate();
 
-		var console = GetTree().Root.GetNode<CanvasLayer>("Console");
-		console.Connect("toggled", this, nameof(handleConsoleToggle));
+		// var console = GetTree().Root.GetNode<CanvasLayer>("Console");
+		// console.Connect("toggled",new Callable(this,nameof(handleConsoleToggle)));
 
 		loadState = (LoadState) GetTree().Root.GetNode("LoadState");
 
@@ -91,22 +91,22 @@ public class GameView : Control {
 			} else {
 				game.Play();
 			}
-			GetTree().SetInputAsHandled();
+			GetViewport().SetInputAsHandled();
 		} else if (@event.IsActionPressed("game_speed_down")) {
 			game.Slower();
-			GetTree().SetInputAsHandled();
+			GetViewport().SetInputAsHandled();
 		} else if (@event.IsActionPressed("game_speed_up")) {
 			game.Faster();
-			GetTree().SetInputAsHandled();
+			GetViewport().SetInputAsHandled();
 		} else if (@event.IsActionPressed("ui_cancel")) {
 			GameController.GameMenu.ShowMenu();
-			GetTree().SetInputAsHandled();
+			GetViewport().SetInputAsHandled();
 		}
 	}
 
-	private void handleConsoleToggle(bool toggled) {
-		isConsoleToggled = toggled;
-	}
+	// private void handleConsoleToggle(bool toggled) {
+	// 	isConsoleToggled = toggled;
+	// }
 
 	/*
 	LOAD GAME

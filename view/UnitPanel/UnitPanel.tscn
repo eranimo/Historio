@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://assets/fonts/DroidSans.ttf" type="FontFile" id=1]
 [ext_resource path="res://view/UnitPanel/UnitPanel.cs" type="Script" id=3]
 [ext_resource path="res://assets/theme.tres" type="Theme" id=4]
 
-[sub_resource type="DynamicFont" id=7]
+[sub_resource type="FontFile" id=7]
 size = 12
 font_data = ExtResource( 1 )
 
@@ -23,87 +23,87 @@ theme = ExtResource( 4 )
 custom_constants/separation = 10
 
 [node name="Content" type="HBoxContainer" parent="UnitInfo"]
-margin_right = 1024.0
-margin_bottom = 572.0
+offset_right = 1024.0
+offset_bottom = 572.0
 size_flags_vertical = 3
 
 [node name="Details" type="VBoxContainer" parent="UnitInfo/Content"]
-margin_right = 510.0
-margin_bottom = 572.0
+offset_right = 510.0
+offset_bottom = 572.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="DetailRow" type="HBoxContainer" parent="UnitInfo/Content/Details"]
-margin_right = 510.0
-margin_bottom = 15.0
+offset_right = 510.0
+offset_bottom = 15.0
 
 [node name="Label" type="Label" parent="UnitInfo/Content/Details/DetailRow"]
-margin_right = 253.0
-margin_bottom = 15.0
+offset_right = 253.0
+offset_bottom = 15.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 0.862745, 0.862745, 0.862745, 1 )
 custom_fonts/font = SubResource( 7 )
 text = "Position"
 
 [node name="UnitPosition" type="Label" parent="UnitInfo/Content/Details/DetailRow"]
-margin_left = 257.0
-margin_right = 510.0
-margin_bottom = 15.0
+offset_left = 257.0
+offset_right = 510.0
+offset_bottom = 15.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 7 )
 text = "(0, 0)"
 
 [node name="Actions" type="VBoxContainer" parent="UnitInfo/Content"]
-margin_left = 514.0
-margin_right = 1024.0
-margin_bottom = 572.0
+offset_left = 514.0
+offset_right = 1024.0
+offset_bottom = 572.0
 size_flags_horizontal = 3
 
 [node name="CurrentActionRow" type="HBoxContainer" parent="UnitInfo/Content/Actions"]
-margin_right = 510.0
-margin_bottom = 15.0
+offset_right = 510.0
+offset_bottom = 15.0
 
 [node name="CurrentActionLabel" type="Label" parent="UnitInfo/Content/Actions/CurrentActionRow"]
-margin_right = 510.0
-margin_bottom = 15.0
+offset_right = 510.0
+offset_bottom = 15.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 7 )
 text = "Moving to (10, 10)"
 
 [node name="ActionQueue" type="ScrollContainer" parent="UnitInfo/Content/Actions"]
-margin_top = 19.0
-margin_right = 510.0
-margin_bottom = 572.0
+offset_top = 19.0
+offset_right = 510.0
+offset_bottom = 572.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_styles/bg = SubResource( 8 )
+custom_styles/panel = SubResource( 8 )
 
 [node name="MarginContainer" type="PanelContainer" parent="UnitInfo/Content/Actions/ActionQueue"]
-margin_right = 10.0
-margin_bottom = 10.0
+offset_right = 10.0
+offset_bottom = 10.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="QueueItemList" type="VBoxContainer" parent="UnitInfo/Content/Actions/ActionQueue/MarginContainer"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 505.0
-margin_bottom = 548.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 505.0
+offset_bottom = 548.0
 
 [node name="Footer" type="HBoxContainer" parent="UnitInfo"]
-margin_top = 582.0
-margin_right = 1024.0
-margin_bottom = 600.0
+offset_top = 582.0
+offset_right = 1024.0
+offset_bottom = 600.0
 
 [node name="StopButton" type="Button" parent="UnitInfo/Footer"]
-margin_right = 32.0
-margin_bottom = 18.0
+offset_right = 32.0
+offset_bottom = 18.0
 text = "Stop"
 
 [node name="MoveButton" type="Button" parent="UnitInfo/Footer"]
-margin_left = 36.0
-margin_right = 75.0
-margin_bottom = 18.0
+offset_left = 36.0
+offset_right = 75.0
+offset_bottom = 18.0
 text = "Move"

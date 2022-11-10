@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-public class BiotaType : Def {
+public partial class BiotaType : Def {
 	public string name { get; set; }
 
 	[JsonConverter(typeof(StringEnumConverter))]
@@ -35,24 +35,24 @@ public enum BiotaClassification {
 	Predator,
 }
 
-public class PlantRequirements {
+public partial class PlantRequirements {
 	// fertility required per unit
 	public float fertility { get; set; }
 }
 
-public class AnimalRequirements {
+public partial class AnimalRequirements {
 	// how much of a certain biota category do they need (per unit)
 	public List<BiotaNeedDef> nutrition { get; set; }
 }
 
 
-public class BiotaNeedDef {
+public partial class BiotaNeedDef {
 	public float amount { get; set; }
 	public BiotaClassification classification { get; set; }
 }
 
 // component
-public class BiotaData {
+public partial class BiotaData {
 	public BiotaType biotaType;
 	public int size;
 
@@ -85,10 +85,10 @@ public class BiotaData {
 }
 
 // relation on Biota to Tile
-public class BiotaTile {}
+public partial class BiotaTile {}
 
 // trigger for when biota are added to a tile
-public class BiotaAdded {
+public partial class BiotaAdded {
 	public Entity biota;
 	public Entity tile;
 }

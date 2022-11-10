@@ -5,7 +5,7 @@ using MessagePack;
 using MessagePack.Formatters;
 
 [MessagePackObject]
-public class CountryData {
+public partial class CountryData {
 	[Key(0)]
 	public string name;
 
@@ -20,9 +20,9 @@ public class CountryData {
 	public HashSet<Hex> observedHexes = new HashSet<Hex>();
 }
 
-public class CountryAdded {
+public partial class CountryAdded {
 	public RelEcs.Entity country;
 }
 
 // tag on entity with Location and ViewStateNode
-public class CountryTile { }
+public partial class CountryTile { }

@@ -1,11 +1,11 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://assets/theme.tres" type="Theme" id=1]
-[ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://assets/ui.png" type="Texture" id=3]
+[ext_resource path="res://assets/fonts/DroidSans.ttf" type="FontFile" id=2]
+[ext_resource path="res://assets/ui.png" type="Texture2D" id=3]
 [ext_resource path="res://view/LoadGameModal/LoadGameModal.cs" type="Script" id=4]
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="FontFile" id=2]
 size = 24
 font_data = ExtResource( 2 )
 
@@ -17,14 +17,14 @@ region = Rect2( 0, 0, 15, 15 )
 atlas = ExtResource( 3 )
 region = Rect2( 15, 0, 15, 15 )
 
-[sub_resource type="DynamicFont" id=5]
+[sub_resource type="FontFile" id=5]
 font_data = ExtResource( 2 )
 
 [node name="LoadGameModal" type="Control"]
-pause_mode = 2
+process_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
-rect_pivot_offset = Vector2( -452, -49 )
+pivot_offset = Vector2( -452, -49 )
 theme = ExtResource( 1 )
 script = ExtResource( 4 )
 
@@ -36,74 +36,74 @@ color = Color( 0, 0, 0, 0.388235 )
 [node name="Container" type="MarginContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/margin_right = 30
-custom_constants/margin_top = 30
-custom_constants/margin_left = 30
-custom_constants/margin_bottom = 30
+custom_constants/offset_right = 30
+custom_constants/offset_top = 30
+custom_constants/offset_left = 30
+custom_constants/offset_bottom = 30
 
 [node name="PanelContainer" type="PanelContainer" parent="Container"]
-margin_left = 30.0
-margin_top = 30.0
-margin_right = 994.0
-margin_bottom = 570.0
+offset_left = 30.0
+offset_top = 30.0
+offset_right = 994.0
+offset_bottom = 570.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Container/PanelContainer"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 959.0
-margin_bottom = 535.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 959.0
+offset_bottom = 535.0
 custom_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Container/PanelContainer/VBoxContainer"]
-margin_right = 954.0
-margin_bottom = 29.0
+offset_right = 954.0
+offset_bottom = 29.0
 
 [node name="PageTitle" type="Label" parent="Container/PanelContainer/VBoxContainer/HBoxContainer"]
-margin_right = 935.0
-margin_bottom = 29.0
+offset_right = 935.0
+offset_bottom = 29.0
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 2 )
 text = "Load Game"
 
 [node name="CloseButton" type="TextureButton" parent="Container/PanelContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 939.0
-margin_right = 954.0
-margin_bottom = 29.0
+offset_left = 939.0
+offset_right = 954.0
+offset_bottom = 29.0
 size_flags_vertical = 5
 texture_normal = SubResource( 3 )
 texture_pressed = SubResource( 4 )
 texture_hover = SubResource( 4 )
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Container/PanelContainer/VBoxContainer"]
-margin_top = 39.0
-margin_right = 954.0
-margin_bottom = 530.0
+offset_top = 39.0
+offset_right = 954.0
+offset_bottom = 530.0
 size_flags_vertical = 3
 custom_constants/separation = 10
 
 [node name="Saves" type="ScrollContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2"]
-margin_right = 472.0
-margin_bottom = 491.0
+offset_right = 472.0
+offset_bottom = 491.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SaveList" type="VBoxContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/Saves"]
 unique_name_in_owner = true
-margin_right = 171.0
-margin_bottom = 14.0
+offset_right = 171.0
+offset_bottom = 14.0
 size_flags_horizontal = 3
 
 [node name="NoSavedGamesText" type="Label" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/Saves/SaveList"]
 unique_name_in_owner = true
-margin_right = 472.0
-margin_bottom = 14.0
+offset_right = 472.0
+offset_bottom = 14.0
 text = "There are no saved games."
 
 [node name="SaveEntries" type="ScrollContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2"]
-margin_left = 482.0
-margin_right = 954.0
-margin_bottom = 491.0
+offset_left = 482.0
+offset_right = 954.0
+offset_bottom = 491.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -112,40 +112,40 @@ size_flags_vertical = 3
 [node name="SelectedSave" type="VBoxContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/Control"]
 unique_name_in_owner = true
 visible = false
-margin_right = 472.0
-margin_bottom = 59.0
+offset_right = 472.0
+offset_bottom = 59.0
 size_flags_horizontal = 3
 
 [node name="SelectedSaveCountryName" type="Label" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/Control/SelectedSave"]
 unique_name_in_owner = true
-margin_right = 472.0
-margin_bottom = 19.0
+offset_right = 472.0
+offset_bottom = 19.0
 custom_fonts/font = SubResource( 5 )
 text = "Tribe of Atlasi"
 
 [node name="NoSaveEntriesText" type="Label" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/Control/SelectedSave"]
 unique_name_in_owner = true
-margin_top = 23.0
-margin_right = 472.0
-margin_bottom = 37.0
+offset_top = 23.0
+offset_right = 472.0
+offset_bottom = 37.0
 text = "There are no saves for this game."
 
 [node name="SaveEntryList" type="VBoxContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/Control/SelectedSave"]
 unique_name_in_owner = true
-margin_top = 41.0
-margin_right = 472.0
-margin_bottom = 41.0
+offset_top = 41.0
+offset_right = 472.0
+offset_bottom = 41.0
 custom_constants/separation = 10
 
 [node name="NoSelectedSave" type="VBoxContainer" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/Control"]
 unique_name_in_owner = true
-margin_right = 472.0
-margin_bottom = 59.0
+offset_right = 472.0
+offset_bottom = 59.0
 size_flags_horizontal = 3
 
 [node name="NoSelectedSaveLabel" type="Label" parent="Container/PanelContainer/VBoxContainer/HBoxContainer2/SaveEntries/Control/NoSelectedSave"]
-margin_right = 472.0
-margin_bottom = 14.0
+offset_right = 472.0
+offset_bottom = 14.0
 text = "Select a saved game from the left to view saves."
 
 [node name="SaveDeleteConfirm" type="ConfirmationDialog" parent="."]
@@ -154,11 +154,11 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -150.0
-margin_top = -39.5
-margin_right = 150.0
-margin_bottom = 39.5
-popup_exclusive = true
+offset_left = -150.0
+offset_top = -39.5
+offset_right = 150.0
+offset_bottom = 39.5
+exclusive = true
 window_title = "Confirm Delete"
 dialog_text = "Are you sure you want to delete this save?"
 dialog_autowrap = true

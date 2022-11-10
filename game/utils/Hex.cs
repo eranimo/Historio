@@ -99,7 +99,7 @@ public static class HexDirectionExtensions {
 	}
 }
 
-public class HexEdge {
+public partial class HexEdge {
 	private readonly Hex h1;
 	private readonly Hex h2;
 	private HexDirection direction;
@@ -218,6 +218,10 @@ public struct Point {
 
 	public Vector2 ToVector() {
 		return new Vector2((float) x, (float) y);
+	}
+
+	public Vector2 ToVectori() {
+		return new Vector2i((int) x, (int) y);
 	}
 
 	public static Point FromVector(Vector2 vec) {
@@ -380,7 +384,7 @@ public struct FractionalCubeCoord {
 }
 
 [MessagePackObject]
-public class Hex {
+public partial class Hex {
 	public Hex() {}
 
 	[SerializationConstructor]
@@ -518,6 +522,10 @@ public class Hex {
 
 	public Vector2 ToVector() {
 		return new Vector2((float) col, (float) row);
+	}
+
+	public Vector2i ToVectori() {
+		return new Vector2i((int) col, (int) row);
 	}
 
 	public static Hex FromVector(Vector2 vector) {

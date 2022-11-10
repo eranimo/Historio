@@ -1,14 +1,14 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b63gj5he317w3"]
 
-[ext_resource path="res://scenes/GameView/MapBordersShader.tres" type="Shader" id=1]
+[ext_resource type="Shader" uid="uid://dd72nemv1xtjg" path="res://scenes/GameView/MapBordersShader.tres" id="1"]
 
 [resource]
-shader = ExtResource( 1 )
-shader_param/hexSize = null
-shader_param/gridSize = null
-shader_param/containerSize = null
-shader_param/gradientEnabled = true
-shader_param/territoryBorderThickness = 1.0
-shader_param/territoryGradientThickness = 6.0
-shader_param/territoryGradientOpacity = 0.6
-shader_param/selectedTerritory = null
+shader = ExtResource("1")
+shader_parameter/containerSize = null
+shader_parameter/gradientEnabled = null
+shader_parameter/gridSize = null
+shader_parameter/hexSize = null
+shader_parameter/selectedTerritory = null
+shader_parameter/territoryBorderThickness = null
+shader_parameter/territoryGradientOpacity = null
+shader_parameter/territoryGradientThickness = null

@@ -9,7 +9,7 @@ public static class EnumExtension {
 
 public static class ColorExtension {
 	public static Godot.Color ToGodot(this System.Drawing.Color color) {
-		return new Godot.Color(color.GetHashCode());
+		return new Godot.Color((uint) color.GetHashCode());
 	}
 
 	public static Godot.Color ToGodot(this byte[] rgb) {

@@ -1,13 +1,13 @@
 using Godot;
 using System;
 
-public class MinimapCamera : Camera2D {
+public partial class MinimapCamera : Camera2D {
 	const float MIN_ZOOM = 0.25f;
 	const float START_ZOOM = 0.5f;
 	const float MAX_ZOOM = 1f;
 
 	public void setZoom(float zoomFactor, Vector2 mousePosition) {
-		var viewportSize = GetViewport().Size;
+		var viewportSize = GetViewport().GetTexture().GetSize();
 		var prevZoom = Zoom;
 		Zoom += Zoom * zoomFactor;
 		Zoom = new Vector2(

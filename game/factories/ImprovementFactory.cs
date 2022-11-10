@@ -1,15 +1,15 @@
 using Godot;
 
-public class ImprovementFactory : Factory {
+public partial class ImprovementFactory : Factory {
 	public ImprovementFactory(GameManager manager) : base(manager) {
 	}
 
 	public Entity AddImprovement(Hex hex, ImprovementType improvementType) {
 		var improvementData = new ImprovementData { type = improvementType };
 
-		var sprite = new Sprite();
+		var sprite = new Sprite2D();
 		sprite.Centered = false;
-		sprite.Texture = ResourceLoader.Load<Texture>(improvementType.spritePath);
+		sprite.Texture = ResourceLoader.Load<Texture2D>(improvementType.spritePath);
 
 		var improvement = Spawn()
 			.Add(improvementData)

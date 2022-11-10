@@ -2,17 +2,15 @@ using Godot;
 using System;
 using System.Reactive.Subjects;
 
-
-
 // console triggers
-public class DebugObserve {
+public partial class DebugObserve {
 }
 
-public class DebugPlay {
+public partial class DebugPlay {
 	public string countryName;
 }
 
-public class DebugListCountries {}
+public partial class DebugListCountries {}
 
 
 public enum GameMapInputType {
@@ -26,27 +24,12 @@ public struct GameMapInput {
 	public bool isShiftModifier;
 }
 
-public static class CommandBuilderExtensions {
-	public static CommandBuilder RemoveCommand(this Console console, string name) {
-		var _console = console.GetTree().Root.GetNode<CanvasLayer>("Console");
-		Godot.Object consoleCommand = _console.Call("remove_command", name) as Godot.Object;
-		return new CommandBuilder(consoleCommand);
-	}
-}
+public partial class GameStart {} 
 
-public static class ConsoleExtensions {
-	public static void WriteLine(this Console console, string text) {
-		var _console = console.GetTree().Root.GetNode<CanvasLayer>("Console");
-		Godot.Object consoleCommand = _console.Call("write_line", text) as Godot.Object;
-	}
-}
-
-public class GameStart {} 
-
-public class GameController : Control {
+public partial class GameController : Control {
 	public Game game;
 
-	public Viewport GameViewport { get; private set; }
+	public SubViewport GameViewport { get; private set; }
 
 	public GamePanel GamePanel;
 
@@ -58,7 +41,7 @@ public class GameController : Control {
 
 	public override void _Ready() {
 		GD.PrintS("(GameController) start game");
-		GameMap = GetNode<GameMap>("GameViewport/Viewport/GameMap");
+		GameMap = GetNode<GameMap>("GameViewport/SubViewport/GameMap");
 		var minimap = GetNode<Minimap>("Minimap");
 		game.manager.state.AddElement(this);
 		game.manager.state.AddElement<GameMap>(GameMap);
@@ -66,7 +49,7 @@ public class GameController : Control {
 		GameMap.RenderMap(game);
 		minimap.RenderMap(game);
 		
-		GameViewport = (Viewport) GetNode("GameViewport/Viewport");
+		GameViewport = (SubViewport) GetNode("GameViewport/SubViewport");
 		GamePanel = (GamePanel) GetNode("GamePanel");
 		GameMenu = (GameMenu) GetNode("%GameMenu");
 
@@ -83,7 +66,7 @@ public class GameController : Control {
 		foreach (var (mapMode, index) in MapModes.List.WithIndex()) {
 			popupMenu.AddItem(mapMode.Name, index);
 		}
-		mapModeDropdown.Connect("item_selected", this, nameof(handleMapModeSelect));
+		mapModeDropdown.Connect("item_selected",new Callable(this,nameof(handleMapModeSelect)));
 		MapModes.CurrentMapMode.Subscribe((MapMode mapMode) => {
 			mapModeDropdown.Select(MapModes.List.IndexOf(mapMode));
 		});
@@ -97,28 +80,28 @@ public class GameController : Control {
 	}
 
 	private void setupConsole() {
-		console = GetTree().Root.GetNode<Console>("CSharpConsole");
+		// console = GetTree().Root.GetNode<Console>("CSharpConsole");
 
-		console.RemoveCommand("next_day");
-		console.RemoveCommand("observe");
-		console.RemoveCommand("play");
+		// console.RemoveCommand("next_day");
+		// console.RemoveCommand("observe");
+		// console.RemoveCommand("play");
 
-		console.AddCommand("next_day", this, nameof(handleNextDay))
-			.SetDescription("Processes the next day in the game")
-			.Register();
+		// console.AddCommand("next_day", this, nameof(handleNextDay))
+		// 	.SetDescription("Processes the next day in the game")
+		// 	.Register();
 
-		console.AddCommand("observe", this, nameof(handleObserve))
-			.SetDescription("Enable observer mode")
-			.Register();
+		// console.AddCommand("observe", this, nameof(handleObserve))
+		// 	.SetDescription("Enable observer mode")
+		// 	.Register();
 
-		console.AddCommand("play", this, nameof(handlePlay))
-			.SetDescription("Play as as the specified country")
-			.AddArgument("country_name", Variant.Type.String)
-			.Register();
+		// console.AddCommand("play", this, nameof(handlePlay))
+		// 	.SetDescription("Play as as the specified country")
+		// 	.AddArgument("country_name", Variant.Type.String)
+		// 	.Register();
 
-		console.AddCommand("list_countries", this, nameof(handleListCountries))
-			.SetDescription("List all countries in the game")
-			.Register();
+		// console.AddCommand("list_countries", this, nameof(handleListCountries))
+		// 	.SetDescription("List all countries in the game")
+		// 	.Register();
 	}
 
 	public Entity currentUnit {
@@ -129,8 +112,6 @@ public class GameController : Control {
 			return null;
 		}
 	}
-
-	public Console console { get; private set; }
 
 	private void handleNextDay() {
 		for (int i = 0; i <= game.speedTicks; i++) {
@@ -150,7 +131,7 @@ public class GameController : Control {
 		game.state.Send(new DebugListCountries());
 	}
 
-	public override void _Process(float delta) {
+	public override void _Process(double delta) {
 		game.Process(delta);
 	}
 }

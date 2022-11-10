@@ -1,4 +1,4 @@
-public class Factory {
+public partial class Factory {
 	protected readonly GameManager manager;
 
 	public Factory(GameManager manager) {
@@ -6,15 +6,15 @@ public class Factory {
 	}
 
 	public EntityBuilder Spawn() {
-		return new EntityBuilder(manager.state, manager.state.Spawn().Identity);
+		return manager.state.Spawn();
 	}
 
 	public EntityBuilder On(Entity entity) {
-		return new EntityBuilder(manager.state, entity.Identity);
+		return new EntityBuilder(manager.state, entity);
 	}
 }
 
-public class Factories {
+public partial class Factories {
 	public UnitFactory unitFactory;
 	public DistrictFactory districtFactory;
 	public ImprovementFactory improvementFactory;

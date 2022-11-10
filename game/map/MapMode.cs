@@ -3,7 +3,7 @@ using System.Reactive.Subjects;
 using Godot;
 using SciColorMaps;
 
-public class MapMode {
+public partial class MapMode {
 	private readonly string name;
 	private readonly MapModeOverlay overlay;
 	private readonly bool showRivers;
@@ -23,7 +23,7 @@ public class MapMode {
 	public bool ShowRivers => showRivers;
 }
 
-public class MapModeOverlay {
+public partial class MapModeOverlay {
 	private readonly ColorMap colorMap;
 	private Dictionary<Hex, Color> hexColors = new Dictionary<Hex, Color>();
 
@@ -31,7 +31,7 @@ public class MapModeOverlay {
 		this.colorMap = colorMap;
 	}
 
-	public bool HasColor(Hex hex) {
+	public bool HasThemeColor(Hex hex) {
 		return hexColors.ContainsKey(hex);
 	}
 

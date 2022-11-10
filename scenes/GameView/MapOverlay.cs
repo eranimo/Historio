@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class MapOverlay : Polygon2D {
+public partial class MapOverlay : Polygon2D {
 	private GameView gameView;
 	private Image hexColorsImage;
 	private ImageTexture hexColors;
@@ -40,20 +40,15 @@ public class MapOverlay : Polygon2D {
 
 		var mapSize = layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
 
-		shader.SetShaderParam("gridSize", worldSize.ToVector());
-		shader.SetShaderParam("mapSize", mapSize);
-		shader.SetShaderParam("containerSize", containerSize);
+		shader.SetShaderParameter("gridSize", worldSize.ToVector());
+		shader.SetShaderParameter("mapSize", mapSize);
+		shader.SetShaderParameter("containerSize", containerSize);
 
-		hexColorsImage = new Image();
-		hexColorsImage.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
-		hexColors = new ImageTexture();
-
+		hexColorsImage = Image.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
 		UpdateMap();
 	}
 
 	public void UpdateMap() {
-		hexColorsImage.Lock();
-
 		var player = gameMap.game.manager.state.GetElement<Player>();
 		var NO_COLOR = new Color(0f, 0f, 0f, 0f);
 
@@ -63,7 +58,7 @@ public class MapOverlay : Polygon2D {
 			if (mapMode.Overlay is null) {
 				hexColorsImage.SetPixel(loc.hex.col, loc.hex.row, NO_COLOR);
 			} else {
-				if (mapMode.Overlay.HasColor(loc.hex)) {
+				if (mapMode.Overlay.HasThemeColor(loc.hex)) {
 					var color = mapMode.Overlay.GetColor(loc.hex);
 					hexColorsImage.SetPixel(loc.hex.col, loc.hex.row, color);
 				} else {
@@ -72,8 +67,7 @@ public class MapOverlay : Polygon2D {
 			}
 		}
 
-		hexColorsImage.Unlock();
-		hexColors.CreateFromImage(hexColorsImage);
-		shader.SetShaderParam("hexColors", hexColors);
+		hexColors = ImageTexture.CreateFromImage(hexColorsImage);
+		shader.SetShaderParameter("hexColors", hexColors);
 	}
 }

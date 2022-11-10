@@ -6,7 +6,7 @@ using System.Collections.Generic;
 Territories are groups of cells 
 Areas are subgroups of territories
 */
-public class MapBorders : Polygon2D {
+public partial class MapBorders : Polygon2D {
 	private GameMap gameMap;
 	private ShaderMaterial shader {
 		get { return (this.Material as ShaderMaterial); }
@@ -24,7 +24,7 @@ public class MapBorders : Polygon2D {
 		get { return _selectedTerritory; }
 		set {
 			_selectedTerritory = value;
-			this.shader.SetShaderParam("selectedTerritory", value);
+			this.shader.SetShaderParameter("selectedTerritory", Variant.CreateFrom((int) value));
 		}
 	}
 
@@ -49,26 +49,22 @@ public class MapBorders : Polygon2D {
 			new Vector2(containerSize.x, containerSize.y),
 			new Vector2(containerSize.x, 0),
 		};
-		this.shader.SetShaderParam("hexSize", gameMap.layout.size.ToVector());
-		this.shader.SetShaderParam("gridSize", worldSize.ToVector());
-		this.shader.SetShaderParam("containerSize", containerSize);
+		this.shader.SetShaderParameter("hexSize", gameMap.layout.size.ToVector());
+		this.shader.SetShaderParameter("gridSize", worldSize.ToVector());
+		this.shader.SetShaderParameter("containerSize", containerSize);
 
 		this.setupMap();
 	}
 
 	public void setupMap() {
-		hexTerritoryColorImage = new Image();
-		hexTerritoryColorImage.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
-		hexAreaColorImage = new Image();
-		hexAreaColorImage.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
+		hexTerritoryColorImage = Image.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
+		hexAreaColorImage = Image.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
 
 		hexTerritoryColors = new ImageTexture();
 		hexAreaColors = new ImageTexture();
 	}
 
 	public void updateTerritoryMap(List<(Hex hex, RelEcs.Entity territory)> updates) {
-		hexTerritoryColorImage.Lock();
-		
 		foreach (var (hex, territory) in updates) {
 			var settlementData = gameView.game.manager.Get<SettlementData>(territory);
 			var settlementOwner = gameView.game.manager.GetTarget<SettlementOwner>(territory);
@@ -85,15 +81,11 @@ public class MapBorders : Polygon2D {
 			hexTerritoryColorImage.SetPixel(hex.col, hex.row, c);
 		}
 
-		hexTerritoryColorImage.Unlock();
-		
-		hexTerritoryColors.CreateFromImage(hexTerritoryColorImage);
-		this.shader.SetShaderParam("hexTerritoryColor", hexTerritoryColors);
+		hexTerritoryColors = ImageTexture.CreateFromImage(hexTerritoryColorImage);
+		this.shader.SetShaderParameter("hexTerritoryColor", hexTerritoryColors);
 	}
 
 	public void updateAreaMap(List<(Hex hex, RelEcs.Entity territory)> updates) {
-		hexAreaColorImage.Lock();
-
 		foreach (var (hex, territory) in updates) {
 			var settlementData = gameView.game.manager.Get<SettlementData>(territory);
 			var settlementOwner = gameView.game.manager.GetTarget<SettlementOwner>(territory);
@@ -105,13 +97,11 @@ public class MapBorders : Polygon2D {
 				id = activeTerritoryEntities.Count + 1;
 				activeTerritoryEntities.Add(territory, id);
 			}
-			var c = Color.FromHsv(0f, 0f, 0f, (float) id / 10_000);
+			var c = Color.FromHSV(0f, 0f, 0f, (float) id / 10_000);
 			hexAreaColorImage.SetPixel(hex.col, hex.row, c);
 		}
 
-		hexAreaColorImage.Unlock();
-		
-		hexAreaColors.CreateFromImage(hexAreaColorImage);
-		this.shader.SetShaderParam("hexAreaIDs", hexAreaColors);
+		hexAreaColors = ImageTexture.CreateFromImage(hexAreaColorImage);
+		this.shader.SetShaderParameter("hexAreaIDs", hexAreaColors);
 	}
 }

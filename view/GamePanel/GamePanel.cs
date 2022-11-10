@@ -13,7 +13,7 @@ public struct GamePanelState {
 	public Entity entity;
 }
 
-public class GamePanel : PanelContainer {
+public partial class GamePanel : PanelContainer {
 	private GameView gameView;
 	private PackedScene unitPanelScene;
 	private PackedScene tilePanelScene;
@@ -54,9 +54,9 @@ public class GamePanel : PanelContainer {
 			)
 			.Subscribe(result => this.updatePanel(result.Current, result.Previous));
 
-		backButton.Connect("pressed", this, nameof(handleBack));
-		forwardButton.Connect("pressed", this, nameof(handleForward));
-		closeButton.Connect("pressed", this, nameof(handleClose));
+		backButton.Connect("pressed",new Callable(this,nameof(handleBack)));
+		forwardButton.Connect("pressed",new Callable(this,nameof(handleForward)));
+		closeButton.Connect("pressed",new Callable(this,nameof(handleClose)));
 	}
 
 	private void updatePanel(GamePanelState? newPanelState, GamePanelState? oldPanelState) {
@@ -87,9 +87,9 @@ public class GamePanel : PanelContainer {
 		}
 
 		if (newPanelState.Value.type == GamePanelType.Unit) {
-			currentPanelView = (GamePanelView) unitPanelScene.Instance();
+			currentPanelView = (GamePanelView) unitPanelScene.Instantiate();
 		} else if (newPanelState.Value.type == GamePanelType.Tile) {
-			currentPanelView = (GamePanelView) tilePanelScene.Instance();
+			currentPanelView = (GamePanelView) tilePanelScene.Instantiate();
 		}
 		content.AddChild(currentPanelView);
 	}
@@ -98,19 +98,19 @@ public class GamePanel : PanelContainer {
 		if (CanGoBack) {
 			PanelBack();
 		}
-		GetTree().SetInputAsHandled();
+		GetViewport().SetInputAsHandled();
 	}
 
 	private void handleForward() {
 		if (CanGoForward) {
 			PanelForward();
 		}
-		GetTree().SetInputAsHandled();
+		GetViewport().SetInputAsHandled();
 	}
 
 	private void handleClose() {
 		PanelClose();
-		GetTree().SetInputAsHandled();
+		GetViewport().SetInputAsHandled();
 	}
 
 	public void SetTitle(string panelTitle) {
@@ -159,7 +159,7 @@ public class GamePanel : PanelContainer {
 		if (@event.IsActionPressed("ui_cancel")) {
 			if (CurrentPanel.HasValue) {
 				PanelClose();
-				GetTree().SetInputAsHandled();
+				GetViewport().SetInputAsHandled();
 			}
 		}
 	}

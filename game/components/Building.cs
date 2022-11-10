@@ -5,16 +5,16 @@ public struct ProductionOption {
 	public List<ResourceAmountDef> output { get; set; }
 }
 
-public class BuildingType : Def {
+public partial class BuildingType : Def {
 	public string name { get; set; }
 	// possible productions made available at this building
 	public List<ProductionOption> productionOptions { get; set; }
 }
 
-public class BuildingData {
+public partial class BuildingData {
 	public BuildingType buildingType;
 	public Entity owner; // owner Pop
 }
 
 // relation on Building to District
-public class DistrictBuilding { }
+public partial class DistrictBuilding { }

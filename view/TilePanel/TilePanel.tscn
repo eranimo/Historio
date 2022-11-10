@@ -2,16 +2,16 @@
 
 [ext_resource path="res://view/TilePanel/TilePanel.cs" type="Script" id=1]
 [ext_resource path="res://assets/theme.tres" type="Theme" id=2]
-[ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://assets/fonts/DroidSans.ttf" type="FontFile" id=3]
 
-[sub_resource type="DynamicFont" id=4]
+[sub_resource type="FontFile" id=4]
 font_data = ExtResource( 3 )
 
-[sub_resource type="DynamicFont" id=3]
+[sub_resource type="FontFile" id=3]
 size = 12
 font_data = ExtResource( 3 )
 
-[sub_resource type="DynamicFont" id=5]
+[sub_resource type="FontFile" id=5]
 size = 12
 font_data = ExtResource( 3 )
 
@@ -25,261 +25,261 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 size_flags_vertical = 3
 theme = ExtResource( 2 )
-tab_align = 0
+tab_alignment = 0
 
 [node name="Details" type="MarginContainer" parent="TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 1.0
-margin_top = 25.0
-margin_right = -1.0
-margin_bottom = -1.0
-custom_constants/margin_right = 10
-custom_constants/margin_top = 10
-custom_constants/margin_left = 10
-custom_constants/margin_bottom = 10
+offset_left = 1.0
+offset_top = 25.0
+offset_right = -1.0
+offset_bottom = -1.0
+custom_constants/offset_right = 10
+custom_constants/offset_top = 10
+custom_constants/offset_left = 10
+custom_constants/offset_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Details"]
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 1012.0
-margin_bottom = 564.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 1012.0
+offset_bottom = 564.0
 
 [node name="Container" type="HBoxContainer" parent="TabContainer/Details/HBoxContainer"]
-margin_right = 499.0
-margin_bottom = 554.0
+offset_right = 499.0
+offset_bottom = 554.0
 size_flags_horizontal = 3
 
 [node name="Labels" type="VBoxContainer" parent="TabContainer/Details/HBoxContainer/Container"]
-margin_right = 247.0
-margin_bottom = 554.0
+offset_right = 247.0
+offset_bottom = 554.0
 size_flags_horizontal = 3
 
 [node name="LocationLabel" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Labels"]
-margin_right = 247.0
-margin_bottom = 14.0
+offset_right = 247.0
+offset_bottom = 14.0
 text = "Location:"
 
 [node name="BiomeLabel" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Labels"]
-margin_top = 18.0
-margin_right = 247.0
-margin_bottom = 32.0
+offset_top = 18.0
+offset_right = 247.0
+offset_bottom = 32.0
 text = "Biome Type:"
 
 [node name="TerrainTypeLabel" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Labels"]
-margin_top = 36.0
-margin_right = 247.0
-margin_bottom = 50.0
+offset_top = 36.0
+offset_right = 247.0
+offset_bottom = 50.0
 text = "Terrain Type:"
 
 [node name="FeatureLabel" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Labels"]
-margin_top = 54.0
-margin_right = 247.0
-margin_bottom = 68.0
+offset_top = 54.0
+offset_right = 247.0
+offset_bottom = 68.0
 text = "Feature Type:"
 
 [node name="Values" type="VBoxContainer" parent="TabContainer/Details/HBoxContainer/Container"]
-margin_left = 251.0
-margin_right = 499.0
-margin_bottom = 554.0
+offset_left = 251.0
+offset_right = 499.0
+offset_bottom = 554.0
 size_flags_horizontal = 3
 
 [node name="Location" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Values"]
 unique_name_in_owner = true
-margin_right = 248.0
-margin_bottom = 14.0
+offset_right = 248.0
+offset_bottom = 14.0
 text = "(0, 0)"
 
 [node name="Biome" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Values"]
 unique_name_in_owner = true
-margin_top = 18.0
-margin_right = 248.0
-margin_bottom = 32.0
+offset_top = 18.0
+offset_right = 248.0
+offset_bottom = 32.0
 text = "Temperate"
 
 [node name="Terrain" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Values"]
 unique_name_in_owner = true
-margin_top = 36.0
-margin_right = 248.0
-margin_bottom = 50.0
+offset_top = 36.0
+offset_right = 248.0
+offset_bottom = 50.0
 text = "Plains"
 
 [node name="Feature" type="Label" parent="TabContainer/Details/HBoxContainer/Container/Values"]
 unique_name_in_owner = true
-margin_top = 54.0
-margin_right = 248.0
-margin_bottom = 68.0
+offset_top = 54.0
+offset_right = 248.0
+offset_bottom = 68.0
 text = "Forest"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Details/HBoxContainer"]
-margin_left = 503.0
-margin_right = 1002.0
-margin_bottom = 554.0
+offset_left = 503.0
+offset_right = 1002.0
+offset_bottom = 554.0
 size_flags_horizontal = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Details/HBoxContainer/HBoxContainer"]
-margin_right = 247.0
-margin_bottom = 554.0
+offset_right = 247.0
+offset_bottom = 554.0
 size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer"]
-margin_right = 247.0
-margin_bottom = 14.0
+offset_right = 247.0
+offset_bottom = 14.0
 text = "Height:"
 
 [node name="Label2" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer"]
-margin_top = 18.0
-margin_right = 247.0
-margin_bottom = 32.0
+offset_top = 18.0
+offset_right = 247.0
+offset_bottom = 32.0
 text = "Temperature:"
 
 [node name="Label3" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer"]
-margin_top = 36.0
-margin_right = 247.0
-margin_bottom = 50.0
+offset_top = 36.0
+offset_right = 247.0
+offset_bottom = 50.0
 text = "Rainfall:"
 
 [node name="Label4" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer"]
-margin_top = 54.0
-margin_right = 247.0
-margin_bottom = 68.0
+offset_top = 54.0
+offset_right = 247.0
+offset_bottom = 68.0
 text = "River Flow:"
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="TabContainer/Details/HBoxContainer/HBoxContainer"]
-margin_left = 251.0
-margin_right = 499.0
-margin_bottom = 554.0
+offset_left = 251.0
+offset_right = 499.0
+offset_bottom = 554.0
 size_flags_horizontal = 3
 
 [node name="Height" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
-margin_right = 248.0
-margin_bottom = 14.0
+offset_right = 248.0
+offset_bottom = 14.0
 text = "0"
 
 [node name="Temperature" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
-margin_top = 18.0
-margin_right = 248.0
-margin_bottom = 32.0
+offset_top = 18.0
+offset_right = 248.0
+offset_bottom = 32.0
 text = "0"
 
 [node name="Rainfall" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
-margin_top = 36.0
-margin_right = 248.0
-margin_bottom = 50.0
+offset_top = 36.0
+offset_right = 248.0
+offset_bottom = 50.0
 text = "0"
 
 [node name="RiverFlow" type="Label" parent="TabContainer/Details/HBoxContainer/HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
-margin_top = 54.0
-margin_right = 248.0
-margin_bottom = 68.0
+offset_top = 54.0
+offset_right = 248.0
+offset_bottom = 68.0
 text = "0"
 
 [node name="Resources" type="MarginContainer" parent="TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 1.0
-margin_top = 25.0
-margin_right = -1.0
-margin_bottom = -1.0
-custom_constants/margin_right = 10
-custom_constants/margin_top = 10
-custom_constants/margin_left = 10
-custom_constants/margin_bottom = 10
+offset_left = 1.0
+offset_top = 25.0
+offset_right = -1.0
+offset_bottom = -1.0
+custom_constants/offset_right = 10
+custom_constants/offset_top = 10
+custom_constants/offset_left = 10
+custom_constants/offset_bottom = 10
 
 [node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Resources"]
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 1012.0
-margin_bottom = 564.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 1012.0
+offset_bottom = 564.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Resources/ScrollContainer"]
-margin_right = 1002.0
-margin_bottom = 10.0
+offset_right = 1002.0
+offset_bottom = 10.0
 size_flags_horizontal = 3
 
 [node name="ResourceListItem" type="PanelContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer"]
-margin_right = 1002.0
-margin_bottom = 48.0
+offset_right = 1002.0
+offset_bottom = 48.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 997.0
-margin_bottom = 43.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 997.0
+offset_bottom = 43.0
 
 [node name="ResourceNodeName" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
-margin_right = 992.0
-margin_bottom = 19.0
+offset_right = 992.0
+offset_bottom = 19.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 4 )
 text = "Wood"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
-margin_top = 23.0
-margin_right = 992.0
-margin_bottom = 38.0
+offset_top = 23.0
+offset_right = 992.0
+offset_bottom = 38.0
 custom_constants/separation = 10
 
 [node name="Size" type="HBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
-margin_right = 99.0
-margin_bottom = 15.0
+offset_right = 99.0
+offset_bottom = 15.0
 
 [node name="Label" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Size"]
-margin_right = 23.0
-margin_bottom = 15.0
+offset_right = 23.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "Size:"
 
 [node name="Value" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Size"]
-margin_left = 27.0
-margin_right = 99.0
-margin_bottom = 15.0
+offset_left = 27.0
+offset_right = 99.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "1,234 / 5,678"
 
 [node name="Growth" type="HBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
-margin_left = 109.0
-margin_right = 206.0
-margin_bottom = 15.0
+offset_left = 109.0
+offset_right = 206.0
+offset_bottom = 15.0
 
 [node name="Label" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Growth"]
-margin_right = 43.0
-margin_bottom = 15.0
+offset_right = 43.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "Growth:"
 
 [node name="Value" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Growth"]
-margin_left = 47.0
-margin_right = 97.0
-margin_bottom = 15.0
+offset_left = 47.0
+offset_right = 97.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "+12 / day"
 
 [node name="Extraction" type="HBoxContainer" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
-margin_left = 216.0
-margin_right = 320.0
-margin_bottom = 15.0
+offset_left = 216.0
+offset_right = 320.0
+offset_bottom = 15.0
 
 [node name="Label" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Extraction"]
-margin_right = 57.0
-margin_bottom = 15.0
+offset_right = 57.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "Extraction:"
 
 [node name="Value" type="Label" parent="TabContainer/Resources/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Extraction"]
-margin_left = 61.0
-margin_right = 104.0
-margin_bottom = 15.0
+offset_left = 61.0
+offset_right = 104.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "+5 / day"
@@ -288,133 +288,133 @@ text = "+5 / day"
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 1.0
-margin_top = 25.0
-margin_right = -1.0
-margin_bottom = -1.0
-custom_constants/margin_right = 10
-custom_constants/margin_top = 10
-custom_constants/margin_left = 10
-custom_constants/margin_bottom = 10
+offset_left = 1.0
+offset_top = 25.0
+offset_right = -1.0
+offset_bottom = -1.0
+custom_constants/offset_right = 10
+custom_constants/offset_top = 10
+custom_constants/offset_left = 10
+custom_constants/offset_bottom = 10
 
 [node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/Biota"]
-margin_left = 10.0
-margin_top = 10.0
-margin_right = 1012.0
-margin_bottom = 564.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 1012.0
+offset_bottom = 564.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Biota/ScrollContainer"]
-margin_right = 1002.0
-margin_bottom = 10.0
+offset_right = 1002.0
+offset_bottom = 10.0
 size_flags_horizontal = 3
 
 [node name="ResourceListItem" type="PanelContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer"]
-margin_right = 1002.0
-margin_bottom = 67.0
+offset_right = 1002.0
+offset_bottom = 67.0
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 997.0
-margin_bottom = 62.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 997.0
+offset_bottom = 62.0
 
 [node name="BiotaName" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
-margin_right = 992.0
-margin_bottom = 19.0
+offset_right = 992.0
+offset_bottom = 19.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 4 )
 text = "Grass (Plant)"
 
 [node name="BiotaCategories" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
-margin_top = 23.0
-margin_right = 992.0
-margin_bottom = 38.0
+offset_top = 23.0
+offset_right = 992.0
+offset_bottom = 38.0
 custom_colors/font_color = Color( 0.803922, 0.803922, 0.803922, 1 )
 custom_fonts/font = SubResource( 5 )
 text = "Flowering Plants"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer"]
-margin_top = 42.0
-margin_right = 992.0
-margin_bottom = 57.0
+offset_top = 42.0
+offset_right = 992.0
+offset_bottom = 57.0
 custom_constants/separation = 10
 
 [node name="Size" type="HBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
-margin_right = 65.0
-margin_bottom = 15.0
+offset_right = 65.0
+offset_bottom = 15.0
 
 [node name="Label" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Size"]
-margin_right = 23.0
-margin_bottom = 15.0
+offset_right = 23.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "Size:"
 
 [node name="Value" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Size"]
-margin_left = 27.0
-margin_right = 65.0
-margin_bottom = 15.0
+offset_left = 27.0
+offset_right = 65.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "10,000"
 
 [node name="Births" type="HBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
-margin_left = 75.0
-margin_right = 134.0
-margin_bottom = 15.0
+offset_left = 75.0
+offset_right = 134.0
+offset_bottom = 15.0
 
 [node name="Label" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Births"]
-margin_right = 34.0
-margin_bottom = 15.0
+offset_right = 34.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "Births:"
 
 [node name="Value" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Births"]
-margin_left = 38.0
-margin_right = 59.0
-margin_bottom = 15.0
+offset_left = 38.0
+offset_right = 59.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "100"
 
 [node name="Deaths" type="HBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
-margin_left = 144.0
-margin_right = 208.0
-margin_bottom = 15.0
+offset_left = 144.0
+offset_right = 208.0
+offset_bottom = 15.0
 
 [node name="Label" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Deaths"]
-margin_right = 39.0
-margin_bottom = 15.0
+offset_right = 39.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "Deaths:"
 
 [node name="Value" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Deaths"]
-margin_left = 43.0
-margin_right = 64.0
-margin_bottom = 15.0
+offset_left = 43.0
+offset_right = 64.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "100"
 
 [node name="Growth" type="HBoxContainer" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer"]
-margin_left = 218.0
-margin_right = 272.0
-margin_bottom = 15.0
+offset_left = 218.0
+offset_right = 272.0
+offset_bottom = 15.0
 
 [node name="Label" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Growth"]
-margin_right = 43.0
-margin_bottom = 15.0
+offset_right = 43.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 0.752941, 0.752941, 0.752941, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "Growth:"
 
 [node name="Value" type="Label" parent="TabContainer/Biota/ScrollContainer/VBoxContainer/ResourceListItem/VBoxContainer/HBoxContainer/Growth"]
-margin_left = 47.0
-margin_right = 54.0
-margin_bottom = 15.0
+offset_left = 47.0
+offset_right = 54.0
+offset_bottom = 15.0
 custom_colors/font_color = Color( 1, 1, 1, 1 )
 custom_fonts/font = SubResource( 3 )
 text = "0"

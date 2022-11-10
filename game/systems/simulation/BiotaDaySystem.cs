@@ -81,18 +81,18 @@ Example:
 */
 
 
-public class BiotaDaySystem : ISystem {
+public partial class BiotaDaySystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 
-		var biotaService = this.GetElement<BiotaService>();
+		var biotaService = World.GetElement<BiotaService>();
 		var tilesChanged = new HashSet<TileData>();
-		foreach (var biotaAdded in this.Receive<BiotaAdded>()) {
+		foreach (var biotaAdded in World.Receive<BiotaAdded>(this)) {
 			// GD.PrintS("Add biota", biotaAdded.biota.Get<BiotaData>().biotaType);
-			TileData tileData = this.GetComponent<TileData>(biotaAdded.tile);
-			BiotaData biotaData = this.GetComponent<BiotaData>(biotaAdded.biota);
+			TileData tileData = World.GetComponent<TileData>(biotaAdded.tile);
+			BiotaData biotaData = World.GetComponent<BiotaData>(biotaAdded.biota);
 			biotaService.AddBiota(biotaData, tileData);
 			tilesChanged.Add(tileData);
 		}
@@ -101,7 +101,7 @@ public class BiotaDaySystem : ISystem {
 			biotaService.UpdateTileBiota(tile);
 		}
 
-		var tiles = this.Query<Entity, TileData>();
+		var tiles = World.Query<Entity, TileData>().Build();
 		foreach (var (tile, tileData) in tiles) {
 			biotaService.CalculateTile(tileData);
 			biotaService.DebugTile(tile);

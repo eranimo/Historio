@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Rivers : Node2D {
+public partial class Rivers : Node2D {
 	private readonly Color STREAM_COLOR = new Color("#0d64b9");
 	private readonly Color ARROW_COLOR = new Color("#043b70");
 	
@@ -16,7 +16,7 @@ public class Rivers : Node2D {
 
 	public void RenderRivers() {
 		shouldRender = true;
-		Update();
+		QueueRedraw();
 	}
 
 	public override void _Draw() {
@@ -46,7 +46,7 @@ public class Rivers : Node2D {
 			// }
 
 			var flowDirPoint = center + layout.HexEdgeMidpoint(tileData.flowDir).ToVector();
-			var p2 = center.LinearInterpolate(flowDirPoint, 0.75f);
+			var p2 = center.Lerp(flowDirPoint, 0.75f);
 			DrawLine(center, p2, ARROW_COLOR, 2f, false);
 		}
 	}

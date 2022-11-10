@@ -5,7 +5,7 @@ using RelEcs;
 
 
 [MessagePackObject]
-public class UnitType : Def {
+public partial class UnitType : Def {
 	[Key(2)]
 	public string name { get; set; }
 
@@ -14,25 +14,25 @@ public class UnitType : Def {
 }
 
 [MessagePackObject]
-public class UnitData {
+public partial class UnitData {
 	[Key(0)]
 	public UnitType type;
 }
 
 // relation on Unit to Country
 [MessagePackObject]
-public class UnitCountry {}
+public partial class UnitCountry {}
 
 // Relation on entity to Country
 [MessagePackObject]
-public class UnitCountryOwner {}
+public partial class UnitCountryOwner {}
 
 
-public class UnitAdded {
+public partial class UnitAdded {
 	public RelEcs.Entity unit;
 }
 
-public class UnitRemoved {
+public partial class UnitRemoved {
 	public RelEcs.Entity unit;
 }
 

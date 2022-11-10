@@ -4,13 +4,13 @@ public struct Order {
 	public int price;
 }
 
-public class Market {
+public partial class Market {
 	public List<Order> buyOrders;
 	public List<Order> sellOrders;
 	public Dictionary<ResourceType, float> prices;
 }
 
 // component on entity that can buy and sell on the market
-public class Trader {
+public partial class Trader {
 	public float money;
 }

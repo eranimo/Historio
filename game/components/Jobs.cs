@@ -1,6 +1,6 @@
 // component on entities that provides jobs
 // sibling of Location
-public class JobProvider {
+public partial class JobProvider {
 	public List<Job> jobs;
 }
 
@@ -29,11 +29,11 @@ public abstract class Job {
 	public List<LaborRequirement> laborRequirement;
 }
 
-public class ConstructionJob : Job {
+public partial class ConstructionJob : Job {
 	public Entity constructionSite;
 }
 
 // component on entities that can perform jobs
-public class HasJob {
+public partial class HasJob {
 	public Job job;
 }

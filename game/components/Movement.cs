@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MessagePack;
 
 [MessagePackObject]
-public class Movement {
+public partial class Movement {
 	[Key(0)]
 	// hex we are moving to
 	public Hex currentTarget = null;
@@ -38,10 +38,10 @@ public class Movement {
 	}
 }
 
-public class UnitMovementPathUpdated {
+public partial class UnitMovementPathUpdated {
 	public Entity unit;
 }
 
-public class UnitMoved {
+public partial class UnitMoved {
 	public RelEcs.Entity unit;
 }

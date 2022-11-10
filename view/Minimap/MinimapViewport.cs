@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class MinimapViewport : ViewportContainer {
+public partial class MinimapViewport : SubViewportContainer {
 	private bool isMousePanning = false;
 
 	private bool isKeyboardPanning = false;
@@ -19,7 +19,7 @@ public class MinimapViewport : ViewportContainer {
 	public override void _Ready() {
 		base._Ready();
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
-		minimapCamera = (MinimapCamera) GetNode("Viewport/MinimapCamera");
+		minimapCamera = (MinimapCamera) GetNode("SubViewport/MinimapCamera");
 	}
 
 	public override void _GuiInput(InputEvent @event) {

@@ -2,17 +2,17 @@ using System;
 using Godot;
 using SciColorMaps;
 
-public class MapModeSystem : ISystem {
+public partial class MapModeSystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
-		foreach (var e in this.Receive<GameStart>()) {
+		foreach (var e in World.Receive<GameStart>(this)) {
 			calculate();
 		}
 	}
 
 	private void calculate() {
-		var tiles = this.Query<Location, TileData>();
+		var tiles = World.Query<Location, TileData>().Build();
 		foreach (var (location, tileData) in tiles) {
 			MapModes.terrain.Overlay.SetValue(location.hex, tileData.height / 255f);
 			MapModes.temperature.Overlay.SetValue(location.hex, tileData.temperature / 255f);

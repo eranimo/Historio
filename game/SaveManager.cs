@@ -6,7 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using MessagePack;
 
 [MessagePackObject]
-public class SavedGameMetadata {
+public partial class SavedGameMetadata {
 	[Key(0)]
 	public string name; // directory filename
 	[Key(1)]
@@ -14,7 +14,7 @@ public class SavedGameMetadata {
 }
 
 [MessagePackObject]
-public class SavedGameEntryMetadata {
+public partial class SavedGameEntryMetadata {
 	[Key(0)]
 	public string name; // also filename
 	[Key(1)]
@@ -28,7 +28,7 @@ public class SavedGameEntryMetadata {
 }
 
 [MessagePackObject]
-public class SavedGameEntry {
+public partial class SavedGameEntry {
 	[Key(0)]
 	public SavedGameEntryMetadata metadata;
 	[Key(1)]
@@ -44,7 +44,7 @@ public abstract class SerializedState {
 }
 
 [MessagePackObject]
-public class SerializedWorld : SerializedState {
+public partial class SerializedWorld : SerializedState {
 	[MessagePackObject]
 	public struct SerializedTile {
 		[Key(0)]
@@ -61,8 +61,8 @@ public class SerializedWorld : SerializedState {
 	public List<SerializedTile> tiles = new List<SerializedTile>();
 
 	public override void Save(ISystem system) {
-		worldData = system.GetElement<WorldData>();
-		var query = system.Query<Location, TileData>();
+		worldData = system.World.GetElement<WorldData>();
+		var query = system.World.Query<Location, TileData>().Build();
 		foreach (var (loc, tileData) in query) {
 			tiles.Add(new SerializedTile {
 				hex = loc.hex,
@@ -72,11 +72,11 @@ public class SerializedWorld : SerializedState {
 	}
 
 	public override void Load(ISystem system, ref LoadData loadData) {
-		system.AddElement<WorldData>(worldData);
-		var worldService = system.GetElement<WorldService>();
+		system.World.AddElement<WorldData>(worldData);
+		var worldService = system.World.GetElement<WorldService>();
 		worldService.initWorld(worldData.worldSize);
 		foreach (var tile in tiles) {
-			var entity = system.Spawn()
+			var entity = system.World.Spawn()
 				.Add(new Location { hex = tile.hex })
 				.Add(tile.tileData)
 				.Id();
@@ -84,20 +84,20 @@ public class SerializedWorld : SerializedState {
 			worldService.AddTile(tile.hex, entity);
 		}
 
-		system.GetElement<PathfindingService>().setup();
+		system.World.GetElement<PathfindingService>().setup();
 	}
 }
 
 [MessagePackObject]
-public class SerializedCountries : SerializedState {
+public partial class SerializedCountries : SerializedState {
 	[MessagePackObject]
-	public class SerializedCountry {
+	public partial class SerializedCountry {
 		[Key(0)]
 		public CountryData countryData;
 	}
 
 	[MessagePackObject]
-	public class SerializedCountryTile {
+	public partial class SerializedCountryTile {
 		[Key(0)]
 		public int ownerCountry;
 
@@ -112,7 +112,7 @@ public class SerializedCountries : SerializedState {
 	}
 
 	[MessagePackObject]
-	public class SerializedSettlement {
+	public partial class SerializedSettlement {
 		[Key(0)]
 		public int ownerCountry;
 
@@ -137,16 +137,16 @@ public class SerializedCountries : SerializedState {
 
 	public override void Save(ISystem system) {
 		countries.Clear();
-		var player = system.GetElement<Player>();
-		foreach (var (country, countryData) in system.Query<Entity, CountryData>()) {
+		var player = system.World.GetElement<Player>();
+		foreach (var (country, countryData) in system.World.Query<Entity, CountryData>().Build()) {
 			// serialize Countries
 			countries[country.Identity.Id] = new SerializedCountry {
 				countryData = countryData,
 			};
 
 			// serialize Settlements
-			var settlementQuery = system
-				.QueryBuilder<Entity, SettlementData>()
+			var settlementQuery = system.World
+				.Query<Entity, SettlementData>()
 				.Has<SettlementOwner>(country)
 				.Build();
 
@@ -154,13 +154,13 @@ public class SerializedCountries : SerializedState {
 				settlements[settlement.Identity.Id] = new SerializedSettlement {
 					ownerCountry = country.Identity.Id,
 					settlementData = settlementData,
-					isCapital = system.HasComponent<CapitalSettlement>(settlement),
+					isCapital = system.World.HasComponent<CapitalSettlement>(settlement),
 				};
 			}
 			
 			// serialize Settlement Tiles
-			var tilesQuery = system
-				.QueryBuilder<Entity, ViewStateNode, Location>()
+			var tilesQuery = system.World
+				.Query<Entity, ViewStateNode, Location>()
 				.Has<CountryTile>(country)
 				.Build();
 
@@ -169,7 +169,7 @@ public class SerializedCountries : SerializedState {
 					ownerCountry = country.Identity.Id,
 					viewStateNode = viewStateNode,
 					location = location,
-					ownerSettlement = system.GetTarget<CountryTileSettlement>(countryTile).Identity.Id,
+					ownerSettlement = system.World.GetTarget<CountryTileSettlement>(countryTile).Identity.Id,
 				};
 			}
 
@@ -178,26 +178,26 @@ public class SerializedCountries : SerializedState {
 	}
 
 	public override void Load(ISystem system, ref LoadData loadData) {
-		var world = system.GetElement<WorldService>();
+		var world = system.World.GetElement<WorldService>();
 
 		// deserialize Countries
 		foreach (var (countryID, country) in this.countries) {
-			var entity = system.Spawn()
+			var entity = system.World.Spawn()
 				.Add(country.countryData)
 				.Id();
 			loadData.countries[countryID] = entity;
 
-			system.Send(new CountryAdded { country = entity });
+			system.World.Send(new CountryAdded { country = entity });
 		}
 
-		system.AddElement<Player>(new Player {
+		system.World.AddElement<Player>(new Player {
 			playerCountry = loadData.countries[playerCountry],
 		});
 
 		// deserialize Settlements
 		foreach (var (settlementID, settlement) in this.settlements) {
 			var country = loadData.countries[settlement.ownerCountry];
-			var entity = system.Spawn()
+			var entity = system.World.Spawn()
 				.Add(settlement.settlementData)
 				.Add<SettlementOwner>(country);
 			if (settlement.isCapital) {
@@ -211,7 +211,7 @@ public class SerializedCountries : SerializedState {
 			var country = loadData.countries[countryTile.ownerCountry];
 			var settlement = loadData.settlements[countryTile.ownerSettlement];
 			var tile = world.GetTile(countryTile.location.hex);
-			var entity = system.Spawn()
+			var entity = system.World.Spawn()
 				.Add(countryTile.location)
 				.Add(countryTile.viewStateNode)
 				.Add<CountryTile>(country)
@@ -219,20 +219,20 @@ public class SerializedCountries : SerializedState {
 				.Add<CountryTileSettlement>(settlement)
 				.Id();
 
-			system.Send(new SettlementBorderUpdated {
+			system.World.Send(new SettlementBorderUpdated {
 				settlement = settlement,
 				countryTile = entity,
 			});
 			loadData.countryTiles[countryTileID] = entity;
-			system.Send(new ViewStateNodeUpdated { entity = entity });
+			system.World.Send(new ViewStateNodeUpdated { entity = entity });
 		}
 	}
 }
 
 [MessagePackObject]
-public class SerializedUnits : SerializedState {
+public partial class SerializedUnits : SerializedState {
 	[MessagePackObject]
-	public class SerializedUnit {
+	public partial class SerializedUnit {
 		[Key(0)]
 		public UnitData unitData;
 
@@ -256,7 +256,7 @@ public class SerializedUnits : SerializedState {
 	public Dictionary<int, SerializedUnit> units = new Dictionary<int, SerializedUnit>();
 
 	public override void Save(ISystem system) {
-		var unitQuery = system.Query<Entity, UnitData, Location, ActionQueue, Movement, ViewStateNode>();
+		var unitQuery = system.World.Query<Entity, UnitData, Location, ActionQueue, Movement, ViewStateNode>().Build();
 
 		foreach (var (entity, unitData, location, actionQueue, movement, viewStateNode) in unitQuery) {
 			var serializedUnit = new SerializedUnit {
@@ -265,7 +265,7 @@ public class SerializedUnits : SerializedState {
 				actionQueue = actionQueue,
 				movement = movement,
 				viewStateNode = viewStateNode,
-				ownerCountry = system.GetTarget<UnitCountry>(entity).Identity.Id,
+				ownerCountry = system.World.GetTarget<UnitCountry>(entity).Identity.Id,
 			};
 			units[entity.Identity.Id] = serializedUnit;
 		}
@@ -275,7 +275,7 @@ public class SerializedUnits : SerializedState {
 	public override void Load(ISystem system, ref LoadData loadData) {
 		Godot.GD.PrintS($"Loaded {units.Count} units");
 		foreach (var (unitID, serializedUnit) in units) {
-			var entity = system.Spawn()
+			var entity = system.World.Spawn()
 				.Add(serializedUnit.unitData)
 				.Add(serializedUnit.location)
 				.Add(serializedUnit.actionQueue)
@@ -286,14 +286,14 @@ public class SerializedUnits : SerializedState {
 				.Id();
 			loadData.units[unitID] = entity;
 
-			system.Send(new UnitAdded { unit = entity });
-			system.Send(new ViewStateNodeUpdated { entity = entity });
+			system.World.Send(new UnitAdded { unit = entity });
+			system.World.Send(new ViewStateNodeUpdated { entity = entity });
 		}
 		Godot.GD.PrintS($"Deserialized {loadData.units.Count} units");
 	}
 }
 
-public class LoadData {
+public partial class LoadData {
 	public Dictionary<int, Entity> countries = new Dictionary<int, Entity>();
 	public Dictionary<int, Entity> settlements = new Dictionary<int, Entity>();
 	public Dictionary<int, Entity> countryTiles = new Dictionary<int, Entity>();
@@ -301,7 +301,7 @@ public class LoadData {
 }
 
 [MessagePackObject]
-public class SaveData {
+public partial class SaveData {
 	[Key(0)]
 	public SerializedWorld world = new SerializedWorld();
 
@@ -332,7 +332,7 @@ SaveManager represents a save system where each saved game represents multiple s
 		- "save.sav" file, a serialized SavedGame struct
 		- "saves" dir, holding files that are serialized SavedGameData structs
 */
-public class SaveManager {
+public partial class SaveManager {
 	private readonly string SAVE_GAME_FOLDER = "user://saved_games";
 	private readonly string SAVE_METADATA_FILENAME = "metadata.dat";
 

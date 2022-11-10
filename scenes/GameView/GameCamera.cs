@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class GameCamera : Camera2D {
+public partial class GameCamera : Camera2D {
 	const float MIN_ZOOM = 0.25f;
 	const float START_ZOOM = 0.5f;
 	const float MAX_ZOOM = 600;
@@ -21,7 +21,7 @@ public class GameCamera : Camera2D {
 	}
 
 	public void ZoomCamera(float zoomFactor, Vector2 mousePosition) {
-		var viewportSize = GetViewport().Size;
+		var viewportSize = GetViewport().GetTexture().GetSize();
 		var prevZoom = Zoom;
 		Zoom += Zoom * zoomFactor;
 		Zoom = new Vector2(
@@ -37,7 +37,7 @@ public class GameCamera : Camera2D {
 		positionChanged = true;
 	}
 
-	public override void _Process(float delta) {
+	public override void _Process(double delta) {
 		base._Process(delta);
 
 		if (positionChanged) {

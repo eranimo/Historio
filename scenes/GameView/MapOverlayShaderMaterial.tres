@@ -1,9 +1,9 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://vc42dumh6y1a"]
 
-[ext_resource path="res://scenes/GameView/MapOverlayShader.tres" type="Shader" id=1]
+[ext_resource type="Shader" uid="uid://bijv2adaxq7n0" path="res://scenes/GameView/MapOverlayShader.tres" id="1"]
 
 [resource]
-shader = ExtResource( 1 )
-shader_param/gridSize = null
-shader_param/mapSize = null
-shader_param/containerSize = null
+shader = ExtResource("1")
+shader_parameter/containerSize = null
+shader_parameter/gridSize = null
+shader_parameter/mapSize = null

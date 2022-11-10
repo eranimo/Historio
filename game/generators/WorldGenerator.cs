@@ -6,7 +6,7 @@ using MessagePack;
 using PriorityQueues;
 
 [MessagePackObject(keyAsPropertyName: true)]
-public class WorldOptions {
+public partial class WorldOptions {
 	public WorldSize Size = WorldSize.Small;
 	public int SeaLevel = 140;
 	public double AxialTilt = 23.45;
@@ -19,14 +19,14 @@ public enum WorldSize {
 }
 
 [MessagePackObject]
-public class WorldData {
+public partial class WorldData {
 	[Key(0)]
 	public Hex worldSize;
 	[Key(1)]
 	public WorldOptions options;
 }
 
-public class WorldGenerator : IGeneratorStep {
+public partial class WorldGenerator : IGeneratorStep {
 	private int TileWidth;
 	private int TileHeight;
 	private HexGrid hexGrid;

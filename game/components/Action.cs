@@ -4,7 +4,7 @@ using Godot;
 using MessagePack;
 
 [MessagePackObject]
-public class ActionQueue {
+public partial class ActionQueue {
 	[Key(0)]
 	public Action currentAction;
 	[Key(1)]
@@ -12,34 +12,34 @@ public class ActionQueue {
 }
 
 // trigger when action queue has changed
-public class ActionQueueChanged {
+public partial class ActionQueueChanged {
 	public Entity entity;
 }
 
 // trigger when current action changes
-public class CurrentActionChanged {
+public partial class CurrentActionChanged {
 	public Entity entity;
 }
 
 // trigger when action is started
-public class ActionStarted {
+public partial class ActionStarted {
 	public Entity entity;
 }
 
 // trigger to add an action to an entity
-public class ActionQueueAdd {
+public partial class ActionQueueAdd {
 	public Entity owner;
 	public Action action;
 }
 
 // trigger when action is removed from queue
-public class ActionQueueRemove {
+public partial class ActionQueueRemove {
 	public Entity owner;
 	public Action action;
 }
 
 // trigger to clear action queue
-public class ActionQueueClear {
+public partial class ActionQueueClear {
 	public Entity owner;
 }
 
@@ -84,21 +84,21 @@ public abstract class Action {
 }
 
 [MessagePackObject]
-public class MovementAction : Action {
+public partial class MovementAction : Action {
 	[Key(1)]
 	public Hex target;
 
 	public override bool CanPerform(ISystem system, Entity owner) {
-		return system.HasComponent<Movement>(owner)
-			&& system.HasComponent<Location>(owner);
+		return system.World.HasComponent<Movement>(owner)
+			&& system.World.HasComponent<Location>(owner);
 	}
 
 	public override void OnStarted(ISystem system, Entity owner) {
-		var world = system.GetElement<WorldService>();
-		var pathfinder = system.GetElement<PathfindingService>();
+		var world = system.World.GetElement<WorldService>();
+		var pathfinder = system.World.GetElement<PathfindingService>();
 
-		var movement = system.GetComponent<Movement>(owner);
-		var location = system.GetComponent<Location>(owner);
+		var movement = system.World.GetComponent<Movement>(owner);
+		var location = system.World.GetComponent<Location>(owner);
 
 		movement.currentTarget = target;
 		movement.movementAction = this;
@@ -120,16 +120,16 @@ public class MovementAction : Action {
 	}
 
 	public override void OnQueued(ISystem system, Entity owner) {
-		system.Send(new UnitMovementPathUpdated { unit = owner });
+		system.World.Send(new UnitMovementPathUpdated { unit = owner });
 	}
 
 	public override void OnFinished(ISystem system, Entity owner) {
-		system.Send(new UnitMovementPathUpdated { unit = owner });
+		system.World.Send(new UnitMovementPathUpdated { unit = owner });
 	}
 
 	public override void OnCancelled(ISystem system, Entity owner) {
-		var movement = system.GetComponent<Movement>(owner);
-		system.Send(new UnitMovementPathUpdated { unit = owner });
+		var movement = system.World.GetComponent<Movement>(owner);
+		system.World.Send(new UnitMovementPathUpdated { unit = owner });
 		movement.Reset();
 	}
 

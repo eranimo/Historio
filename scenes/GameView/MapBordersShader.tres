@@ -1,4 +1,4 @@
-[gd_resource type="Shader" format=2]
+[gd_resource type="Shader" format=3 uid="uid://dd72nemv1xtjg"]
 
 [resource]
 code = "shader_type canvas_item;
@@ -15,7 +15,6 @@ uniform float territoryGradientThickness = 4.0;
 uniform float territoryGradientOpacity = 0.8;
 uniform float selectedTerritory;
 
-const float PI = 3.14159265358979323846;
 const float SQRT_2 = 1.4142135623730951;
 const float SQRT_3 = 1.73205080757;
 

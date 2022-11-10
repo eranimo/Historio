@@ -9,7 +9,7 @@ public enum GameSpeed {
 	Fast,
 }
 
-public class GameOptions {
+public partial class GameOptions {
 	public int Seed = 123456;
 	public WorldOptions world = new WorldOptions();
 }
@@ -22,7 +22,7 @@ public interface IGeneratorStep {
 - Handles play state, speed, and game date
 - contains GameManager
 */
-public class Game {
+public partial class Game {
 	public static readonly int TICKS_PER_DAY = 5;
 	private BehaviorSubject<bool> playState = new BehaviorSubject<bool>(false);
 	private BehaviorSubject<GameSpeed> speed = new BehaviorSubject<GameSpeed>(GameSpeed.Slow);
@@ -61,7 +61,7 @@ public class Game {
 		manager.Init();
 	}
 
-	public void Process(float delta, bool force = false) {
+	public void Process(double delta, bool force = false) {
 		manager.Process(delta);
 		if (!force && !IsPlaying) {
 			return;

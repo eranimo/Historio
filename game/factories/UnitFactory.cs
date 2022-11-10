@@ -1,4 +1,4 @@
-public class UnitFactory : Factory {
+public partial class UnitFactory : Factory {
 	public UnitFactory(GameManager manager) : base(manager) {}
 
 	public void NewUnit(

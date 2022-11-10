@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-public class ResourceType : Def {
+public partial class ResourceType : Def {
 	public string name { get; set; }
 	public float basePrice { get; set; }
 	public float nutrition { get; set; } = 0f;
@@ -26,7 +26,7 @@ public enum ResourceCategory {
 	RawMaterials,
 }
 
-public class ResourceNode {
+public partial class ResourceNode {
 	public ResourceType resourceType;
 	public float amountLeft;
 	public float amountMax;

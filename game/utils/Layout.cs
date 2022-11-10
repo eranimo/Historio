@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Godot;
 
-public class HexGrid {
+public partial class HexGrid {
 	private readonly int cols;
 	private readonly int rows;
 
@@ -22,7 +22,7 @@ public class HexGrid {
 	}
 }
 
-public class Layout {
+public partial class Layout {
 	public Layout(Point size, Point origin) {
 		this.size = size;
 		this.origin = origin;
@@ -61,7 +61,7 @@ public class Layout {
 	public Point HexEdgeMidpoint(HexDirection dir) {
 		var p1 = HexCornerOffset(dir.CornerLeft());
 		var p2 = HexCornerOffset(dir.CornerRight());
-		return Point.FromVector(p1.ToVector().LinearInterpolate(p2.ToVector(), 0.5f));
+		return Point.FromVector(p1.ToVector().Lerp(p2.ToVector(), 0.5f));
 	}
 
 	public List<Point> PolygonCorners(CubeCoord h) {

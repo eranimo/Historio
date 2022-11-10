@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class SettlementLabel : PanelContainer {
+public partial class SettlementLabel : PanelContainer {
 	public ColorRect flag;
 	public Label label;
 	private GameView gameView;
@@ -16,8 +16,8 @@ public class SettlementLabel : PanelContainer {
 		resize();
 		gameView.OnZoom.Subscribe((float zoom) => resize());
 
-		Connect("mouse_entered", this, nameof(onMouseEntered));
-		Connect("mouse_exited", this, nameof(onMouseExited));
+		Connect("mouse_entered",new Callable(this,nameof(onMouseEntered)));
+		Connect("mouse_exited",new Callable(this,nameof(onMouseExited)));
 	}
 
 	private bool _hovered;
@@ -31,7 +31,7 @@ public class SettlementLabel : PanelContainer {
 			} else {
 				style = ResourceLoader.Load<StyleBoxFlat>("res://assets/styles/UnitLabelNormal.tres");
 			}
-			AddStyleboxOverride("panel", style);
+			AddThemeStyleboxOverride("panel", style);
 		}
 	}
 
@@ -52,11 +52,11 @@ public class SettlementLabel : PanelContainer {
 		}
 	}
 	public void centerLabel() {
-		SetPosition(position - RectSize / 2 * gameView.zoom.Value);
+		SetPosition(position - Size / 2 * gameView.zoom.Value);
 	}
 
 	private void resize() {
-		RectScale = new Vector2(gameView.zoom.Value, gameView.zoom.Value);
+		Scale = new Vector2(gameView.zoom.Value, gameView.zoom.Value);
 		centerLabel();
 	}
 
@@ -87,9 +87,9 @@ public class SettlementLabel : PanelContainer {
 		// if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_RIGHT:
 		if (hovered && @event is InputEventMouseButton) {
 			var mouseEventButton = (InputEventMouseButton) @event;
-			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex == 1) {
+			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex == MouseButton.MaskLeft) {
 				GD.PrintS("Clicked on settlement label");
-				GetTree().SetInputAsHandled();
+				GetViewport().SetInputAsHandled();
 			}
 		}
 	}

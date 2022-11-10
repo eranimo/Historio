@@ -4,8 +4,8 @@ using System;
 using Godot;
 using System.Linq;
 
-public class PhysicsDelta {
-	public float delta;
+public partial class PhysicsDelta {
+	public double delta;
 }
 
 public static class Defs {
@@ -18,11 +18,11 @@ public static class Defs {
 	public static DefStore<BiotaType> BiotaType = new DefStore<BiotaType>("BiotaType", "biotaType");
 }
 
-public class DebugDaySystem : ISystem {
+public partial class DebugDaySystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
-		this.GetElement<GameController>().PrintStrayNodes();
+		// World.GetElement<GameController>().PrintOrphanNodes();
 	}
 }
 
@@ -36,53 +36,53 @@ public static class QueryExtensions {
 	}
 }
 
-public class DebugStartSystem : ISystem {
+public partial class DebugStartSystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
 		GD.PrintS("(DebugStartSystem) entity counts:");
 		
-		GD.PrintS("\t Tiles:", this.Query<TileData>().Count());
-		GD.PrintS("\t Countries:", this.Query<CountryData>().Count());
-		GD.PrintS("\t Settlements:", this.Query<SettlementData>().Count());
-		GD.PrintS("\t Country Tiles:", this.Query<CountryTile>().Count());
-		GD.PrintS("\t Units:", this.Query<UnitData>().Count());
+		GD.PrintS("\t Tiles:", World.Query<TileData>().Build().Count());
+		GD.PrintS("\t Countries:", World.Query<CountryData>().Build().Count());
+		GD.PrintS("\t Settlements:", World.Query<SettlementData>().Build().Count());
+		GD.PrintS("\t Country Tiles:", World.Query<CountryTile>().Build().Count());
+		GD.PrintS("\t Units:", World.Query<UnitData>().Build().Count());
 	}
 }
 
-public class DebugTickSystem : ISystem {
+public partial class DebugTickSystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
-		foreach (var e in this.Receive<DebugObserve>()) {
-			this.GetElement<Player>().playerCountry = null;
-			this.Send(new PlayerChanged());
+		foreach (var e in World.Receive<DebugObserve>(this)) {
+			World.GetElement<Player>().playerCountry = null;
+			World.Send(new PlayerChanged());
 		}
 
-		foreach (var e in this.Receive<DebugPlay>()) {
-			var countries = this.Query<Entity, CountryData>();
+		foreach (var e in World.Receive<DebugPlay>(this)) {
+			var countries = World.Query<Entity, CountryData>().Build();
 			foreach (var (country, countryData) in countries) {
 				if (countryData.name == e.countryName) {
 					GD.PrintS("Play as", e.countryName);
-					this.GetElement<Player>().playerCountry = country;
-					this.Send(new PlayerChanged());
+					World.GetElement<Player>().playerCountry = country;
+					World.Send(new PlayerChanged());
 					break;
 				}
 			}
 		}
 
-		foreach (var e in this.Receive<DebugListCountries>()) {
-			var countries = this.Query<CountryData>();
-			var countryList = new List<string>();
-			foreach (var countryData in countries) {
-				countryList.Add(countryData.name);
-			}
-			this.GetElement<GameController>().console.WriteLine(String.Join(", ", countryList));
-		}
+		// foreach (var e in World.Receive<DebugListCountries>(this)) {
+		// 	var countries = World.Query<CountryData>().Build();
+		// 	var countryList = new List<string>();
+		// 	foreach (var countryData in countries) {
+		// 		countryList.Add(countryData.name);
+		// 	}
+		// 	World.GetElement<GameController>().console.WriteLine(String.Join(", ", countryList));
+		// }
 	} 
 }
 
-public class GameManager {
+public partial class GameManager {
 	public RelEcs.World state;
 
 	// runs when game is starts (before scene is loaded)
@@ -195,7 +195,7 @@ public class GameManager {
 		}
 	}
 
-	public void ProcessPlaying(float delta) {
+	public void ProcessPlaying(double delta) {
 		try {
 			physicsDelta.delta = delta;
 			playSystems.Run(state);
@@ -204,7 +204,7 @@ public class GameManager {
 		}
 	}
 
-	public void Process(float delta) {
+	public void Process(double delta) {
 		try {
 			tickSystems.Run(state);
 		} catch (Exception err) {
@@ -221,27 +221,27 @@ public class GameManager {
 	}
 
 	public T Get<T>(Entity entity) where T : class {
-		return state.GetComponent<T>(entity.Identity);
+		return state.GetComponent<T>(entity);
 	}
 
 	public T Get<T>(Entity entity, Entity target) where T : class {
-		return state.GetComponent<T>(entity.Identity, target.Identity);
+		return state.GetComponent<T>(entity, target);
 	}
 
 	public T Get<T>(Entity entity, Type type) where T : class {
-		var typeIdentity = state.GetTypeIdentity(type);
-		return state.GetComponent<T>(entity.Identity, typeIdentity);
+		var typeIdentity = state.GetTypeEntity(type);
+		return state.GetComponent<T>(entity, typeIdentity);
 	}
 
 	public Entity GetTarget<T>(Entity entity) where T : class {
-		return state.GetTarget<T>(entity.Identity);
+		return state.GetTarget<T>(entity);
 	}
 
 	public EntityBuilder Spawn() {
-		return new EntityBuilder(state, state.Spawn().Identity);
+		return state.Spawn();
 	}
 
 	public EntityBuilder On(Entity entity) {
-		return new EntityBuilder(state, entity.Identity);
+		return new EntityBuilder(state, entity);
 	}
 }

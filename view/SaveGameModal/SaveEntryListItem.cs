@@ -5,7 +5,7 @@ using System.Reactive.Subjects;
 public delegate void SaveEntryDelete();
 public delegate void SaveEntryOverwrite();
 
-public class SaveEntryListItem : PanelContainer {
+public partial class SaveEntryListItem : PanelContainer {
 	private Label saveEntryName;
 	private Label saveDate;
 	private Button deleteButton;
@@ -31,8 +31,8 @@ public class SaveEntryListItem : PanelContainer {
 		deleteButton = (Button) GetNode("%DeleteButton");
 		overwriteButton = (Button) GetNode("%OverwriteButton");
 
-		deleteButton.Connect("pressed", this, nameof(handleDelete));
-		overwriteButton.Connect("pressed", this, nameof(handleOverwrite));
+		deleteButton.Connect("pressed",new Callable(this,nameof(handleDelete)));
+		overwriteButton.Connect("pressed",new Callable(this,nameof(handleOverwrite)));
 	}
 
 	private void handleDelete() {

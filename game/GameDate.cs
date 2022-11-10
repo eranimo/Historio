@@ -1,6 +1,6 @@
 using System;
 
-public class GameDate {
+public partial class GameDate {
 	public int dayTicks;
 	private DateTime dateTime;
 

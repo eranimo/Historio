@@ -1,21 +1,21 @@
 // center the game map on the player's capital settlement
-public class GameMapTickSystem : ISystem {
+public partial class GameMapTickSystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
-		foreach (var e in this.Receive<GameStart>()) {
+		foreach (var e in World.Receive<GameStart>(this)) {
 			centerOnPlayerCountry();
 		}
 
-		foreach (var e in this.Receive<PlayerChanged>()) {
+		foreach (var e in World.Receive<PlayerChanged>(this)) {
 			centerOnPlayerCountry();
 		}
 	}
 
 	private void centerOnPlayerCountry() {
-		var gameMap = this.GetElement<GameMap>();
-		var player = this.GetElement<Player>();
-		var playerOwnedTiles = this.QueryBuilder<Location>()
+		var gameMap = World.GetElement<GameMap>();
+		var player = World.GetElement<Player>();
+		var playerOwnedTiles = World.Query<Location>()
 			.Has<CountryTile>(player.playerCountry)
 			.Build();
 		var hexes = new List<Hex>();

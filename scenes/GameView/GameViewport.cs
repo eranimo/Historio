@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class GameViewport : ViewportContainer {
+public partial class GameViewport : SubViewportContainer {
 	private GameView gameView;
 	private GameCamera gameCamera;
 	const float ZOOM_SPEED = 0.25f;
@@ -12,7 +12,7 @@ public class GameViewport : ViewportContainer {
 
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
-		gameCamera = (GameCamera) GetNode("Viewport/GameMap/GameCamera");
+		gameCamera = (GameCamera) GetNode("SubViewport/GameMap/GameCamera");
 		gameView.zoom.OnNext(gameCamera.Zoom.x);
 		gameView.pan.OnNext(gameCamera.Position);
 	}
@@ -45,20 +45,20 @@ public class GameViewport : ViewportContainer {
 
 		if (@event is InputEventMouseButton) {
 			var mouseEventButton = (InputEventMouseButton) @event;
-			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex != (int) ButtonList.MaskMiddle) {
+			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex != MouseButton.MaskMiddle) {
 				var coord = getCoordAtCursor();
-				if (mouseEventButton.ButtonIndex == (int) ButtonList.MaskLeft) {
+				if (mouseEventButton.ButtonIndex == MouseButton.MaskLeft) {
 					gameView.GameController.gameMapInputSubject.OnNext(new GameMapInput {
 						hex = coord,
 						type = GameMapInputType.LeftClick,
-						isShiftModifier = mouseEventButton.Shift
+						isShiftModifier = mouseEventButton.ShiftPressed
 					});
 					AcceptEvent();
-				} else if (mouseEventButton.ButtonIndex == (int) ButtonList.MaskRight) {
+				} else if (mouseEventButton.ButtonIndex == MouseButton.MaskRight) {
 					gameView.GameController.gameMapInputSubject.OnNext(new GameMapInput {
 						hex = coord,
 						type = GameMapInputType.RightClick,
-						isShiftModifier = mouseEventButton.Shift
+						isShiftModifier = mouseEventButton.ShiftPressed
 					});
 					AcceptEvent();
 				}
@@ -84,14 +84,14 @@ public class GameViewport : ViewportContainer {
 		return gameView.game.state.GetElement<Layout>().PixelToHex(new Point(cursorPos.x, cursorPos.y));
 	}
 
-	public override void _PhysicsProcess(float delta) {
+	public void _PhysicsProcess(float delta) {
 		if (gameView.isConsoleToggled) {
 			return;
 		}
 		moveDirection.x = 0;
 		moveDirection.y = 0;
 		var moveAmount = BASE_MOVE_AMOUNT;
-		if (Input.IsKeyPressed((int) Godot.KeyList.Shift)) {
+		if (Input.IsKeyPressed(Key.Shift)) {
 			moveAmount *= 2;
 		}
 		if (Input.IsActionPressed("view_pan_up")) {

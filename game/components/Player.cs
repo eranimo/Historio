@@ -2,9 +2,9 @@ using System;
 
 
 // Element
-public class Player {
+public partial class Player {
 	public RelEcs.Entity playerCountry;
 }
 
 // trigger
-public class PlayerChanged {}
+public partial class PlayerChanged {}

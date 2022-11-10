@@ -1,30 +1,31 @@
 using System;
 using System.Linq;
+using System.IO;
 
-public class SaveModalTickSystem : ISystem {
+public partial class SaveModalTickSystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
-		if (!this.HasElement<SaveGameModal>()) {
+		if (!World.HasElement<SaveGameModal>()) {
 			return;
 		}
 
-		foreach (var e in this.Receive<SaveModalLoadTrigger>()) {
-			var saveGameModal = this.GetElement<SaveGameModal>();
-			var player = this.GetElement<Player>();
-			var gameDate = this.GetElement<GameDate>();
-			saveGameModal.CountryName = this.GetComponent<CountryData>(player.playerCountry).name;
+		foreach (var e in World.Receive<SaveModalLoadTrigger>(this)) {
+			var saveGameModal = World.GetElement<SaveGameModal>();
+			var player = World.GetElement<Player>();
+			var gameDate = World.GetElement<GameDate>();
+			saveGameModal.CountryName = World.GetComponent<CountryData>(player.playerCountry).name;
 			saveGameModal.SaveNameInput = gameDate.ToString();
 		}
 
-		foreach (var e in this.Receive<SaveModalSaveTrigger>()) {
-			var saveGameModal = this.GetElement<SaveGameModal>();
-			var player = this.GetElement<Player>();
-			var gameDate = this.GetElement<GameDate>();
-			var countryName = this.GetComponent<CountryData>(player.playerCountry).name;
-			var worldData = this.GetElement<WorldData>();
+		foreach (var e in World.Receive<SaveModalSaveTrigger>(this)) {
+			var saveGameModal = World.GetElement<SaveGameModal>();
+			var player = World.GetElement<Player>();
+			var gameDate = World.GetElement<GameDate>();
+			var countryName = World.GetComponent<CountryData>(player.playerCountry).name;
+			var worldData = World.GetElement<WorldData>();
 
-			var nameSanitized = System.IO.Path.GetInvalidFileNameChars().Aggregate(e.name, (f, c) => f.Replace(c, '_'));
+			var nameSanitized = Path.GetInvalidFileNameChars().Aggregate(e.name, (f, c) => f.Replace(c, '_'));
 			var entry = new SavedGameEntryMetadata {
 				name = nameSanitized,
 				saveName = e.name,
@@ -32,7 +33,7 @@ public class SaveModalTickSystem : ISystem {
 				dayTicks = gameDate.dayTicks,
 				saveDate = DateTime.Now,
 			};
-			this.Send(new SaveGameTrigger { entry = entry });
+			World.Send(new SaveGameTrigger { entry = entry });
 		}
 	}
 }

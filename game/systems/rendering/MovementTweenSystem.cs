@@ -1,15 +1,15 @@
 using System.Linq;
 using Godot;
 
-public class MovementTweenPlaySystem : ISystem {
+public partial class MovementTweenPlaySystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
-		var layout = this.GetElement<Layout>();
-		var world = this.GetElement<WorldService>();
-		var sprites = this.Query<Entity, Location, UnitIcon, Movement>();
-		var delta = this.GetElement<PhysicsDelta>().delta;
-		var game = this.GetElement<Game>();
+		var layout = World.GetElement<Layout>();
+		var world = World.GetElement<WorldService>();
+		var delta = World.GetElement<PhysicsDelta>().delta;
+		var game = World.GetElement<Game>();
+		var sprites = World.Query<Entity, Location, UnitIcon, Movement>().Build();
 
 		try {
 			foreach (var (entity, location, unitIcon, movement) in sprites) {
@@ -29,7 +29,7 @@ public class MovementTweenPlaySystem : ISystem {
 				var tweenToHex = movement.tweenHexes[tweenToIndex];
 				var tweenFromVec = layout.HexToPixel(tweenFromHex).ToVector();
 				var tweenToVec = layout.HexToPixel(tweenToHex).ToVector();
-				unitIcon.Position = tweenFromVec.LinearInterpolate(tweenToVec, tweenSegmentPercent);
+				unitIcon.Position = tweenFromVec.Lerp(tweenToVec, tweenSegmentPercent);
 
 				if (game.isLastDayTick && movement.currentTarget == null) {
 					unitIcon.Position = layout.HexToPixel(movement.tweenHexes.Last()).ToVector();

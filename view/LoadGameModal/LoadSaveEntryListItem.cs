@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class LoadSaveEntryListItem : PanelContainer {
+public partial class LoadSaveEntryListItem : PanelContainer {
 	private Label saveEntryName;
 	private Label saveDate;
 
@@ -25,8 +25,8 @@ public class LoadSaveEntryListItem : PanelContainer {
 		saveEntryName = (Label) GetNode("%SaveEntryName");
 		saveDate = (Label) GetNode("%SaveDate");
 
-		GetNode("%LoadEntryButton").Connect("pressed", this, nameof(handleLoad));
-		GetNode("%DeleteEntryButton").Connect("pressed", this, nameof(handleDelete));
+		GetNode("%LoadEntryButton").Connect("pressed",new Callable(this,nameof(handleLoad)));
+		GetNode("%DeleteEntryButton").Connect("pressed",new Callable(this,nameof(handleDelete)));
 	}
 
 	private void handleLoad() {

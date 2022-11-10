@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class GameMenu : Control {
+public partial class GameMenu : Control {
 	private GameView gameView;
 	private LoadGameModal loadGameModal;
 	private SaveGameModal saveGameModal;
@@ -18,11 +18,11 @@ public class GameMenu : Control {
 		var saveGameButton = (Button) GetNode("%SaveGameButton");
 		var mainMenuButton = (Button) GetNode("%MainMenuButton");
 
-		continueButton.Connect("pressed", this, nameof(handleContinuePressed));
-		exitButton.Connect("pressed", this, nameof(handleExitPressed));
-		loadGameButton.Connect("pressed", this, nameof(handleLoadPressed));
-		saveGameButton.Connect("pressed", this, nameof(handleSavePressed));
-		mainMenuButton.Connect("pressed", this, nameof(handleMainMenu));
+		continueButton.Connect("pressed",new Callable(this,nameof(handleContinuePressed)));
+		exitButton.Connect("pressed",new Callable(this,nameof(handleExitPressed)));
+		loadGameButton.Connect("pressed",new Callable(this,nameof(handleLoadPressed)));
+		saveGameButton.Connect("pressed",new Callable(this,nameof(handleSavePressed)));
+		mainMenuButton.Connect("pressed",new Callable(this,nameof(handleMainMenu)));
 	}
 
 	public void ShowMenu() {
@@ -65,10 +65,10 @@ public class GameMenu : Control {
 
 	private void handleMainMenu() {
 		GetTree().Paused = false;
-		GetTree().ChangeScene("res://scenes/MainMenu/MainMenu.tscn");
+		GetTree().ChangeSceneToFile("res://scenes/MainMenu/MainMenu.tscn");
 	}
 
-	public override void _Process(float delta) {
+	public override void _Process(double delta) {
 		base._Process(delta);
 		gameView.game.manager.ProcessMenu();
 	}

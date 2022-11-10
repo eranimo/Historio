@@ -1,12 +1,12 @@
 using Godot;
 using System;
 
-public class MinimapIndicator : ColorRect {
+public partial class MinimapIndicator : ColorRect {
 	private Rect2 indicatorRect;
 
 	public void updateIndicator(Rect2 rect) {
 		indicatorRect = rect;
-		Update();
+		QueueRedraw();
 	}
 
 	public override void _Draw() {

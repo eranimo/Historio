@@ -36,7 +36,7 @@ public enum TileSideFeature {
 }
 
 [MessagePackObject]
-public class TileData {
+public partial class TileData {
 	[Key(0)] public float height;
 	[Key(1)] public float temperature;
 	[Key(2)] public float rainfall;
@@ -113,23 +113,23 @@ public class TileData {
 
 // Added to entities with Hex components to propagate areas where that country is "observing" a tile
 [MessagePackObject]
-public class ViewStateNode {
+public partial class ViewStateNode {
 	[Key(0)]
 	public int range;
 }
 
 // relation on entity that has a ViewStateNode to Country entity
 [MessagePackObject]
-public class ViewStateOwner {}
+public partial class ViewStateOwner {}
 
 
 // Trigger when view state nodes for a country updates
-public class ViewStateNodeUpdated {
+public partial class ViewStateNodeUpdated {
 	public Entity entity; // entity with ViewStateNode component
 }
 
 // trigger when Country view state is updated
-public class ViewStateUpdated {
+public partial class ViewStateUpdated {
 	public Entity country;
 }
 

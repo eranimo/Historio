@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class MainMenu : Control {
+public partial class MainMenu : Control {
 	private LoadGameModal loadGameModal;
 	private SaveManager saveManager;
 
@@ -15,14 +15,14 @@ public class MainMenu : Control {
 
 		loadGameModal = (LoadGameModal) GetNode("%LoadGameModal");
 
-		NewGameButton.Connect("pressed", this, nameof(handleNewGame));
-		LoadGameButton.Connect("pressed", this, nameof(handleLoadGame));
-		SettingsButton.Connect("pressed", this, nameof(handleSettings));
-		ExitButton.Connect("pressed", this, nameof(handleExit));
+		NewGameButton.Connect("pressed",new Callable(this,nameof(handleNewGame)));
+		LoadGameButton.Connect("pressed",new Callable(this,nameof(handleLoadGame)));
+		SettingsButton.Connect("pressed",new Callable(this,nameof(handleSettings)));
+		ExitButton.Connect("pressed",new Callable(this,nameof(handleExit)));
 	}
 
 	private void handleNewGame() {
-		GetTree().ChangeScene("res://scenes/GameView/GameView.tscn");
+		GetTree().ChangeSceneToFile("res://scenes/GameView/GameView.tscn");
 	}
 
 	private void handleLoadGame() {

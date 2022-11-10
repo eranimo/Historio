@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class MapLabel : Label {
+public partial class MapLabel : Label {
 	private GameView gameView;
 	private MapLabelType labelType;
 
@@ -9,9 +9,9 @@ public class MapLabel : Label {
 		get => labelType;
 		set {
 			if (value == MapLabelType.Territory) {
-				this.AddFontOverride("font", ResourceLoader.Load<Font>("res://assets/fonts/TerritoryLabelFont.tres"));
+				this.AddThemeFontOverride("font", ResourceLoader.Load<Font>("res://assets/fonts/TerritoryLabelFont.tres"));
 			} else if (value == MapLabelType.Region) {
-				this.AddFontOverride("font", ResourceLoader.Load<Font>("res://assets/fonts/RegionLabelFont.tres"));
+				this.AddThemeFontOverride("font", ResourceLoader.Load<Font>("res://assets/fonts/RegionLabelFont.tres"));
 			}
 			labelType = value;
 		}
@@ -23,20 +23,20 @@ public class MapLabel : Label {
 	}
 
 	public override void _Ready() {
-		Align = Label.AlignEnum.Center;
-		Valign = Label.VAlign.Center;
-		RectPivotOffset = RectSize / 2;
+		HorizontalAlignment = HorizontalAlignment.Center;
+		VerticalAlignment = VerticalAlignment.Center;
+		PivotOffset = Size / 2;
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
 		resize();
 		gameView.OnZoom.Subscribe((float zoom) => resize());
 	}
 
 	public void SetPosition(Vector2 position) {
-		base.SetPosition(position - RectSize / 2);
+		base.SetPosition(position - Size / 2);
 		// base.SetPosition(position);
 	}
 
 	private void resize() {
-		RectScale = new Vector2(gameView.zoom.Value, gameView.zoom.Value);
+		Scale = new Vector2(gameView.zoom.Value, gameView.zoom.Value);
 	}
 }

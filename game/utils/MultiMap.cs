@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class MultiMap<K, V> : IEnumerable<(K, List<V>)> {
+public partial class MultiMap<K, V> : IEnumerable<(K, List<V>)> {
 	private Dictionary<K, List<V>> dict = new Dictionary<K, List<V>>();
 
 	public void Add(K key, V value) {

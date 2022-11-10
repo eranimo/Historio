@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class SaveGameModal : Control {
+public partial class SaveGameModal : Control {
 	private Label countryName;
 	private LineEdit saveNameInput;
 	private Button saveButton;
@@ -20,14 +20,14 @@ public class SaveGameModal : Control {
 		saveManager = new SaveManager();
 
 		var closeButton = (TextureButton) GetNode("%CloseButton");
-		closeButton.Connect("pressed", this, nameof(handleClose));
+		closeButton.Connect("pressed",new Callable(this,nameof(handleClose)));
 
 		countryName = (Label) GetNode("%CountryName");
 
 		saveNameInput = (LineEdit) GetNode("%SaveNameInput");
 
 		saveButton = (Button) GetNode("%SaveButton");
-		saveButton.Connect("pressed", this, nameof(handleSave));
+		saveButton.Connect("pressed",new Callable(this,nameof(handleSave)));
 
 		saveEntryList = (VBoxContainer) GetNode("%SaveEntryList");
 
@@ -42,7 +42,7 @@ public class SaveGameModal : Control {
 
 		SavedGameMetadata savedGame = gameView.game.savedGame;
 		foreach (SavedGameEntryMetadata save in savedGame.saves) {
-			var listItem = (SaveEntryListItem) SaveEntryListItem.Instance();
+			var listItem = (SaveEntryListItem) SaveEntryListItem.Instantiate();
 			saveEntryList.AddChild(listItem);
 			listItem.SaveEntryName = save.name;
 			listItem.SaveDate = save.saveDate.ToString();
@@ -71,7 +71,7 @@ public class SaveGameModal : Control {
 
 		if (@event.IsActionPressed("ui_cancel") && Visible) {
 			Hide();
-			GetTree().SetInputAsHandled();
+			GetViewport().SetInputAsHandled();
 		}
 	}
 }

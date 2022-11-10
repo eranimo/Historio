@@ -1,6 +1,6 @@
 using Godot;
 
-public class UnitPanel : GamePanelView {
+public partial class UnitPanel : GamePanelView {
 	private Label unitPositionLabel;
 	private Label currentActionLabel;
 	private Control queueItemList;
@@ -28,7 +28,7 @@ public class UnitPanel : GamePanelView {
 		stopButton = GetNode<Button>("UnitInfo/Footer/StopButton");
 		moveButton = GetNode<Button>("UnitInfo/Footer/MoveButton");
 
-		// stopButton.Connect("pressed", this, nameof(stopButtonPressed));
+		// stopButton.Connect("pressed",new Callable(this,nameof(stopButtonPressed)));
 
 		UpdateView(gamePanel.CurrentPanel.Value.entity);
 	}
@@ -57,7 +57,7 @@ public class UnitPanel : GamePanelView {
 
 		int num = 1;
 		foreach (var action in actionQueue.actions) {
-			var queueItem = queueItemScene.Instance<QueueItem>();
+			var queueItem = queueItemScene.Instantiate<QueueItem>();
 			queueItemList.AddChild(queueItem);
 			queueItem.handleRemove = () => {
 				state.Send(new ActionQueueRemove { owner = unit, action = action });

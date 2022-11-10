@@ -1,19 +1,19 @@
 using Godot;
 
-public class MinimapRenderSystem : ISystem {
+public partial class MinimapRenderSystem : ISystem {
 	public RelEcs.World World { get; set; }
 
 	public void Run() {
-		var minimapWorld = this.GetElement<MinimapWorld>();
-		var player = this.GetElement<Player>();
+		var minimapWorld = World.GetElement<MinimapWorld>();
+		var player = World.GetElement<Player>();
 
-		foreach (var action in this.Receive<ViewStateUpdated>()) {
+		foreach (var action in World.Receive<ViewStateUpdated>(this)) {
 			if (action.country == player.playerCountry) {
 				updateMap(minimapWorld, player);
 			}
 		}
 
-		foreach (var action in this.Receive<PlayerChanged>()) {
+		foreach (var action in World.Receive<PlayerChanged>(this)) {
 			updateMap(minimapWorld, player);
 		}
 	}

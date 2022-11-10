@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-public class CountryGenerator : IGeneratorStep {
+public partial class CountryGenerator : IGeneratorStep {
 	private HashSet<Entity> availableLandTiles;
 	private Random rng;
 	private GameManager manager;
@@ -34,8 +34,8 @@ public class CountryGenerator : IGeneratorStep {
 		for (int i = 0; i < numCountries; i++) {
 			var countryName = nameFactory.GetName();
 			var countryData = new CountryData{ name = countryName };
-			var country = manager.state.Spawn();
-			var countryColor = Color.FromHsv((float) rng.NextDouble(), 0.5f, 1.0f);
+			var country = manager.state.Spawn().Id();
+			var countryColor = Color.FromHSV((float) rng.NextDouble(), 0.5f, 1.0f);
 			manager.On(country).Add(countryData).Add<Persisted>();
 			var sourceTile = findAvailableTile();
 			availableLandTiles.Remove(sourceTile);

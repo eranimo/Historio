@@ -16,12 +16,10 @@ class NameFactory {
 		this.seed = 0;
 		rng = new Random(seed);
 
-		var file = new File();
-		file.Open($"res://assets/namelists/{name}.txt", File.ModeFlags.Read);
+		var file = FileAccess.Open($"res://assets/namelists/{name}.txt", FileAccess.ModeFlags.Read);
 		while (!file.EofReached()) {
 			addName(file.GetLine());
 		}
-		file.Close();
 		// GD.PrintS($"NameGenerator init: {watch.ElapsedMilliseconds}ms");
 	}
 

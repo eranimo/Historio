@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using Godot;
 
-public class BiotaTileData {
+public partial class BiotaTileData {
 	private readonly TileData tileData;
 	public MultiSet<BiotaCategory, BiotaData> biotaByCategory;
 	public Dictionary<BiotaType, BiotaData> biotaByType;
@@ -45,7 +45,7 @@ public class BiotaTileData {
 	}
 }
 
-public class BiotaService {
+public partial class BiotaService {
 	private readonly GameManager manager;
 	private MultiMap<TileData, BiotaData> biotaByTile = new MultiMap<TileData, BiotaData>();
 	private Dictionary<TileData, BiotaTileData> tilesBiotaData = new Dictionary<TileData, BiotaTileData>();

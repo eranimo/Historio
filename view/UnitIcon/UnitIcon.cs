@@ -7,17 +7,17 @@ public abstract class SerializedNode<T> {
 	public abstract T Deserialize();
 }
 
-public class UnitIcon : Node2D {
+public partial class UnitIcon : Node2D {
 	private GameView gameView;
 	private TextureRect sprite;
 
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
-		sprite = GetNode<TextureRect>("Sprite");
-		sprite.Texture = ResourceLoader.Load<Texture>(unitType.spritePath);
+		sprite = GetNode<TextureRect>("Sprite2D");
+		sprite.Texture = ResourceLoader.Load<Texture2D>(unitType.spritePath);
 
-		sprite.Connect("mouse_entered", this, nameof(onMouseEntered));
-		sprite.Connect("mouse_exited", this, nameof(onMouseExited));
+		sprite.Connect("mouse_entered",new Callable(this,nameof(onMouseEntered)));
+		sprite.Connect("mouse_exited",new Callable(this,nameof(onMouseExited)));
 	}
 
 	private void onMouseEntered() {
@@ -51,7 +51,7 @@ public class UnitIcon : Node2D {
 		set {
 			unitType = value;
 			if (IsInsideTree()) {
-				sprite.Texture = ResourceLoader.Load<Texture>(unitType.spritePath);
+				sprite.Texture = ResourceLoader.Load<Texture2D>(unitType.spritePath);
 			}
 		}
 	}
@@ -61,12 +61,12 @@ public class UnitIcon : Node2D {
 
 		if (hovered && @event is InputEventMouseButton) {
 			var mouseEventButton = (InputEventMouseButton) @event;
-			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex == 1) {
+			if (mouseEventButton.IsPressed() && mouseEventButton.ButtonIndex == MouseButton.Left) {
 				gameView.GameController.GamePanel.PanelSet(new GamePanelState {
 					type = GamePanelType.Unit,
 					entity = entity
 				});
-				GetTree().SetInputAsHandled();
+				GetViewport().SetInputAsHandled();
 			}
 		}
 	}

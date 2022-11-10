@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Minimap : Control {
+public partial class Minimap : Control {
 	private GameView gameView;
 	private MinimapWorld MinimapWorld;
 	private MinimapViewport MinimapViewport;
@@ -9,7 +9,7 @@ public class Minimap : Control {
 
 	public override void _Ready() {
 		gameView = (GameView) GetTree().Root.GetNode("GameView");
-		MinimapWorld = (MinimapWorld) GetNode("VBoxContainer/MinimapViewport/Viewport/MinimapWorld");
+		MinimapWorld = (MinimapWorld) GetNode("VBoxContainer/MinimapViewport/SubViewport/MinimapWorld");
 		MinimapViewport = (MinimapViewport) GetNode("VBoxContainer/MinimapViewport");
 	}
 	public void RenderMap(Game game) {
@@ -17,7 +17,7 @@ public class Minimap : Control {
 		var worldSize = game.state.GetElement<WorldData>().worldSize;
 		var mapSize = layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
 		MinimapWorld.RenderMap(game);
-		MinimapViewport.SetupMap(mapSize, MinimapWorld.RectSize);
+		MinimapViewport.SetupMap(mapSize, MinimapWorld.Size);
 		MinimapViewport.UpdateMinimap();
 
 		gameView.pan.Subscribe((Vector2 _offset) => UpdateMinimap());

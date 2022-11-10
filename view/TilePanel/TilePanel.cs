@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class TilePanel : GamePanelView {
+public partial class TilePanel : GamePanelView {
 	private Label locationLabel;
 	private Label biomeLabel;
 	private Label terrainLabel;

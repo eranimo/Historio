@@ -1,4 +1,4 @@
-[gd_resource type="Shader" format=2]
+[gd_resource type="Shader" format=3 uid="uid://bijv2adaxq7n0"]
 
 [resource]
 code = "shader_type canvas_item;
@@ -8,7 +8,6 @@ uniform vec2 mapSize;
 uniform vec2 containerSize;
 uniform sampler2D hexColors;
 
-const float PI = 3.14159265358979323846;
 const float SQRT_2 = 1.4142135623730951;
 const float SQRT_3 = 1.73205080757;
 

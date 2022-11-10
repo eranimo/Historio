@@ -1,4 +1,4 @@
-public class PopFactory : Factory {
+public partial class PopFactory : Factory {
 	public PopFactory(GameManager manager) : base(manager) {
 	}
 

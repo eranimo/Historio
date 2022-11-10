@@ -5,7 +5,7 @@ using MessagePack;
 using Newtonsoft.Json;
 
 [MessagePackObject]
-public class Def {
+public partial class Def {
 	[Key(0)]
 	public string type { get; set; }
 
@@ -13,7 +13,7 @@ public class Def {
 	public string id { get; set; }
 }
 
-public class DefRef<T> where T : Def {
+public partial class DefRef<T> where T : Def {
 	public string def { get; set; }
 	public string id { get; set; }
 
@@ -30,7 +30,7 @@ public class DefRef<T> where T : Def {
 	}
 }
 
-public class DefStore<T> where T : Def {
+public partial class DefStore<T> where T : Def {
 	private Dictionary<string, T> items;
 	private readonly string type;
 	private readonly string filePath;
@@ -42,14 +42,14 @@ public class DefStore<T> where T : Def {
 	}
 
 	private void loadData() {
-		var file = new File();
 		var path = $"res://game/defs/{filePath}.json";
-		if (!file.FileExists(path)) {
+		var file = FileAccess.Open(path, FileAccess.ModeFlags.Read);
+		if (file is null) {
 			throw new System.Exception($"No Def found named {type}");
 		}
-		file.Open(path, File.ModeFlags.Read);
+
 		var json = file.GetAsText();
-		file.Close();
+
 		var data = JsonConvert.DeserializeObject<List<T>>(json);
 		items = new Dictionary<string, T>();
 		foreach (var item in data) {

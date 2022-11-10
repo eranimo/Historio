@@ -4,7 +4,7 @@ using RelEcs;
 using System.Collections.Generic;
 using Godot;
 
-public class PathfindingService {
+public partial class PathfindingService {
 	private readonly GameManager manager;
 	private AStar2D aStar;
 	private Dictionary<int, Entity> idToTile = new Dictionary<int, Entity>();

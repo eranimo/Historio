@@ -1,12 +1,12 @@
 [gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://assets/theme.tres" type="Theme" id=1]
-[ext_resource path="res://assets/fonts/DroidSans.ttf" type="DynamicFontData" id=2]
-[ext_resource path="res://assets/ui.png" type="Texture" id=3]
+[ext_resource path="res://assets/fonts/DroidSans.ttf" type="FontFile" id=2]
+[ext_resource path="res://assets/ui.png" type="Texture2D" id=3]
 [ext_resource path="res://view/SaveGameModal/SaveGameModal.cs" type="Script" id=4]
 [ext_resource path="res://view/SaveGameModal/SaveEntryListItem.tscn" type="PackedScene" id=6]
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="FontFile" id=2]
 size = 24
 font_data = ExtResource( 2 )
 
@@ -32,94 +32,94 @@ color = Color( 0, 0, 0, 0.388235 )
 [node name="Container" type="MarginContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/margin_right = 30
-custom_constants/margin_top = 30
-custom_constants/margin_left = 30
-custom_constants/margin_bottom = 30
+custom_constants/offset_right = 30
+custom_constants/offset_top = 30
+custom_constants/offset_left = 30
+custom_constants/offset_bottom = 30
 
 [node name="PanelContainer" type="PanelContainer" parent="Container"]
-margin_left = 30.0
-margin_top = 30.0
-margin_right = 994.0
-margin_bottom = 570.0
+offset_left = 30.0
+offset_top = 30.0
+offset_right = 994.0
+offset_bottom = 570.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Container/PanelContainer"]
-margin_left = 5.0
-margin_top = 5.0
-margin_right = 959.0
-margin_bottom = 535.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 959.0
+offset_bottom = 535.0
 custom_constants/separation = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Container/PanelContainer/VBoxContainer"]
-margin_right = 954.0
-margin_bottom = 29.0
+offset_right = 954.0
+offset_bottom = 29.0
 
 [node name="PageTitle" type="Label" parent="Container/PanelContainer/VBoxContainer/HBoxContainer"]
-margin_right = 935.0
-margin_bottom = 29.0
+offset_right = 935.0
+offset_bottom = 29.0
 size_flags_horizontal = 3
 custom_fonts/font = SubResource( 2 )
 text = "Save Game"
 
 [node name="CloseButton" type="TextureButton" parent="Container/PanelContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 939.0
-margin_right = 954.0
-margin_bottom = 29.0
+offset_left = 939.0
+offset_right = 954.0
+offset_bottom = 29.0
 size_flags_vertical = 5
 texture_normal = SubResource( 3 )
 texture_pressed = SubResource( 4 )
 texture_hover = SubResource( 4 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Container/PanelContainer/VBoxContainer"]
-margin_top = 39.0
-margin_right = 954.0
-margin_bottom = 530.0
+offset_top = 39.0
+offset_right = 954.0
+offset_bottom = 530.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 10
 
 [node name="CountryName" type="Label" parent="Container/PanelContainer/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
-margin_right = 954.0
-margin_bottom = 14.0
+offset_right = 954.0
+offset_bottom = 14.0
 text = "Tribe of Atlasi"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Container/PanelContainer/VBoxContainer/VBoxContainer"]
-margin_top = 24.0
-margin_right = 954.0
-margin_bottom = 48.0
+offset_top = 24.0
+offset_right = 954.0
+offset_bottom = 48.0
 
 [node name="SaveNameInput" type="LineEdit" parent="Container/PanelContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_right = 911.0
-margin_bottom = 24.0
+offset_right = 911.0
+offset_bottom = 24.0
 size_flags_horizontal = 3
 
 [node name="SaveButton" type="Button" parent="Container/PanelContainer/VBoxContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
-margin_left = 915.0
-margin_right = 954.0
-margin_bottom = 24.0
+offset_left = 915.0
+offset_right = 954.0
+offset_bottom = 24.0
 text = "Save"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Container/PanelContainer/VBoxContainer/VBoxContainer"]
-margin_top = 58.0
-margin_right = 954.0
-margin_bottom = 491.0
+offset_top = 58.0
+offset_right = 954.0
+offset_bottom = 491.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SaveEntryList" type="VBoxContainer" parent="Container/PanelContainer/VBoxContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
-margin_right = 282.0
-margin_bottom = 43.0
+offset_right = 282.0
+offset_bottom = 43.0
 size_flags_horizontal = 3
 custom_constants/separation = 10
 
 [node name="SaveEntryListItem" parent="Container/PanelContainer/VBoxContainer/VBoxContainer/ScrollContainer/SaveEntryList" instance=ExtResource( 6 )]
-margin_right = 954.0
-margin_bottom = 43.0
+offset_right = 954.0
+offset_bottom = 43.0
 
 [node name="SaveOverwriteConfirm" type="ConfirmationDialog" parent="."]
 unique_name_in_owner = true
@@ -127,11 +127,11 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -153.0
-margin_top = -35.0
-margin_right = 97.0
-margin_bottom = 44.0
-popup_exclusive = true
+offset_left = -153.0
+offset_top = -35.0
+offset_right = 97.0
+offset_bottom = 44.0
+exclusive = true
 window_title = "Confirm Overwrite"
 dialog_text = "Are you sure you want to overwrite this save?"
 dialog_autowrap = true
@@ -142,11 +142,11 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -142.0
-margin_top = -31.0
-margin_right = 108.0
-margin_bottom = 31.0
-popup_exclusive = true
+offset_left = -142.0
+offset_top = -31.0
+offset_right = 108.0
+offset_bottom = 31.0
+exclusive = true
 window_title = "Save Failed"
 dialog_text = "Saving the game was not successful. Make sure you have enough disk space."
 dialog_autowrap = true
@@ -157,11 +157,11 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -150.0
-margin_top = -39.5
-margin_right = 150.0
-margin_bottom = 39.5
-popup_exclusive = true
+offset_left = -150.0
+offset_top = -39.5
+offset_right = 150.0
+offset_bottom = 39.5
+exclusive = true
 window_title = "Confirm Delete"
 dialog_text = "Are you sure you want to delete this save?"
 dialog_autowrap = true

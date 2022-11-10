@@ -4,13 +4,13 @@ public abstract class ConstructionSiteData {
 	public List<ResourceAmount> resourceRequirements;
 }
 
-public class DistrictConstructionSite : ConstructionSiteData {
+public partial class DistrictConstructionSite : ConstructionSiteData {
 	public DistrictType type;
 }
 
-public class ImprovementConstructionSite : ConstructionSiteData {
+public partial class ImprovementConstructionSite : ConstructionSiteData {
 	public ImprovementType type;
 }
 
 // relation on construction to Tile
-public class ConstructionTile {}
+public partial class ConstructionTile {}

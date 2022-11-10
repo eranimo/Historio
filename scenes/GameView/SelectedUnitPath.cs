@@ -5,7 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 
-public class SelectedUnitPath : TileMap {
+public partial class SelectedUnitPath : TileMap {
 	private GameView gameView;
 
 	enum TileMapIndex {
@@ -45,9 +45,9 @@ public class SelectedUnitPath : TileMap {
 				var toTile = world.GetTile(movementAction.target);
 				var path = pathfinder.getPath(fromTile, toTile);
 				foreach (var loc in path) {
-					SetCellv(loc.ToVector(), (int) TileMapIndex.HexInterval);
+					SetCell(0, loc.ToVectori(), (int) TileMapIndex.HexInterval);
 				}
-				SetCellv(movementAction.target.ToVector(), (int) TileMapIndex.Target);
+				SetCell(0, movementAction.target.ToVectori(), (int) TileMapIndex.Target);
 				currentHex = movementAction.target;
 			}
 		}
@@ -60,9 +60,9 @@ public class SelectedUnitPath : TileMap {
 				if (path is not null && path.Count() > 1) {
 					var pathpart = path.ToArray()[1..^1];
 					foreach (var loc in pathpart) {
-						SetCellv(loc.ToVector(), (int) TileMapIndex.HexInterval);
+						SetCell(0, loc.ToVectori(), (int) TileMapIndex.HexInterval);
 					}
-					SetCellv(movementAction.target.ToVector(), (int) TileMapIndex.Target);
+					SetCell(0, movementAction.target.ToVectori(), (int) TileMapIndex.Target);
 					currentHex = movementAction.target;
 				}
 			}

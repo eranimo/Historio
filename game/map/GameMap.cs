@@ -8,7 +8,7 @@ using System.Reactive.Linq;
 using System.Linq;
 
 
-public class GameMap : Node2D {
+public partial class GameMap : Node2D {
 	public Game game;
 	public Layout layout;
 
@@ -17,8 +17,8 @@ public class GameMap : Node2D {
 	private TileMap features;
 	private TileMap grid;
 	private Rivers rivers;
-	private Sprite selectionHex;
-	private Sprite hoverHex;
+	private Sprite2D selectionHex;
+	private Sprite2D hoverHex;
 	public MapBorders mapBorders;
 	private MapOverlay mapOverlay;
 	public Node2D spriteContainer;
@@ -41,8 +41,8 @@ public class GameMap : Node2D {
 		features = GetNode<TileMap>("%Features");
 		grid = GetNode<TileMap>("%Grid");
 		rivers = GetNode<Rivers>("%Rivers");
-		selectionHex = GetNode<Sprite>("%SelectionHex");
-		hoverHex = GetNode<Sprite>("%HoverHex");
+		selectionHex = GetNode<Sprite2D>("%SelectionHex");
+		hoverHex = GetNode<Sprite2D>("%HoverHex");
 		spriteContainer = GetNode<Node2D>("%SpriteContainer");
 		mapBorders = GetNode<MapBorders>("%MapBorders");
 		mapOverlay = GetNode<MapOverlay>("%MapOverlay");
@@ -168,11 +168,11 @@ public class GameMap : Node2D {
 	private void drawTile(Entity tile) {
 		var coord = gameView.game.manager.Get<Location>(tile).hex;
 		var data = gameView.game.manager.Get<TileData>(tile);
-		grid.SetCell(coord.col, coord.row, 1);
-		terrain.SetCell(coord.col, coord.row, data.GetTerrainTilesetIndex().Value);
+		grid.SetCell(0, new Vector2i(coord.col, coord.row), 1);
+		terrain.SetCell(0, new Vector2i(coord.col, coord.row), data.GetTerrainTilesetIndex().Value);
 
 		if (data.GetFeatureTilesetIndex().HasValue) {
-			features.SetCell(coord.col, coord.row, data.GetFeatureTilesetIndex().Value);
+			features.SetCell(0, new Vector2i(coord.col, coord.row), data.GetFeatureTilesetIndex().Value);
 		}
 	}
 }

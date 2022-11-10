@@ -1,7 +1,7 @@
-public class SpriteAdded {
+public partial class SpriteAdded {
 	public RelEcs.Entity entity;
 }
 
-public class SpriteRemoved {
+public partial class SpriteRemoved {
 	public RelEcs.Entity entity;
 }

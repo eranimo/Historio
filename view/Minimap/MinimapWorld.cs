@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class MinimapWorld : Control  {
+public partial class MinimapWorld : Control  {
 	private Game game;
 	private ColorRect MinimapCanvas;
 	private MinimapIndicator MinimapIndicator;
@@ -31,7 +31,7 @@ public class MinimapWorld : Control  {
 			return;
 		}
 		var viewportSize = gameView.camera.GetViewportRect().Size;
-		Viewport viewport = gameView.GameController.GameViewport;
+		SubViewport viewport = gameView.GameController.GameViewport;
 		if (viewport is null) {
 			return;
 		}
@@ -42,9 +42,9 @@ public class MinimapWorld : Control  {
 		var mapSize = layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
 
 		var topLeft = cameraTransform.AffineInverse() * new Vector2(0, 0);
-		var topLeftScreen = ((topLeft / mapSize) * RectSize).Round();
+		var topLeftScreen = ((topLeft / mapSize) * Size).Round();
 		var bottomRight = cameraTransform.AffineInverse() * viewportSize;
-		var bottomRightScreen = ((bottomRight / mapSize) * RectSize).Round();
+		var bottomRightScreen = ((bottomRight / mapSize) * Size).Round();
 		var size = bottomRightScreen - topLeftScreen;
 		Rect2 indicator = new Rect2(topLeftScreen, size);
 		MinimapIndicator.updateIndicator(indicator);
@@ -63,18 +63,14 @@ public class MinimapWorld : Control  {
 		var worldSize = game.state.GetElement<WorldData>().worldSize;
 		var mapSize = layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
 
-		shader.SetShaderParam("gridSize", worldSize.ToVector());
-		shader.SetShaderParam("mapSize", mapSize);
-		shader.SetShaderParam("containerSize", RectSize);
+		shader.SetShaderParameter("gridSize", worldSize.ToVector());
+		shader.SetShaderParameter("mapSize", mapSize);
+		shader.SetShaderParameter("containerSize", Size);
 
-		hexColorsImage = new Image();
-		hexColorsImage.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
-		hexColors = new ImageTexture();
+		hexColorsImage = Image.Create(worldSize.col, worldSize.row, false, Image.Format.Rgbaf);
 	}
 
 	public void updateMap() {
-		hexColorsImage.Lock();
-
 		var player = game.manager.state.GetElement<Player>();
 		
 		if (player.playerCountry is null) {
@@ -98,8 +94,7 @@ public class MinimapWorld : Control  {
 			}
 		}
 
-		hexColorsImage.Unlock();
-		hexColors.CreateFromImage(hexColorsImage);
-		shader.SetShaderParam("hexColors", hexColors);
+		hexColors = ImageTexture.CreateFromImage(hexColorsImage);
+		shader.SetShaderParameter("hexColors", hexColors);
 	}
 }

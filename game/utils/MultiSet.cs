@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class MultiSet<K, V> {
+public partial class MultiSet<K, V> {
 	private Dictionary<K, HashSet<V>> dict = new Dictionary<K, HashSet<V>>();
 
 	public void Add(K key, V value) {

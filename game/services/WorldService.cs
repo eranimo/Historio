@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using RelEcs;
 
-public class WorldService {
+public partial class WorldService {
 	private readonly GameManager manager;
 	public List<Entity> tiles = new List<Entity>();
 	private Dictionary<Hex, Entity> tileByHex;

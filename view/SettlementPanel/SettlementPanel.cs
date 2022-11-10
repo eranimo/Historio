@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class SettlementPanel : PanelContainer
+public partial class SettlementPanel : PanelContainer
 {
 	// Declare member variables here. Examples:
 	// private int a = 2;

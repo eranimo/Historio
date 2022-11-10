@@ -2,16 +2,16 @@ class Persisted {}
 
 
 // trigger for saving a game
-public class SaveGameTrigger {
+public partial class SaveGameTrigger {
 	public SavedGameEntryMetadata entry;
 }
 
-public class SaveModalLoadTrigger {};
-public class SaveModalSaveTrigger {
+public partial class SaveModalLoadTrigger {};
+public partial class SaveModalSaveTrigger {
 	public string name;
 }
 
-public class LoadGameTrigger {
+public partial class LoadGameTrigger {
 	public SavedGameMetadata savedGame;
 	public SavedGameEntryMetadata saveEntry;
 }

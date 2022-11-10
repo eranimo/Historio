@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class MapLabels : Node2D {
+public partial class MapLabels : Node2D {
 	private PackedScene mapLabelScene;
 	private Dictionary<Entity, MapLabel> entityMapLabels = new Dictionary<Entity, MapLabel>();
 
@@ -23,7 +23,7 @@ public class MapLabels : Node2D {
 		if (entityMapLabels.ContainsKey(entity)) {
 			label = entityMapLabels[entity];
 		} else {
-			label = mapLabelScene.Instance<MapLabel>();
+			label = mapLabelScene.Instantiate<MapLabel>();
 			AddChild(label);
 		}
 

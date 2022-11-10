@@ -1,16 +1,16 @@
 using Godot;
 
-public class BiotaFactory : Factory {
+public partial class BiotaFactory : Factory {
 	public BiotaFactory(GameManager manager) : base(manager) {
 	}
 
 	public Entity Add(Entity tile, BiotaType biotaType, int size) {
 		var biota = Spawn()
-			.Add<BiotaData>(new BiotaData {
+			.Add(new BiotaData {
 				biotaType = biotaType,
 				size = size
 			})
-			.Add(new BiotaTile(), tile)
+			.Add<BiotaTile>(tile)
 			.Id();
 		manager.state.Send(new BiotaAdded {
 			biota = biota,

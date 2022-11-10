@@ -1,0 +1,4 @@
+res://scenes/GameView/GameView.tscn
+res://assets/theme.tres
+res://scenes/GameView/GameController.tscn
+res://assets/grid-ui.tres
