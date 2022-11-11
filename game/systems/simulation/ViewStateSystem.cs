@@ -38,18 +38,18 @@ public partial class ViewStateSystem : ISystem {
 			// GD.PrintS($"(ViewStateSystem) update view state for {countryData.name}");
 			gameMap.viewState.Clear();
 
-			foreach (var tile in World.GetElement<WorldService>().tiles) {
-				var location = World.GetComponent<Location>(tile);
-				gameMap.viewState.SetCell(0, new Vector2i(location.hex.col, location.hex.row), ViewState.Unexplored.GetTileMapTile());
-			}
+			// foreach (var tile in World.GetElement<WorldService>().tiles) {
+			// 	var location = World.GetComponent<Location>(tile);
+			// 	gameMap.viewState.SetCell(0, new Vector2i(location.hex.col, location.hex.row), ViewState.Unexplored.GetTileMapTile());
+			// }
 
-			foreach (var hex in countryData.exploredHexes) {
-				gameMap.viewState.SetCell(0, new Vector2i(hex.col, hex.row), ViewState.Unobserved.GetTileMapTile());
-			}
+			// foreach (var hex in countryData.exploredHexes) {
+			// 	gameMap.viewState.SetCell(0, new Vector2i(hex.col, hex.row), ViewState.Unobserved.GetTileMapTile());
+			// }
 
-			foreach (var hex in countryData.observedHexes) {
-				gameMap.viewState.SetCell(0, new Vector2i(hex.col, hex.row), ViewState.Observed.GetTileMapTile());
-			}
+			// foreach (var hex in countryData.observedHexes) {
+			// 	gameMap.viewState.SetCell(0, new Vector2i(hex.col, hex.row), ViewState.Observed.GetTileMapTile());
+			// }
 		}
 	}
 

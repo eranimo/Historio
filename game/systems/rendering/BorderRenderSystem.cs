@@ -38,8 +38,8 @@ public partial class BorderRenderSystem : ISystem {
 		}
 
 		if (hexUpdates.Count > 0) {
-			gameMap.mapBorders.updateTerritoryMap(hexUpdates);
-			gameMap.mapBorders.updateAreaMap(hexUpdates);
+			// gameMap.mapBorders.updateTerritoryMap(hexUpdates);
+			// gameMap.mapBorders.updateAreaMap(hexUpdates);
 
 			var settlementUpdatesPerCountry = new Dictionary<Entity, HashSet<Hex>>();
 

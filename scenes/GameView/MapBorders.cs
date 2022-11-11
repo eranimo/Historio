@@ -41,19 +41,19 @@ public partial class MapBorders : Polygon2D {
 	private Hex worldSize => gameMap.game.state.GetElement<WorldData>().worldSize;
 
 	public void RenderMap(GameMap gameMap) {
-		this.gameMap = gameMap;
-		var containerSize = gameMap.layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
-		this.Polygon = new Vector2[] {
-			new Vector2(0, 0),
-			new Vector2(0, containerSize.y),
-			new Vector2(containerSize.x, containerSize.y),
-			new Vector2(containerSize.x, 0),
-		};
-		this.shader.SetShaderParameter("hexSize", gameMap.layout.size.ToVector());
-		this.shader.SetShaderParameter("gridSize", worldSize.ToVector());
-		this.shader.SetShaderParameter("containerSize", containerSize);
+		// this.gameMap = gameMap;
+		// var containerSize = gameMap.layout.GridDimensions(worldSize.col, worldSize.row).ToVector();
+		// this.Polygon = new Vector2[] {
+		// 	new Vector2(0, 0),
+		// 	new Vector2(0, containerSize.y),
+		// 	new Vector2(containerSize.x, containerSize.y),
+		// 	new Vector2(containerSize.x, 0),
+		// };
+		// this.shader.SetShaderParameter("hexSize", gameMap.layout.size.ToVector());
+		// this.shader.SetShaderParameter("gridSize", worldSize.ToVector());
+		// this.shader.SetShaderParameter("containerSize", containerSize);
 
-		this.setupMap();
+		// this.setupMap();
 	}
 
 	public void setupMap() {

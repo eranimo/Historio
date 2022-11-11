@@ -110,26 +110,26 @@ public partial class GameMap : Node2D {
 		mapBorders.RenderMap(this);
 		mapOverlay.SetupMap(this);
 
-		MapModes.CurrentMapMode.Subscribe((MapMode mapMode) => {
-			mapOverlay.UpdateMap();
-		});
+		// MapModes.CurrentMapMode.Subscribe((MapMode mapMode) => {
+		// 	mapOverlay.UpdateMap();
+		// });
 
 
-		foreach (Entity tile in game.manager.world.tiles) {
-			drawTile(tile);
-		}
-		rivers.RenderRivers();
+		// foreach (Entity tile in game.manager.world.tiles) {
+		// 	drawTile(tile);
+		// }
+		// rivers.RenderRivers();
 
-		tileUpdates.Subscribe((Entity tile) => this.drawTile(tile));
+		// tileUpdates.Subscribe((Entity tile) => this.drawTile(tile));
 
-		gameView.zoom.Subscribe((float zoom) => {
-			calculateMapMode();
-		});
+		// gameView.zoom.Subscribe((float zoom) => {
+		// 	calculateMapMode();
+		// });
 
-		MapModes.CurrentMapMode.Subscribe((MapMode mapMode) => {
-			calculateMapMode();
-		});
-		calculateMapMode();
+		// MapModes.CurrentMapMode.Subscribe((MapMode mapMode) => {
+		// 	calculateMapMode();
+		// });
+		// calculateMapMode();
 	}
 
 	private void calculateMapMode() {
