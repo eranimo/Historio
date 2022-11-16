@@ -8,16 +8,6 @@
 
 config_version=5
 
-_global_script_classes=[{
-"base": "RefCounted",
-"class": &"GutHookScript",
-"language": &"GDScript",
-"path": "res://addons/gut/hook_script.gd"
-}]
-_global_script_class_icons={
-"GutHookScript": ""
-}
-
 [application]
 
 config/name="Historio"

@@ -1,0 +1,48 @@
+[gd_scene load_steps=5 format=3 uid="uid://cc35soqfohkbr"]
+
+[ext_resource type="Script" path="res://view/MapView/PlanetMesh.cs" id="1_55seq"]
+[ext_resource type="Script" path="res://view/MapView/PlanetMeshFace.cs" id="1_83851"]
+[ext_resource type="Script" path="res://view/MapView/Camera.gd" id="1_jsai4"]
+
+[sub_resource type="Environment" id="Environment_o00p4"]
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
+
+[node name="MapView" type="Node3D"]
+
+[node name="Camera" type="Camera3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 5, 0, 0)
+script = ExtResource("1_jsai4")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 411.032, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_o00p4")
+
+[node name="PlanetMesh" type="Node3D" parent="."]
+script = ExtResource("1_55seq")
+
+[node name="Up" type="MeshInstance3D" parent="PlanetMesh"]
+script = ExtResource("1_83851")
+Normal = Vector3(0, 1, 0)
+
+[node name="Down" type="MeshInstance3D" parent="PlanetMesh"]
+script = ExtResource("1_83851")
+Normal = Vector3(0, -1, 0)
+
+[node name="Left" type="MeshInstance3D" parent="PlanetMesh"]
+script = ExtResource("1_83851")
+Normal = Vector3(-1, 0, 0)
+
+[node name="Right" type="MeshInstance3D" parent="PlanetMesh"]
+script = ExtResource("1_83851")
+Normal = Vector3(1, 0, 0)
+
+[node name="Front" type="MeshInstance3D" parent="PlanetMesh"]
+script = ExtResource("1_83851")
+Normal = Vector3(0, 0, -1)
+
+[node name="Back" type="MeshInstance3D" parent="PlanetMesh"]
+script = ExtResource("1_83851")
+Normal = Vector3(0, 0, 1)
