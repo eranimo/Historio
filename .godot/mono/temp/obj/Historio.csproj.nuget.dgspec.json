@@ -60,6 +60,10 @@
               "target": "Package",
               "version": "[0.2.0, )"
             },
+            "MIConvexHull": {
+              "target": "Package",
+              "version": "[1.1.19.1019, )"
+            },
             "MessagePack": {
               "target": "Package",
               "version": "[2.4.35, )"

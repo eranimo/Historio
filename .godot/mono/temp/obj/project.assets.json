@@ -69,6 +69,15 @@
           "lib/netstandard2.0/MessagePack.Annotations.dll": {}
         }
       },
+      "MIConvexHull/1.1.19.1019": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/MIConvexHull.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/MIConvexHull.dll": {}
+        }
+      },
       "Microsoft.NET.StringTools/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -230,6 +239,23 @@
         "messagepack.annotations.nuspec"
       ]
     },
+    "MIConvexHull/1.1.19.1019": {
+      "sha512": "Qz0BIRVyflj9jMkIKG1tpON5Xz1lFEA9XyRH0Pw5qIsCE75heHF4cHrBr8RqvQJRaaNXH+5jdWAfFP3m3OfTOA==",
+      "type": "package",
+      "path": "miconvexhull/1.1.19.1019",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard1.0/MIConvexHull.deps.json",
+        "lib/netstandard1.0/MIConvexHull.dll",
+        "lib/netstandard1.0/MIConvexHull.pdb",
+        "lib/netstandard2.0/MIConvexHull.deps.json",
+        "lib/netstandard2.0/MIConvexHull.dll",
+        "lib/netstandard2.0/MIConvexHull.pdb",
+        "miconvexhull.1.1.19.1019.nupkg.sha512",
+        "miconvexhull.nuspec"
+      ]
+    },
     "Microsoft.NET.StringTools/1.0.0": {
       "sha512": "ZYVcoDM0LnSyT5nWoRGfShYdOecCw2sOXWwP6j1Z0u48Xq3+BVvZ+EiPCX9/8Gz439giW+O1H1kWF9Eb/w6rVg==",
       "type": "package",
@@ -381,6 +407,7 @@
       "GodotSharp >= 4.0.0-beta.4",
       "GodotSharpEditor >= 4.0.0-beta.4",
       "LibNoise >= 0.2.0",
+      "MIConvexHull >= 1.1.19.1019",
       "MessagePack >= 2.4.35",
       "Newtonsoft.Json >= 13.0.1",
       "PriorityQueues >= 2.0.2",
@@ -447,6 +474,10 @@
           "LibNoise": {
             "target": "Package",
             "version": "[0.2.0, )"
+          },
+          "MIConvexHull": {
+            "target": "Package",
+            "version": "[1.1.19.1019, )"
           },
           "MessagePack": {
             "target": "Package",

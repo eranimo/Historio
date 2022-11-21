@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "rKp0ZKcHTKA+EaGtsNP7KAKTfGRoXZyPOHXWN+BhpF6WWMek8K3WXbj3IVeRK8btw19x+lkJGRyb3kMGWCaZPQ==",
+  "dgSpecHash": "6J9j3TiXtu5fRu2BtsKVfWG1JLSU+3I3ZRgW3NWlufrU58WumL1qGsj2VM6BrdkDvI3u1r/JurcM3hOGo5bbUQ==",
   "success": true,
   "projectFilePath": "E:\\Projects\\Historio\\Historio.csproj",
   "expectedPackageFiles": [
@@ -11,6 +11,7 @@
     "C:\\Users\\Kaelan\\.nuget\\packages\\libnoise\\0.2.0\\libnoise.0.2.0.nupkg.sha512",
     "C:\\Users\\Kaelan\\.nuget\\packages\\messagepack\\2.4.35\\messagepack.2.4.35.nupkg.sha512",
     "C:\\Users\\Kaelan\\.nuget\\packages\\messagepack.annotations\\2.4.35\\messagepack.annotations.2.4.35.nupkg.sha512",
+    "C:\\Users\\Kaelan\\.nuget\\packages\\miconvexhull\\1.1.19.1019\\miconvexhull.1.1.19.1019.nupkg.sha512",
     "C:\\Users\\Kaelan\\.nuget\\packages\\microsoft.net.stringtools\\1.0.0\\microsoft.net.stringtools.1.0.0.nupkg.sha512",
     "C:\\Users\\Kaelan\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
     "C:\\Users\\Kaelan\\.nuget\\packages\\priorityqueues\\2.0.2\\priorityqueues.2.0.2.nupkg.sha512",

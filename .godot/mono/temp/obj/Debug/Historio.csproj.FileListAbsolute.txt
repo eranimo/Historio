@@ -24,3 +24,4 @@ E:\Projects\Historio\.godot\mono\temp\obj\Debug\refint\Historio.dll
 E:\Projects\Historio\.godot\mono\temp\obj\Debug\Historio.pdb
 E:\Projects\Historio\.godot\mono\temp\obj\Debug\Historio.genruntimeconfig.cache
 E:\Projects\Historio\.godot\mono\temp\obj\Debug\ref\Historio.dll
+E:\Projects\Historio\.godot\mono\temp\bin\Debug\MIConvexHull.dll
