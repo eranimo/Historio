@@ -17,3 +17,5 @@ bin/
 mono_crash*
 
 .vs/
+
+.godot
