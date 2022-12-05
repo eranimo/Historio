@@ -153,7 +153,7 @@ public partial class PlanetMesh : MeshInstance3D {
 
 	public void Generate(int cells) {
 		var rng = new Random(123);
-		var jitterAmount = 0.01f;
+		var jitterAmount = 0;//0.001f;
 
 		// RenderingServer.SetDebugGenerateWireframes(true);
 		// GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
@@ -165,6 +165,7 @@ public partial class PlanetMesh : MeshInstance3D {
 		cellMidpoints.Clear();
 
 		// find cell centers
+		var watch = System.Diagnostics.Stopwatch.StartNew();
 		var phi = Math.PI * (3.0 - Math.Sqrt(5.0));
 		for(int p = 0; p < Cells; p++) {
 			var y = 1 - (p / ((double) (Cells - 1))) * 2;
@@ -181,8 +182,10 @@ public partial class PlanetMesh : MeshInstance3D {
 			var center = CoordinateConversion.SphericalToCartesian(centerSphere);
 			CellCenters.Add(center);
 		}
-		
+		Godot.GD.PrintS($"\tFinding points: {watch.ElapsedMilliseconds}ms");
+
 		// perform Delaunay triangulation
+		watch = System.Diagnostics.Stopwatch.StartNew();
 		var centers = new List<PlanetVertex>();
 		foreach (var cell in cellCenters) {
 			centers.Add(new PlanetVertex() { Position = new Double[] {
@@ -197,8 +200,8 @@ public partial class PlanetMesh : MeshInstance3D {
 
 		var convexHull = ConvexHull.Create<PlanetVertex, PlanetFace>(centers, 1E-10);
 		var faces = convexHull.Result.Faces;
-		GD.PrintS("Cells:", cellCenters.Count);
-		GD.PrintS("Faces", Enumerable.Count(faces));
+		Godot.GD.PrintS($"\tTriangulating: {watch.ElapsedMilliseconds}ms");
+		watch = System.Diagnostics.Stopwatch.StartNew();
 
 		// create a mapping of cell centers to faces
 		var pointsToFaces = new MultiMap<PlanetVertex, PlanetFace>();
@@ -215,35 +218,12 @@ public partial class PlanetMesh : MeshInstance3D {
 		}
 
 		// create triangles for each cell
-		var newFacePoints = new List<Vector3>();
-		var indices = new List<int>();
-		var vertexIndices = new Dictionary<Vector3, int>();
-
+		var sortedPoints = new List<Vector3>();
 		foreach (var (center, pointFaces) in pointsToFaces) {
+			sortedPoints.Clear();
+			var color = new Color(rng.NextSingle(), rng.NextSingle(), rng.NextSingle());
 			var p0 = center.ToVector();
-			var thisCellPoints = new List<Vector3>();
-			var centerIndex = indices.Count;
-			indices.Add(centerIndex);
-			vertexIndices[p0] = centerIndex;
-
-			st.AddVertex(p0);
-
-			foreach (var face in pointFaces) {
-				var point = cellPoints[face];
-				cellMidpoints.Add(point);
-				thisCellPoints.Add(cellPoints[face]);
-				var index = indices.Count;
-				indices.Add(index);
-				vertexIndices[point] = index;
-				st.AddVertex(point);
-			}
-		}
-
-		foreach (var (center, pointFaces) in pointsToFaces) {
-			var p0 = center.ToVector();
-			var thisCellPoints = new List<Vector3>();
-			var points = new List<Vector3>(pointFaces.Select(face => cellPoints[face]));
-			var sortedPoints = new List<Vector3>();
+			var points = pointFaces.Select(face => cellPoints[face]).ToList();
 			var validPoints = new HashSet<Vector3>(points);
 			Vector3 nextPoint = points[0];
 			validPoints.Remove(points[0]);
@@ -257,11 +237,17 @@ public partial class PlanetMesh : MeshInstance3D {
 			for (int i = 0; i < sortedPoints.Count; i++) {
 				var p1 = sortedPoints[i];
 				var p2 = i == sortedPoints.Count - 1 ? sortedPoints[0] : sortedPoints[i + 1];
-				st.AddIndex(vertexIndices[p1]);
-				st.AddIndex(vertexIndices[p2]);
-				st.AddIndex(vertexIndices[p0]);
+				st.SetColor(color);
+				st.AddVertex(p1);
+
+				st.SetColor(color);
+				st.AddVertex(p2);
+
+				st.SetColor(color);
+				st.AddVertex(p0);
 			}
 		}
+		Godot.GD.PrintS($"\tBuilding mesh: {watch.ElapsedMilliseconds}ms");
 
 		// st.GenerateNormals();
 

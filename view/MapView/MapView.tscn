@@ -42,6 +42,8 @@ mesh = SubResource("SphereMesh_tudot")
 cull_mode = 2
 shading_mode = 2
 diffuse_mode = 3
+vertex_color_use_as_albedo = true
+vertex_color_is_srgb = true
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_fk7mg"]
 
@@ -62,9 +64,11 @@ environment = SubResource("Environment_o00p4")
 script = ExtResource("2_lcuoi")
 
 [node name="CellCenters" type="MultiMeshInstance3D" parent="Planet"]
+visible = false
 multimesh = SubResource("MultiMesh_b3b7j")
 
 [node name="CellMidpoints" type="MultiMeshInstance3D" parent="Planet"]
+visible = false
 multimesh = SubResource("MultiMesh_mdmt4")
 
 [node name="PlanetMesh" type="MeshInstance3D" parent="Planet"]

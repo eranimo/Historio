@@ -4,7 +4,9 @@ using System.Linq;
 public partial class Planet : Node3D {
 	public override void _Ready(){
 		var planetMesh = GetNode<PlanetMesh>("PlanetMesh");
-		planetMesh.Generate(10_000);
+		var watch = System.Diagnostics.Stopwatch.StartNew();
+		planetMesh.Generate(200_000);
+		Godot.GD.PrintS($"(Planet) Generating planet in {watch.ElapsedMilliseconds}ms");
 		renderPoints(GetNode<MultiMeshInstance3D>("CellCenters"), planetMesh.CellCenters);
 		renderPoints(GetNode<MultiMeshInstance3D>("CellMidpoints"), planetMesh.CellMidpoints);
 	}
