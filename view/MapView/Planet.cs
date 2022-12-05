@@ -5,7 +5,7 @@ public partial class Planet : Node3D {
 	public override void _Ready(){
 		var planetMesh = GetNode<PlanetMesh>("PlanetMesh");
 		var watch = System.Diagnostics.Stopwatch.StartNew();
-		planetMesh.Generate(200_000);
+		planetMesh.Generate(250_000);
 		Godot.GD.PrintS($"(Planet) Generating planet in {watch.ElapsedMilliseconds}ms");
 		renderPoints(GetNode<MultiMeshInstance3D>("CellCenters"), planetMesh.CellCenters);
 		renderPoints(GetNode<MultiMeshInstance3D>("CellMidpoints"), planetMesh.CellMidpoints);

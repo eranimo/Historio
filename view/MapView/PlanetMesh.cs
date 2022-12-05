@@ -223,11 +223,11 @@ public partial class PlanetMesh : MeshInstance3D {
 			sortedPoints.Clear();
 			var color = new Color(rng.NextSingle(), rng.NextSingle(), rng.NextSingle());
 			var p0 = center.ToVector();
-			var points = pointFaces.Select(face => cellPoints[face]).ToList();
+			var points = pointFaces.Select(face => cellPoints[face]);
 			var validPoints = new HashSet<Vector3>(points);
-			Vector3 nextPoint = points[0];
-			validPoints.Remove(points[0]);
-			sortedPoints.Add(points[0]);
+			Vector3 nextPoint = points.First();
+			validPoints.Remove(points.First());
+			sortedPoints.Add(points.First());
 			while (validPoints.Count != 0) {
 				var picked = validPoints.OrderBy(p => nextPoint.DistanceTo(p)).First();
 				sortedPoints.Add(picked);
@@ -250,7 +250,8 @@ public partial class PlanetMesh : MeshInstance3D {
 		Godot.GD.PrintS($"\tBuilding mesh: {watch.ElapsedMilliseconds}ms");
 
 		// st.GenerateNormals();
-
+		watch = System.Diagnostics.Stopwatch.StartNew();
 		Mesh = st.Commit();
+		Godot.GD.PrintS($"\tCommit mesh: {watch.ElapsedMilliseconds}ms");
 	}
 }
