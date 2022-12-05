@@ -1,9 +1,8 @@
-res://view/MapView/MapView.tscn
+res://scenes/GameView/GameView.tscn
 res://assets/theme.tres
 res://assets/terrain.tres
 res://assets/features.tres
 res://assets/grid-ui.tres
-res://scenes/GameView/GameView.tscn
 res://scenes/GameView/GameController.tscn
 res://view/GamePanel/GamePanel.tscn
-res://view/MapView/Camera.gd
+res://view/MapView/MapView.tscn

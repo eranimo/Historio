@@ -1,3 +1,4 @@
+
 using Godot;
 using System;
 using System.Linq;
@@ -12,6 +13,10 @@ public struct SphericalCoordinate {
 		this.Radius = radius;
 		this.Polar = polar;
 		this.Elevation = elevation;
+	}
+
+	public Vector2 ToLatLong() {
+		return new Vector2(Polar, Elevation);
 	}
 }
 
@@ -85,6 +90,10 @@ public class PlanetVertex : IVertex {
 	public override string ToString() {
 		return string.Format("PlanetVertex({0}, {1}, {2})", Position[0], Position[1], Position[2]);
 	}
+
+	public Vector3 ToVector() {
+		return new Vector3((float)Position[0], (float)Position[1], (float)Position[2]);
+	}
 }
 
 public class PlanetFace : ConvexFace<PlanetVertex, PlanetFace> {
@@ -131,19 +140,6 @@ public class PlanetFace : ConvexFace<PlanetVertex, PlanetFace> {
 		var z = (Normal[0] + Normal[1] + Normal[2]) / 3d;
 		return new Vector3((float)x, (float)y, (float)z);
 	}
-}
-
-public class PlanetCellPoint {
-	public Vector3 Vertex { get; set; }
-	public Vector3 Normal { get; set; }
-
-	public override string ToString() {
-		return string.Format("PlanetCellPoint({0})", Vertex);
-	}
-}
-
-public class PlanetCellTriangle {
-	public PlanetCellPoint[] Points { get; set; }
 }
 
 public partial class PlanetMesh : MeshInstance3D {
@@ -213,100 +209,62 @@ public partial class PlanetMesh : MeshInstance3D {
 		}
 
 		// calculate midpoint of each face
-		var cellPoints = new Dictionary<PlanetFace, PlanetCellPoint>();
+		var cellPoints = new Dictionary<PlanetFace, Vector3>();
 		foreach (var face in faces) {
-			cellPoints.Add(face, new PlanetCellPoint{
-				Vertex = face.Midpoint(),
-				Normal = face.MidpointNormal()
-			});
+			cellPoints.Add(face, face.Midpoint());
 		}
 
 		// create triangles for each cell
-		var newFacePoints = new List<PlanetCellPoint>();
-		var t = 0;
-		foreach (var (center, pointFaces) in pointsToFaces.Take(1)) {
-			var thisCellPoints = new List<PlanetCellPoint>();
-			var centerNormal = new Vector3();
+		var newFacePoints = new List<Vector3>();
+		var indices = new List<int>();
+		var vertexIndices = new Dictionary<Vector3, int>();
+
+		foreach (var (center, pointFaces) in pointsToFaces) {
+			var p0 = center.ToVector();
+			var thisCellPoints = new List<Vector3>();
+			var centerIndex = indices.Count;
+			indices.Add(centerIndex);
+			vertexIndices[p0] = centerIndex;
+
+			st.AddVertex(p0);
+
 			foreach (var face in pointFaces) {
+				var point = cellPoints[face];
+				cellMidpoints.Add(point);
 				thisCellPoints.Add(cellPoints[face]);
-				cellMidpoints.Add(cellPoints[face].Vertex);
-				centerNormal += cellPoints[face].Normal;
+				var index = indices.Count;
+				indices.Add(index);
+				vertexIndices[point] = index;
+				st.AddVertex(point);
 			}
-			centerNormal /= pointFaces.Count;
-
-			var p0 = new PlanetCellPoint {
-				Vertex = new Vector3((float)center.Position[0], (float)center.Position[1], (float)center.Position[2]),
-				Normal = centerNormal,
-			};
-
-			for (int i = 0; i < thisCellPoints.Count; i++) {
-				var p1 = thisCellPoints[i];
-				var p2 = i + 1 == thisCellPoints.Count ? thisCellPoints[0] : thisCellPoints[i + 1];
-
-				GD.PrintS("i", i);
-				GD.PrintS("\tp1", p1);
-				GD.PrintS("\tp2", p2);
-
-				newFacePoints.Clear();
-				newFacePoints.Add(p0);
-				newFacePoints.Add(p1);
-				newFacePoints.Add(p2);
-
-				var faceCenter = (p0.Vertex + p1.Vertex + p2.Vertex) / 3f;
-				var faceNormal = (p0.Normal + p1.Normal + p2.Normal) / 3f;
-				var faceCenterSphere = CoordinateConversion.CartesianToSpherical(faceCenter);
-
-				// newFacePoints.Sort((a, b) => sortPoints(faceCenter, a.Vertex, b.Vertex));
-				// newFacePoints = newFacePoints.OrderBy(item => {
-				// 		var p = CoordinateConversion.CartesianToSpherical(item.Vertex);
-				// 		return Math.Atan2(p.Elevation - faceCenterSphere.Elevation, p.Polar - faceCenterSphere.Polar);
-				// 	})
-				// 	.ToList();
-				foreach (var p in newFacePoints) {
-					st.SetNormal(p.Normal);
-					st.AddVertex(p.Vertex);
-				}
-				t++;
-
-				// st.SetNormal(centerNormal);
-				// st.AddVertex(p0);
-			
-				// st.SetNormal(p1.Normal);
-				// st.AddVertex(p1.Vertex);
-
-				// st.SetNormal(p2.Normal);
-				// st.AddVertex(p2.Vertex);
-			}
-			
 		}
+
+		foreach (var (center, pointFaces) in pointsToFaces) {
+			var p0 = center.ToVector();
+			var thisCellPoints = new List<Vector3>();
+			var points = new List<Vector3>(pointFaces.Select(face => cellPoints[face]));
+			var sortedPoints = new List<Vector3>();
+			var validPoints = new HashSet<Vector3>(points);
+			Vector3 nextPoint = points[0];
+			validPoints.Remove(points[0]);
+			sortedPoints.Add(points[0]);
+			while (validPoints.Count != 0) {
+				var picked = validPoints.OrderBy(p => nextPoint.DistanceTo(p)).First();
+				sortedPoints.Add(picked);
+				nextPoint = picked;
+				validPoints.Remove(nextPoint);
+			}
+			for (int i = 0; i < sortedPoints.Count; i++) {
+				var p1 = sortedPoints[i];
+				var p2 = i == sortedPoints.Count - 1 ? sortedPoints[0] : sortedPoints[i + 1];
+				st.AddIndex(vertexIndices[p1]);
+				st.AddIndex(vertexIndices[p2]);
+				st.AddIndex(vertexIndices[p0]);
+			}
+		}
+
+		// st.GenerateNormals();
+
 		Mesh = st.Commit();
-	}
-
-	// From https://www.baeldung.com/cs/sort-points-clockwise
-	private int sortPoints(Vector3 center, Vector3 a, Vector3 b) {
-		var origin = new Vector3(0, 0, 0);
-		var angle1 = getAngle(origin, a);
-		var angle2 = getAngle(origin, b);
-		if (angle1 < angle2) {
-			return 1;
-		}
-
-		var d1 = origin.DistanceTo(a);
-		var d2 = origin.DistanceTo(b);
-
-		if (angle1 == angle2 && d1 < d2) {
-			return 1;
-		}
-
-		return 0;
-	}
-
-	private double getAngle(Vector3 center, Vector3 point) {
-		var diff = point - center;
-		var angle = Math.Atan2(point.y, point.x);
-		if (angle <= 0) {
-			angle = 2 * Math.PI + angle;
-		}
-		return angle;
 	}
 }
