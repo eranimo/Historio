@@ -143,110 +143,44 @@ public class PlanetFace : ConvexFace<PlanetVertex, PlanetFace> {
 }
 
 public partial class PlanetMesh : MeshInstance3D {
-	private int cells;
 	private List<Vector3> cellCenters;
 	private List<Vector3> cellMidpoints;
 
-	public int Cells => cells;
 	public List<Vector3> CellCenters { get => cellCenters; set => cellCenters = value; }
 	public List<Vector3> CellMidpoints { get => cellMidpoints; set => cellMidpoints = value; }
 
-	public void Generate(int cells) {
+	public void Generate() {
 		var rng = new Random(123);
-		var jitterAmount = 0;//0.001f;
 
 		// RenderingServer.SetDebugGenerateWireframes(true);
 		// GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
 
-		this.cells = cells;
 		cellCenters = new List<Vector3>();
 		cellMidpoints = new List<Vector3>();
-		cellCenters.Clear();
-		cellMidpoints.Clear();
 
-		// find cell centers
-		var watch = System.Diagnostics.Stopwatch.StartNew();
-		var phi = Math.PI * (3.0 - Math.Sqrt(5.0));
-		for(int p = 0; p < Cells; p++) {
-			var y = 1 - (p / ((double) (Cells - 1))) * 2;
-			var radius = Math.Sqrt(1 - y * y);
-			var theta = phi * p;
-			var x = Math.Cos(theta) * radius;
-			var z = Math.Sin(theta) * radius;
-			var centerCart = new Vector3((float)x, (float)y, (float)z);
-			var centerSphere = CoordinateConversion.CartesianToSpherical(centerCart);
-			var jitterX = rng.NextSingle() * jitterAmount;
-			var jitterY = rng.NextSingle() * jitterAmount;
-			centerSphere.Polar += jitterX;
-			centerSphere.Elevation += jitterY;
-			var center = CoordinateConversion.SphericalToCartesian(centerSphere);
-			CellCenters.Add(center);
-		}
-		Godot.GD.PrintS($"\tFinding points: {watch.ElapsedMilliseconds}ms");
-
-		// perform Delaunay triangulation
-		watch = System.Diagnostics.Stopwatch.StartNew();
-		var centers = new List<PlanetVertex>();
-		foreach (var cell in cellCenters) {
-			centers.Add(new PlanetVertex() { Position = new Double[] {
-				(double) cell.x,
-				(double) cell.y,
-				(double) cell.z
-			}});
-		}
 		var st = new SurfaceTool();
 		st.Begin(Mesh.PrimitiveType.Triangles);
 
+		var watch = System.Diagnostics.Stopwatch.StartNew();
+		var icosphere = new Icosphere(6);
+		Godot.GD.PrintS($"\tBuilding Icosphere: {watch.ElapsedMilliseconds}ms");
+		watch = System.Diagnostics.Stopwatch.StartNew();
+		var hexsphere = new Hexsphere(icosphere);
 
-		var convexHull = ConvexHull.Create<PlanetVertex, PlanetFace>(centers, 1E-10);
-		var faces = convexHull.Result.Faces;
-		Godot.GD.PrintS($"\tTriangulating: {watch.ElapsedMilliseconds}ms");
+		Godot.GD.PrintS($"\tBuilding Hexsphere: {watch.ElapsedMilliseconds}ms");
+		GD.PrintS($"\t\tHexsphere cells:", hexsphere.Cells.Count);
 		watch = System.Diagnostics.Stopwatch.StartNew();
 
-		// create a mapping of cell centers to faces
-		var pointsToFaces = new MultiMap<PlanetVertex, PlanetFace>();
-		foreach (var face in faces) {
-			foreach (var v in face.Vertices) {
-				pointsToFaces.Add(v, face);
-			}
-		}
-
-		// calculate midpoint of each face
-		var cellPoints = new Dictionary<PlanetFace, Vector3>();
-		foreach (var face in faces) {
-			cellPoints.Add(face, face.Midpoint());
-		}
-
-		// create triangles for each cell
-		var sortedPoints = new List<Vector3>();
-		foreach (var (center, pointFaces) in pointsToFaces) {
-			sortedPoints.Clear();
+		foreach (var cell in hexsphere.Cells) {
 			var color = new Color(rng.NextSingle(), rng.NextSingle(), rng.NextSingle());
-			var p0 = center.ToVector();
-			var points = pointFaces.Select(face => cellPoints[face]);
-			var validPoints = new HashSet<Vector3>(points);
-			Vector3 nextPoint = points.First();
-			validPoints.Remove(points.First());
-			sortedPoints.Add(points.First());
-			while (validPoints.Count != 0) {
-				var picked = validPoints.OrderBy(p => nextPoint.DistanceTo(p)).First();
-				sortedPoints.Add(picked);
-				nextPoint = picked;
-				validPoints.Remove(nextPoint);
-			}
-			for (int i = 0; i < sortedPoints.Count; i++) {
-				var p1 = sortedPoints[i];
-				var p2 = i == sortedPoints.Count - 1 ? sortedPoints[0] : sortedPoints[i + 1];
-				st.SetColor(color);
-				st.AddVertex(p1);
-
-				st.SetColor(color);
-				st.AddVertex(p2);
-
-				st.SetColor(color);
-				st.AddVertex(p0);
+			st.SetColor(color);
+			foreach (var face in cell.Faces) {
+				st.AddVertex(hexsphere.Geometry.Vertices[face.v1]);
+				st.AddVertex(hexsphere.Geometry.Vertices[face.v2]);
+				st.AddVertex(hexsphere.Geometry.Vertices[face.v3]);
 			}
 		}
+
 		Godot.GD.PrintS($"\tBuilding mesh: {watch.ElapsedMilliseconds}ms");
 
 		// st.GenerateNormals();
