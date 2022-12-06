@@ -162,7 +162,7 @@ public partial class PlanetMesh : MeshInstance3D {
 		st.Begin(Mesh.PrimitiveType.Triangles);
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
-		var icosphere = new Icosphere(6);
+		var icosphere = new Icosphere(7);
 		Godot.GD.PrintS($"\tBuilding Icosphere: {watch.ElapsedMilliseconds}ms");
 		watch = System.Diagnostics.Stopwatch.StartNew();
 		var hexsphere = new Hexsphere(icosphere);
@@ -171,9 +171,20 @@ public partial class PlanetMesh : MeshInstance3D {
 		GD.PrintS($"\t\tHexsphere cells:", hexsphere.Cells.Count);
 		watch = System.Diagnostics.Stopwatch.StartNew();
 
+		var cellColors = new Dictionary<Hexsphere.Cell, Color>();
 		foreach (var cell in hexsphere.Cells) {
 			var color = new Color(rng.NextSingle(), rng.NextSingle(), rng.NextSingle());
-			st.SetColor(color);
+			// var color = new Color("white");
+			cellColors[cell] = color;
+		}
+		// var first = hexsphere.Cells[0];
+		// cellColors[first] = new Color("red");
+		// foreach (var neighbor in first.Neighbors) {
+		// 	cellColors[neighbor] = new Color("blue");
+		// }
+
+		foreach (var cell in hexsphere.Cells) {
+			st.SetColor(cellColors[cell]);
 			foreach (var face in cell.Faces) {
 				st.AddVertex(hexsphere.Geometry.Vertices[face.v1]);
 				st.AddVertex(hexsphere.Geometry.Vertices[face.v2]);

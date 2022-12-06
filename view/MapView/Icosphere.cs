@@ -129,6 +129,8 @@ public class Icosphere : ProceduralShape {
 public class Hexsphere : ProceduralShape {
 	public class Cell {
 		public List<Face> Faces = new List<Face>();
+		public HashSet<Cell> Neighbors = new HashSet<Cell>();
+		public List<Vector3> Edges = new List<Vector3>();
 	}
 
 	public List<Cell> Cells = new List<Cell>();
@@ -136,6 +138,7 @@ public class Hexsphere : ProceduralShape {
 	public Hexsphere(Icosphere icosphere) {
 		var vertexToFaces = new Dictionary<Vector3, List<Face>>();
 		var faceCentroids = new Dictionary<Face, int>();
+		var cellsOnPoint = new MultiSet<Vector3, Cell>();
 		foreach (var vertex in icosphere.Geometry.Vertices) {
 			vertexToFaces[vertex] = new List<Face>();
 		}
@@ -154,8 +157,8 @@ public class Hexsphere : ProceduralShape {
 			var vertexIndex = addVertex(vertex);
 			var cell = new Cell();
 			foreach (var face in vertexToFaces[vertex]) {
-				Vector3 B = new Vector3();
-				Vector3 C = new Vector3();
+				Vector3 B;
+				Vector3 C;
 
 				if (vertex == icosphere.Geometry.Vertices[face.v1]) {
 					B = icosphere.Geometry.Vertices[face.v2];
@@ -163,7 +166,7 @@ public class Hexsphere : ProceduralShape {
 				} else if (vertex == icosphere.Geometry.Vertices[face.v2]) {
 					B = icosphere.Geometry.Vertices[face.v1];
 					C = icosphere.Geometry.Vertices[face.v3];
-				} else if (vertex == icosphere.Geometry.Vertices[face.v3]) {
+				} else {
 					B = icosphere.Geometry.Vertices[face.v1];
 					C = icosphere.Geometry.Vertices[face.v2];
 				}
@@ -172,11 +175,14 @@ public class Hexsphere : ProceduralShape {
 				var midAC = vertex.Lerp(C, 0.5f);
 				var midABi = addVertex(midAB);
 				var midACi = addVertex(midAC);
-				var centroid = faceCentroids[face];
-				var f1 = new Face(vertexIndex, midABi, centroid);
-				var f2 = new Face(vertexIndex, centroid, midACi);
+				var centroidIndex = faceCentroids[face];
+				var centroid = Geometry.Vertices[centroidIndex];
+				cellsOnPoint.Add(centroid, cell);
+				var f1 = new Face(vertexIndex, midABi, centroidIndex);
+				var f2 = new Face(vertexIndex, centroidIndex, midACi);
 				Geometry.Faces.Add(f1);
 				Geometry.Faces.Add(f2);
+				cell.Edges.Add(centroid);
 				cell.Faces.Add(f1);
 				cell.Faces.Add(f2);
 			}
@@ -187,6 +193,16 @@ public class Hexsphere : ProceduralShape {
 			Geometry.FaceIndices.Add(tri.v1);
 			Geometry.FaceIndices.Add(tri.v2);
 			Geometry.FaceIndices.Add(tri.v3);
+		}
+
+		// find neighbors
+		foreach (var cell in Cells) {
+			foreach (var edge in cell.Edges) {
+				foreach (var c in cellsOnPoint[edge]) {
+					cell.Neighbors.Add(c);
+				}
+			}
+			cell.Neighbors.Remove(cell);
 		}
 	}
 }
