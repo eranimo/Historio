@@ -1,13 +1,15 @@
 using System;
 using Godot;
 
+// From https://github.com/andreiazotov/catlikecoding/blob/master/[Cube_Sphere]/Assets/Scripts/CubeSphere.cs#L92
 public partial class CubeSphere : ArrayMesh {
 	private int gridSize;
 	public float radius = 1.0f;
 
 	private Vector3[] vertices;
 	private Vector3[] normals;
-	private Color[] cubeUV;
+	private Color[] colors;
+	private Vector2[] uvs;
 
 	public int GridSize {
 		get => gridSize;
@@ -15,6 +17,11 @@ public partial class CubeSphere : ArrayMesh {
 			gridSize = value;
 			generate();
 		}
+	}
+
+	public CubeSphere() {
+		gridSize = 100;
+		this.generate();
 	}
 
 	public CubeSphere(int _gridSize) {
@@ -26,9 +33,9 @@ public partial class CubeSphere : ArrayMesh {
 		this.createVertices();
 		this.createTriangles();
 
-		GD.PrintS("Vertices count:", vertices.Length);
-		GD.PrintS("Normals count:", normals.Length);
-		GD.PrintS("UV count:", cubeUV.Length);
+		// GD.PrintS("Vertices count:", vertices.Length);
+		// GD.PrintS("Normals count:", normals.Length);
+		// GD.PrintS("UV count:", colors.Length);
 
 	}
 
@@ -39,7 +46,8 @@ public partial class CubeSphere : ArrayMesh {
 
 		this.vertices = new Vector3[cornerVertices + edgeVertices + faceVertices];
 		this.normals = new Vector3[this.vertices.Length];
-		this.cubeUV = new Color[this.vertices.Length];
+		this.colors = new Color[this.vertices.Length];
+		this.uvs = new Vector2[this.vertices.Length];
 
 		int v = 0;
 		for (int y = 0; y <= this.GridSize; y++) {
@@ -74,16 +82,25 @@ public partial class CubeSphere : ArrayMesh {
 		float x2 = v.x * v.x;
 		float y2 = v.y * v.y;
 		float z2 = v.z * v.z;
-		Vector3 s;
 
+		Vector3 s;
 		s.x = v.x * Mathf.Sqrt(1f - y2 / 2f - z2 / 2f + y2 * z2 / 3f);
 		s.y = v.y * Mathf.Sqrt(1f - x2 / 2f - z2 / 2f + x2 * z2 / 3f);
 		s.z = v.z * Mathf.Sqrt(1f - x2 / 2f - y2 / 2f + x2 * y2 / 3f);
 
 		this.normals[i] = v.Normalized();
 		this.normals[i] = new Vector3(this.normals[i].x, -this.normals[i].y, this.normals[i].z);
-		this.vertices[i] = this.normals[i] * this.radius;
-		this.cubeUV[i] = Color.Color8((byte) x, (byte) y, (byte) z);
+		var vertex = this.normals[i] * this.radius;
+		this.vertices[i] = vertex;
+
+		var uv = new Vector2(
+			0.5f + (Mathf.Atan2(vertex.z, vertex.x) / (2f * Mathf.Pi)),
+			0.5f + ((Mathf.Asin(vertex.y)) / Mathf.Pi)
+		);
+
+		this.uvs[i] = uv;
+		this.colors[i] = Color.Color8((byte) x, (byte) y, (byte) z);
+		// this.colors[i] = Color.Color8((byte) (uv.x / 255), (byte) (uv.y / 255), (byte) 0.5f);
 	}
 
 	private void createTriangles() {
@@ -124,13 +141,12 @@ public partial class CubeSphere : ArrayMesh {
 	}
 
 	private void createSurface(int[] indices) {
-		GD.PrintS("Creating surface with indices count", indices.Length);
-
 		var arrays = new Godot.Collections.Array();
 		arrays.Resize((int) Mesh.ArrayType.Max);
 		arrays[(int) Mesh.ArrayType.Vertex] = vertices.AsSpan();
 		arrays[(int) Mesh.ArrayType.Normal] = normals.AsSpan();
-		arrays[(int) Mesh.ArrayType.Color] = cubeUV.AsSpan();
+		arrays[(int) Mesh.ArrayType.Color] = colors.AsSpan();
+		arrays[(int) Mesh.ArrayType.TexUv] = uvs.AsSpan();
 		arrays[(int) Mesh.ArrayType.Index] = indices.AsSpan();
 		AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
 	}
