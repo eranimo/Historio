@@ -3,17 +3,17 @@
 [ext_resource type="FontFile" uid="uid://spm4xlttneqw" path="res://assets/fonts/DroidSans.ttf" id="1"]
 [ext_resource type="Texture2D" uid="uid://c5b68n7po6x61" path="res://assets/ui.png" id="2"]
 
-[sub_resource type="StyleBoxEmpty" id="9"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_38h2e"]
 
-[sub_resource type="StyleBoxEmpty" id="10"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ooue0"]
 
-[sub_resource type="StyleBoxEmpty" id="11"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e6xow"]
 
-[sub_resource type="StyleBoxEmpty" id="12"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bc556"]
 
-[sub_resource type="StyleBoxEmpty" id="13"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_03aki"]
 
-[sub_resource type="FontFile" id="3"]
+[sub_resource type="FontFile" id="FontFile_ux3vb"]
 fallbacks = [ExtResource("1")]
 face_index = null
 embolden = null
@@ -25,7 +25,7 @@ cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
-[sub_resource type="FontFile" id="2"]
+[sub_resource type="FontFile" id="FontFile_ri7yj"]
 fallbacks = [ExtResource("1")]
 face_index = null
 embolden = null
@@ -37,7 +37,7 @@ cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
-[sub_resource type="StyleBoxFlat" id="23"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qhjuv"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -53,10 +53,10 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[sub_resource type="StyleBoxFlat" id="14"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xqa71"]
 bg_color = Color(0.223529, 0.223529, 0.223529, 1)
 
-[sub_resource type="StyleBoxFlat" id="1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1hlus"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -68,27 +68,27 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.368627, 0.368627, 0.368627, 1)
 
-[sub_resource type="AtlasTexture" id="33"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_wmop4"]
 atlas = ExtResource("2")
 region = Rect2(90, 60, 15, 15)
 
-[sub_resource type="AtlasTexture" id="35"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_gw6ud"]
 atlas = ExtResource("2")
 region = Rect2(30, 75, 15, 15)
 
-[sub_resource type="AtlasTexture" id="34"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_mqrc3"]
 atlas = ExtResource("2")
 region = Rect2(0, 75, 15, 15)
 
-[sub_resource type="AtlasTexture" id="36"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_plrpk"]
 atlas = ExtResource("2")
 region = Rect2(30, 60, 15, 15)
 
-[sub_resource type="AtlasTexture" id="32"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_4vqjl"]
 atlas = ExtResource("2")
 region = Rect2(60, 60, 15, 15)
 
-[sub_resource type="StyleBoxFlat" id="29"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6noww"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -100,7 +100,7 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.368627, 0.368627, 0.368627, 1)
 
-[sub_resource type="StyleBoxFlat" id="30"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b54kx"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -112,13 +112,13 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.368627, 0.368627, 0.368627, 1)
 
-[sub_resource type="StyleBoxLine" id="31"]
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_df4kl"]
 color = Color(0.576471, 0.576471, 0.576471, 1)
 
-[sub_resource type="StyleBoxFlat" id="28"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ttbo6"]
 bg_color = Color(0.211765, 0.211765, 0.211765, 1)
 
-[sub_resource type="FontFile" id="21"]
+[sub_resource type="FontFile" id="FontFile_4klyd"]
 fallbacks = [ExtResource("1")]
 face_index = null
 embolden = null
@@ -130,7 +130,7 @@ cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
-[sub_resource type="StyleBoxFlat" id="22"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vag6y"]
 content_margin_left = 3.0
 content_margin_top = 3.0
 content_margin_right = 3.0
@@ -142,10 +142,10 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.45, 0.45, 0.45, 1)
 
-[sub_resource type="StyleBoxFlat" id="20"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t5fek"]
 bg_color = Color(0.0941176, 0.447059, 0.94902, 1)
 
-[sub_resource type="StyleBoxFlat" id="15"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lxkb0"]
 bg_color = Color(0.24, 0.24, 0.24, 1)
 border_width_left = 1
 border_width_top = 1
@@ -153,21 +153,21 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.35, 0.35, 0.35, 1)
 
-[sub_resource type="StyleBoxFlat" id="16"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c8aci"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
 content_margin_bottom = 5.0
 bg_color = Color(0.210938, 0.210938, 0.210938, 1)
 
-[sub_resource type="StyleBoxFlat" id="18"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_70pwt"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
 content_margin_bottom = 5.0
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
-[sub_resource type="StyleBoxFlat" id="17"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ghw6b"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -178,7 +178,7 @@ border_width_top = 1
 border_width_right = 1
 border_color = Color(0.34902, 0.34902, 0.34902, 1)
 
-[sub_resource type="FontFile" id="26"]
+[sub_resource type="FontFile" id="FontFile_mvpv2"]
 fallbacks = [ExtResource("1")]
 face_index = null
 embolden = null
@@ -190,15 +190,15 @@ cache/0/16/0/underline_thickness = 0.0
 cache/0/16/0/scale = 1.0
 cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
 
-[sub_resource type="AtlasTexture" id="24"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_htij5"]
 atlas = ExtResource("2")
 region = Rect2(0, 0, 15, 15)
 
-[sub_resource type="AtlasTexture" id="25"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_mdx22"]
 atlas = ExtResource("2")
 region = Rect2(15, 0, 15, 15)
 
-[sub_resource type="StyleBoxFlat" id="27"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4syq2"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -219,14 +219,14 @@ Button/colors/font_color_hover = Color(0.94, 0.94, 0.94, 1)
 Button/colors/font_color_pressed = Color(1, 1, 1, 1)
 Button/constants/hseparation = 3
 Button/fonts/font = null
-Button/styles/disabled = SubResource("9")
-Button/styles/focus = SubResource("10")
-Button/styles/hover = SubResource("11")
-Button/styles/normal = SubResource("12")
-Button/styles/pressed = SubResource("13")
-Fonts/fonts/large = SubResource("3")
-Fonts/fonts/normal = SubResource("2")
-LineEdit/styles/normal = SubResource("23")
+Button/styles/disabled = SubResource("StyleBoxEmpty_38h2e")
+Button/styles/focus = SubResource("StyleBoxEmpty_ooue0")
+Button/styles/hover = SubResource("StyleBoxEmpty_e6xow")
+Button/styles/normal = SubResource("StyleBoxEmpty_bc556")
+Button/styles/pressed = SubResource("StyleBoxEmpty_03aki")
+Fonts/fonts/large = SubResource("FontFile_ux3vb")
+Fonts/fonts/normal = SubResource("FontFile_ri7yj")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_qhjuv")
 OptionButton/colors/font_color = Color(0.88, 0.88, 0.88, 1)
 OptionButton/colors/font_color_disabled = Color(0.9, 0.9, 0.9, 0.2)
 OptionButton/colors/font_color_focus = Color(0.94, 0.94, 0.94, 1)
@@ -241,24 +241,24 @@ OptionButton/styles/focus = null
 OptionButton/styles/hover = null
 OptionButton/styles/normal = null
 OptionButton/styles/pressed = null
-Panel/styles/panel = SubResource("14")
-PanelContainer/styles/panel = SubResource("1")
+Panel/styles/panel = SubResource("StyleBoxFlat_xqa71")
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_1hlus")
 PopupMenu/constants/hseparation = 8
 PopupMenu/constants/vseparation = 8
-PopupMenu/icons/checked = SubResource("33")
-PopupMenu/icons/radio_checked = SubResource("35")
-PopupMenu/icons/radio_unchecked = SubResource("34")
-PopupMenu/icons/submenu = SubResource("36")
-PopupMenu/icons/unchecked = SubResource("32")
-PopupMenu/styles/hover = SubResource("29")
-PopupMenu/styles/panel = SubResource("30")
-PopupMenu/styles/separator = SubResource("31")
-PopupPanel/styles/panel = SubResource("28")
+PopupMenu/icons/checked = SubResource("AtlasTexture_wmop4")
+PopupMenu/icons/radio_checked = SubResource("AtlasTexture_gw6ud")
+PopupMenu/icons/radio_unchecked = SubResource("AtlasTexture_mqrc3")
+PopupMenu/icons/submenu = SubResource("AtlasTexture_plrpk")
+PopupMenu/icons/unchecked = SubResource("AtlasTexture_4vqjl")
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_6noww")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_b54kx")
+PopupMenu/styles/separator = SubResource("StyleBoxLine_df4kl")
+PopupPanel/styles/panel = SubResource("StyleBoxFlat_ttbo6")
 ProgressBar/colors/font_color = Color(0.94, 0.94, 0.94, 1)
 ProgressBar/colors/font_color_shadow = Color(0, 0, 0, 1)
-ProgressBar/fonts/font = SubResource("21")
-ProgressBar/styles/bg = SubResource("22")
-ProgressBar/styles/fg = SubResource("20")
+ProgressBar/fonts/font = SubResource("FontFile_4klyd")
+ProgressBar/styles/bg = SubResource("StyleBoxFlat_vag6y")
+ProgressBar/styles/fg = SubResource("StyleBoxFlat_t5fek")
 TabContainer/colors/font_color_bg = Color(0.69, 0.69, 0.69, 1)
 TabContainer/colors/font_color_disabled = Color(0.9, 0.9, 0.9, 0.2)
 TabContainer/colors/font_color_fg = Color(0.94, 0.94, 0.94, 1)
@@ -274,13 +274,13 @@ TabContainer/icons/increment = null
 TabContainer/icons/increment_highlight = null
 TabContainer/icons/menu = null
 TabContainer/icons/menu_highlight = null
-TabContainer/styles/panel = SubResource("15")
-TabContainer/styles/tab_bg = SubResource("16")
-TabContainer/styles/tab_disabled = SubResource("18")
-TabContainer/styles/tab_fg = SubResource("17")
-TextEdit/styles/normal = SubResource("23")
+TabContainer/styles/panel = SubResource("StyleBoxFlat_lxkb0")
+TabContainer/styles/tab_bg = SubResource("StyleBoxFlat_c8aci")
+TabContainer/styles/tab_disabled = SubResource("StyleBoxFlat_70pwt")
+TabContainer/styles/tab_fg = SubResource("StyleBoxFlat_ghw6b")
+TextEdit/styles/normal = SubResource("StyleBoxFlat_qhjuv")
 Window/colors/title_color = Color(1, 1, 1, 1)
-Window/fonts/title_font = SubResource("26")
-Window/icons/close = SubResource("24")
-Window/icons/close_highlight = SubResource("25")
-Window/styles/panel = SubResource("27")
+Window/fonts/title_font = SubResource("FontFile_mvpv2")
+Window/icons/close = SubResource("AtlasTexture_htij5")
+Window/icons/close_highlight = SubResource("AtlasTexture_mdx22")
+Window/styles/panel = SubResource("StyleBoxFlat_4syq2")

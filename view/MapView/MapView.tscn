@@ -1,51 +1,15 @@
-[gd_scene load_steps=13 format=3 uid="uid://cc35soqfohkbr"]
+[gd_scene load_steps=5 format=3 uid="uid://cc35soqfohkbr"]
 
-[ext_resource type="Script" path="res://view/MapView/PlanetMesh.cs" id="1_55seq"]
 [ext_resource type="Script" path="res://view/MapView/Camera.gd" id="1_jsai4"]
 [ext_resource type="Script" path="res://view/MapView/Planet.cs" id="2_lcuoi"]
 
 [sub_resource type="Environment" id="Environment_o00p4"]
-ambient_light_source = 3
-ambient_light_color = Color(0.243137, 0.243137, 0.243137, 1)
+ambient_light_source = 2
+ambient_light_color = Color(1, 1, 1, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4sjes"]
-shading_mode = 0
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_ss87f"]
-material = SubResource("StandardMaterial3D_4sjes")
-radius = 0.005
-height = 0.01
-radial_segments = 4
-rings = 1
-
-[sub_resource type="MultiMesh" id="MultiMesh_b3b7j"]
-transform_format = 1
-mesh = SubResource("SphereMesh_ss87f")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gww8d"]
-shading_mode = 0
-albedo_color = Color(1, 0, 0.0156863, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_tudot"]
-material = SubResource("StandardMaterial3D_gww8d")
-radius = 0.003
-height = 0.006
-radial_segments = 4
-rings = 1
-
-[sub_resource type="MultiMesh" id="MultiMesh_mdmt4"]
-transform_format = 1
-mesh = SubResource("SphereMesh_tudot")
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_43483"]
-cull_mode = 2
-shading_mode = 2
-diffuse_mode = 3
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xde8a"]
 vertex_color_use_as_albedo = true
 vertex_color_is_srgb = true
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_fk7mg"]
 
 [node name="MapView" type="Node3D"]
 
@@ -55,24 +19,13 @@ script = ExtResource("1_jsai4")
 max_speed = 100.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 6.4819, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 463.593, 0)
+visible = false
+shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_o00p4")
 
-[node name="Planet" type="Node3D" parent="."]
+[node name="Planet" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_xde8a")
 script = ExtResource("2_lcuoi")
-
-[node name="CellCenters" type="MultiMeshInstance3D" parent="Planet"]
-visible = false
-multimesh = SubResource("MultiMesh_b3b7j")
-
-[node name="CellMidpoints" type="MultiMeshInstance3D" parent="Planet"]
-visible = false
-multimesh = SubResource("MultiMesh_mdmt4")
-
-[node name="PlanetMesh" type="MeshInstance3D" parent="Planet"]
-material_override = SubResource("StandardMaterial3D_43483")
-mesh = SubResource("ArrayMesh_fk7mg")
-skeleton = NodePath("")
-script = ExtResource("1_55seq")
