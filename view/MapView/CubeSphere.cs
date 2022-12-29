@@ -4,7 +4,7 @@ using Godot;
 // From https://github.com/andreiazotov/catlikecoding/blob/master/[Cube_Sphere]/Assets/Scripts/CubeSphere.cs#L92
 public partial class CubeSphere : ArrayMesh {
 	private int gridSize;
-	public float radius = 1.0f;
+	private float radius = 1.0f;
 
 	private Vector3[] vertices;
 	private Vector3[] normals;
@@ -19,13 +19,17 @@ public partial class CubeSphere : ArrayMesh {
 		}
 	}
 
+	public float Radius { get => radius; set => radius = value; }
+
 	public CubeSphere() {
 		gridSize = 100;
+		radius = 1.0f;
 		this.generate();
 	}
 
-	public CubeSphere(int _gridSize) {
+	public CubeSphere(int _gridSize, float _radius) {
 		gridSize = _gridSize;
+		radius = _radius;
 		this.generate();
 	}
 
@@ -90,12 +94,14 @@ public partial class CubeSphere : ArrayMesh {
 
 		this.normals[i] = v.Normalized();
 		this.normals[i] = new Vector3(this.normals[i].x, -this.normals[i].y, this.normals[i].z);
-		var vertex = this.normals[i] * this.radius;
+		var vertex = this.normals[i] * this.Radius;
 		this.vertices[i] = vertex;
 
 		var uv = new Vector2(
-			0.5f + (Mathf.Atan2(vertex.z, vertex.x) / (2f * Mathf.Pi)),
-			0.5f + ((Mathf.Asin(vertex.y)) / Mathf.Pi)
+		// 0.5f + (Mathf.Atan2(vertex.z, vertex.x) / (2f * Mathf.Pi)),
+		// 0.5f + ((Mathf.Asin(vertex.y)) / Mathf.Pi)
+			Mathf.Atan2(this.normals[i].z, this.normals[i].x) / (2f * Mathf.Pi),
+			(Mathf.Asin(this.normals[i].y) / Mathf.Pi) + 0.5f
 		);
 
 		this.uvs[i] = uv;
