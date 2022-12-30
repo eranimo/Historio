@@ -14,6 +14,7 @@ public partial class Planet : MeshInstance3D {
 	private float radius = 1.0f;
 	private float waterHeight = 0.5f;
 	private MeshInstance3D water;
+	private PlanetShaderMaterial material;
 
 	[Export(PropertyHint.Enum)]
 	public PlanetSize PlanetSize {
@@ -52,10 +53,11 @@ public partial class Planet : MeshInstance3D {
 	private void generateMesh() {
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 		Mesh = new CubeSphere((int) PlanetSize, radius);
-		var material = ResourceLoader.Load<PlanetShaderMaterial>("res://view/MapView/PlanetShaderMaterial.tres");
+		material = ResourceLoader.Load<PlanetShaderMaterial>("res://view/MapView/PlanetShaderMaterial.tres");
 		var height = (int) PlanetSize;
 		var width = height * 2;
-		material.Generate(width, height, seed);
+		material.GenerateTerrain(width, height, seed, waterHeight);
+		material.GenerateTexture(width, height, seed, waterHeight);
 		MaterialOverride = material;
 		GD.PrintS($"\tBuilding Planet mesh: {watch.ElapsedMilliseconds}ms");
 	}
@@ -63,7 +65,9 @@ public partial class Planet : MeshInstance3D {
 	private void generateWater() {
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 		water = GetNode<MeshInstance3D>("Water");
-		GD.PrintS("water", water);
+		var height = (int) PlanetSize;
+		var width = height * 2;
+		material.GenerateTexture(width, height, seed, waterHeight);
 		var waterMesh = new SphereMesh();
 		var waterHeightFixed = radius + waterHeight;
 		waterMesh.Radius = waterHeightFixed;

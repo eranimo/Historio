@@ -151,7 +151,7 @@ public partial class CubeSphere : ArrayMesh {
 		arrays.Resize((int) Mesh.ArrayType.Max);
 		arrays[(int) Mesh.ArrayType.Vertex] = vertices.AsSpan();
 		arrays[(int) Mesh.ArrayType.Normal] = normals.AsSpan();
-		arrays[(int) Mesh.ArrayType.Color] = colors.AsSpan();
+		// arrays[(int) Mesh.ArrayType.Color] = colors.AsSpan();
 		arrays[(int) Mesh.ArrayType.TexUv] = uvs.AsSpan();
 		arrays[(int) Mesh.ArrayType.Index] = indices.AsSpan();
 		AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
