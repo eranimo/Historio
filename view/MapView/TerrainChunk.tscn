@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://view/MapView/TerrainChunk.cs" id="1_yyifd"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_71ca3"]
+center_offset = Vector3(1, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_st8f1"]
 transparency = 1
@@ -13,8 +14,10 @@ albedo_color = Color(0, 0.0313726, 1, 0.807843)
 [sub_resource type="PlaneMesh" id="PlaneMesh_ieck6"]
 subdivide_width = 50
 subdivide_depth = 50
+center_offset = Vector3(1, 0, 1)
 
 [node name="MapChunk" type="VisibleOnScreenNotifier3D"]
+aabb = AABB(0, 0, 0, 1, 50, 1)
 script = ExtResource("1_kxy0x")
 
 [node name="WaterChunk" type="MeshInstance3D" parent="."]

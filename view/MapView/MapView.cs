@@ -17,4 +17,12 @@ public partial class MapView : Node3D {
 		camera.Position = new Vector3(center.x, camera.Position.y, center.y);
 		light.Position = new Vector3(center.x, light.Position.y, center.y);
 	}
+
+	public override void _Process(double delta) {
+		base._Process(delta);
+
+		if (!(planet is null)) {
+			GD.PrintS(GetViewport().GetCamera3d().Position);
+		}
+	}
 }

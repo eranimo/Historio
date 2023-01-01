@@ -39,6 +39,8 @@ public partial class Planet : Node3D {
 
 	public PlanetData PlanetData { get => planetData; set => planetData = value; }
 
+	private Dictionary<Vector2i, MapChunk> chunks = new Dictionary<Vector2i, MapChunk>();
+
 	public void Generate() {
 		// RenderingServer.SetDebugGenerateWireframes(true);
 		// GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
@@ -82,18 +84,30 @@ public partial class Planet : Node3D {
 		splatmapDebug.Texture = splatmap;
 		splatmapDebug.Size = worldSize / 2;
 
-		var terrainChunkScene = ResourceLoader.Load<PackedScene>("res://view/MapView/TerrainChunk.tscn");
+		
 		for (int x = 0; x < ChunkWidth; x++) {
 			for (int y = 0; y < ChunkHeight; y++) {
-				var chunk = terrainChunkScene.Instantiate<MapChunk>();
-				var chunkPosition = new Vector2(x, y) * PlanetData.ChunkSize;
-				chunk.Position = new Vector3(chunkPosition.x, 0, chunkPosition.y);
-				
-				GD.PrintS("Setup chunk", chunkPosition);
-				chunk.ChunkPosition = chunkPosition;
-				chunk.PlanetData = PlanetData;
-				AddChild(chunk);
+				handleChunkSpawn(new Vector2i(x, y));
 			}
 		}
+	}
+
+	private void handleChunkSpawn(Vector2i chunkID) {
+		var terrainChunkScene = ResourceLoader.Load<PackedScene>("res://view/MapView/TerrainChunk.tscn");
+		var chunk = terrainChunkScene.Instantiate<MapChunk>();
+		var chunkPosition = chunkID * PlanetData.ChunkSize;
+		chunk.Position = new Vector3(chunkPosition.x, 0, chunkPosition.y);
+
+		GD.PrintS("Setup chunk", chunkPosition);
+		chunk.ChunkID = chunkID;
+		chunk.ChunkPosition = chunkPosition;
+		chunk.PlanetData = PlanetData;
+		AddChild(chunk);
+		chunks[chunkID] = chunk;
+		// chunk.OnDespawn += () => this.handleChunkDespawn(chunk);
+	}
+
+	private void handleChunkDespawn(MapChunk chunk) {
+		RemoveChild(chunks[chunk.ChunkID]);
 	}
 }
