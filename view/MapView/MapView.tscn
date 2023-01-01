@@ -13,7 +13,7 @@ sky_material = SubResource("ProceduralSkyMaterial_ie2hw")
 background_mode = 2
 sky = SubResource("Sky_hbo3j")
 ambient_light_source = 2
-ambient_light_color = Color(0.407843, 0.407843, 0.407843, 1)
+ambient_light_color = Color(0.290196, 0.290196, 0.290196, 1)
 
 [node name="MapView" type="Node3D"]
 script = ExtResource("1_coh0q")
@@ -24,15 +24,14 @@ script = ExtResource("1_jsai4")
 max_speed = 100.0
 
 [node name="Light" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 500, 0)
 light_energy = 16.0
 shadow_enabled = true
 shadow_bias = 0.25
 shadow_opacity = 0.5
 shadow_blur = 10.0
 omni_range = 4096.0
-omni_attenuation = 0.63728
-omni_shadow_mode = 0
+omni_attenuation = 0.406126
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_o00p4")
@@ -48,12 +47,10 @@ offset_right = 518.0
 offset_bottom = 228.0
 
 [node name="Heightmap" type="TextureRect" parent="UI"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 31.0
+layout_mode = 2
 ignore_texture_size = true
 
 [node name="Splatmap" type="TextureRect" parent="UI"]
 visible = false
+layout_mode = 2
 ignore_texture_size = true

@@ -14,7 +14,7 @@ public partial class MapView : Node3D {
 		planet.Generate();
 
 		var center = planet.PlanetData.WorldSize / 2;
-		camera.Position = new Vector3(center.x, 100, center.y);
-		light.Position = new Vector3(center.x, 100, center.y);
+		camera.Position = new Vector3(center.x, camera.Position.y, center.y);
+		light.Position = new Vector3(center.x, light.Position.y, center.y);
 	}
 }
