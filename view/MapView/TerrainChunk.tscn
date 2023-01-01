@@ -1,0 +1,31 @@
+[gd_scene load_steps=7 format=3 uid="uid://d87ugtab85uc"]
+
+[ext_resource type="Script" path="res://view/MapView/MapChunk.cs" id="1_kxy0x"]
+[ext_resource type="Material" uid="uid://cbql2tgvwudof" path="res://view/MapView/TerrainMaterial.tres" id="1_yoqno"]
+[ext_resource type="Script" path="res://view/MapView/TerrainChunk.cs" id="1_yyifd"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_71ca3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_st8f1"]
+transparency = 1
+albedo_color = Color(0, 0.0313726, 1, 0.807843)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_ieck6"]
+subdivide_width = 50
+subdivide_depth = 50
+
+[node name="MapChunk" type="VisibleOnScreenNotifier3D"]
+script = ExtResource("1_kxy0x")
+
+[node name="WaterChunk" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25, 0)
+mesh = SubResource("PlaneMesh_71ca3")
+skeleton = NodePath("../TerrainChunk")
+surface_material_override/0 = SubResource("StandardMaterial3D_st8f1")
+
+[node name="TerrainChunk" type="MeshInstance3D" parent="."]
+unique_name_in_owner = true
+material_override = ExtResource("1_yoqno")
+mesh = SubResource("PlaneMesh_ieck6")
+script = ExtResource("1_yyifd")
