@@ -1,5 +1,5 @@
 shader_type spatial;
-// render_mode diffuse_lambert;
+render_mode diffuse_lambert;
 
 uniform float height_scale = 0.5;
 uniform sampler2D heightmap;
