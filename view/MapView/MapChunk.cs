@@ -48,7 +48,6 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 		material.SetShaderParameter("terrainSize", TerrainSize);
 		material.SetShaderParameter("chunkSize", ChunkSize);
 		material.SetShaderParameter("heightmap", PlanetData.Heightmap);
-		material.SetShaderParameter("normalmap", PlanetData.Normalmap);
 		material.SetShaderParameter("splatmap", PlanetData.Splatmap);
 		terrainChunk.MaterialOverride = material;
 	}

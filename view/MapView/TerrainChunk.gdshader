@@ -1,9 +1,8 @@
 shader_type spatial;
-render_mode diffuse_lambert;
+render_mode specular_toon;
 
 uniform float height_scale = 0.5;
 uniform sampler2D heightmap;
-uniform sampler2D normalmap;
 uniform vec2 chunkPosition;
 uniform vec2 worldSize;
 uniform vec2 chunkSize;
@@ -29,6 +28,16 @@ void vertex() {
 
 	float height = texture(heightmap, tex_position).x;
 	VERTEX.y += height * height_scale;
+
+	float texelSize = 1.0 / float(textureSize(heightmap, 0).x); 
+    float n = texture(heightmap, tex_position + vec2(0, -texelSize)).x; 
+    float s = texture(heightmap, tex_position + vec2(0, texelSize)).x; 
+    float e = texture(heightmap, tex_position + vec2(-texelSize, 0)).x; 
+    float w = texture(heightmap, tex_position + vec2(texelSize, 0)).x;
+    NORMAL.x = n - s;
+	NORMAL.y = 2.0;
+	NORMAL.z = e - w;
+	NORMAL = normalize(NORMAL);
 }
 
 void fragment() {
@@ -37,7 +46,7 @@ void fragment() {
 	vec3 rockcolor;
 	vec3 splatmapcolor;
 
-	NORMAL_MAP = texture(normalmap, tex_position).xyz;
+	// NORMAL_MAP = texture(normalmap, tex_position).xyz;
 	splatmapcolor = texture(splatmap, tex_position).rgb;
 
 	sandcolor = texture(sand, UV * sandres).rgb * splatmapcolor.r;

@@ -4,7 +4,6 @@ using System;
 
 public partial class PlanetData : Resource {
 	[Export] public NoiseTexture2D Heightmap;
-	[Export] public NoiseTexture2D Normalmap;
 	[Export] public NoiseTexture2D Splatmap;
 }
 
@@ -69,9 +68,6 @@ public partial class Planet : Node3D {
 		heightmap.Height = (int) worldSize.y;
 		heightmap.Noise = noise;
 
-		var normalmap = heightmap.Duplicate() as NoiseTexture2D;
-		normalmap.AsNormalMap = true;
-
 		var splatmap = heightmap.Duplicate() as NoiseTexture2D;
 		var gradient = new Gradient();
 		gradient.SetColor(0, new Color(1f, 0, 0));
@@ -80,17 +76,12 @@ public partial class Planet : Node3D {
 
 		planetData = new PlanetData {
 			Heightmap = heightmap,
-			Normalmap = normalmap,
 			Splatmap = splatmap,
 		};
 
 		var heightmapDebug = GetParent().GetNode<TextureRect>("UI/Heightmap");
 		heightmapDebug.Texture = heightmap;
 		heightmapDebug.Size = worldSize / 2f;
-
-		var normalmapDebug = GetParent().GetNode<TextureRect>("UI/Normalmap");
-		normalmapDebug.Texture = normalmap;
-		normalmapDebug.Size = worldSize / 2f;
 
 		var splatmapDebug = GetParent().GetNode<TextureRect>("UI/Splatmap");
 		splatmapDebug.Texture = splatmap;

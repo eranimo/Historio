@@ -29,7 +29,7 @@ shadow_bias = 0.25
 shadow_opacity = 0.5
 shadow_blur = 10.0
 omni_range = 4096.0
-omni_attenuation = 0.574349
+omni_attenuation = 0.63728
 omni_shadow_mode = 0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -46,11 +46,6 @@ offset_right = 518.0
 offset_bottom = 228.0
 
 [node name="Heightmap" type="TextureRect" parent="UI"]
-layout_mode = 2
-ignore_texture_size = true
-
-[node name="Normalmap" type="TextureRect" parent="UI"]
-visible = false
 layout_mode = 2
 ignore_texture_size = true
 
