@@ -11,7 +11,8 @@ sky_material = SubResource("ProceduralSkyMaterial_ie2hw")
 [sub_resource type="Environment" id="Environment_o00p4"]
 background_mode = 2
 sky = SubResource("Sky_hbo3j")
-ambient_light_color = Color(0.592157, 0.592157, 0.592157, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.407843, 0.407843, 0.407843, 1)
 
 [node name="MapView" type="Node3D"]
 
@@ -22,10 +23,13 @@ max_speed = 100.0
 
 [node name="OmniLight3D" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
-light_energy = 11.389
+light_energy = 16.0
 shadow_enabled = true
-shadow_blur = 3.133
+shadow_bias = 0.25
+shadow_opacity = 0.5
+shadow_blur = 10.0
 omni_range = 4096.0
+omni_attenuation = 0.574349
 omni_shadow_mode = 0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -33,6 +37,9 @@ environment = SubResource("Environment_o00p4")
 
 [node name="Planet" type="Node3D" parent="."]
 script = ExtResource("2_1ikcm")
+seed = 1234
+worldWidth = 1000
+worldHeight = 500
 
 [node name="UI" type="TabContainer" parent="."]
 offset_right = 518.0
