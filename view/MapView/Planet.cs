@@ -5,6 +5,10 @@ using System;
 public partial class PlanetData : Resource {
 	[Export] public NoiseTexture2D Heightmap;
 	[Export] public NoiseTexture2D Splatmap;
+	[Export] public Vector2i WorldSize;
+	[Export] public Vector2i ChunkGridSize;
+
+	public Vector2i ChunkSize => WorldSize / ChunkGridSize;
 }
 
 public partial class Planet : Node3D {
@@ -28,20 +32,14 @@ public partial class Planet : Node3D {
 	private PlanetData planetData;
 
 	public int ChunkWidth { get => chunkWidth; set { chunkWidth = value; } }
-	public int ChunkHeight { get => chunkHeight; set { chunkHeight = value; generate(); } }
-	public int Seed { get => seed; set { seed = value; generate(); } }
-	public int WorldWidth { get => worldWidth; set { worldWidth = value; generate(); } }
-	public int WorldHeight { get => worldHeight; set { worldHeight = value; generate(); } }
+	public int ChunkHeight { get => chunkHeight; set { chunkHeight = value; } }
+	public int Seed { get => seed; set { seed = value; } }
+	public int WorldWidth { get => worldWidth; set { worldWidth = value; } }
+	public int WorldHeight { get => worldHeight; set { worldHeight = value; } }
 
-	public Planet() {
-		// generate();
-	}
+	public PlanetData PlanetData { get => planetData; set => planetData = value; }
 
-	public override void _Ready() {
-		generate();
-	}
-
-	private void generate() {
+	public void Generate() {
 		// RenderingServer.SetDebugGenerateWireframes(true);
 		// GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
 
@@ -50,13 +48,8 @@ public partial class Planet : Node3D {
 			RemoveChild(child);
 		}
 
-		var worldSize = new Vector2(worldWidth, worldHeight);
-		var chunkGridSize = new Vector2(chunkWidth, chunkHeight);
-		var chunkSize = worldSize / chunkGridSize;
-		var terrainSize = chunkGridSize * worldSize;
-		GD.PrintS("\t worldSize", worldSize);
-		GD.PrintS("\t terrainSize", terrainSize);
-		GD.PrintS("\t chunkSize", chunkSize);
+		var worldSize = new Vector2i(worldWidth, worldHeight);
+		var chunkGridSize = new Vector2i(chunkWidth, chunkHeight);
 
 		var noise = new FastNoiseLite();
 		noise.Frequency = 0.002f;
@@ -64,8 +57,8 @@ public partial class Planet : Node3D {
 
 		var heightmap = new NoiseTexture2D();
 		heightmap.In3dSpace = true;
-		heightmap.Width = (int) worldSize.x;
-		heightmap.Height = (int) worldSize.y;
+		heightmap.Width = worldSize.x;
+		heightmap.Height = worldSize.y;
 		heightmap.Noise = noise;
 
 		var splatmap = heightmap.Duplicate() as NoiseTexture2D;
@@ -74,32 +67,31 @@ public partial class Planet : Node3D {
 		gradient.SetColor(1, new Color(0, 1f, 0));
 		splatmap.ColorRamp = gradient;
 
-		planetData = new PlanetData {
+		PlanetData = new PlanetData {
+			WorldSize = worldSize,
+			ChunkGridSize = chunkGridSize,
 			Heightmap = heightmap,
 			Splatmap = splatmap,
 		};
 
 		var heightmapDebug = GetParent().GetNode<TextureRect>("UI/Heightmap");
 		heightmapDebug.Texture = heightmap;
-		heightmapDebug.Size = worldSize / 2f;
+		heightmapDebug.Size = worldSize / 2;
 
 		var splatmapDebug = GetParent().GetNode<TextureRect>("UI/Splatmap");
 		splatmapDebug.Texture = splatmap;
-		splatmapDebug.Size = worldSize / 2f;
+		splatmapDebug.Size = worldSize / 2;
 
 		var terrainChunkScene = ResourceLoader.Load<PackedScene>("res://view/MapView/TerrainChunk.tscn");
 		for (int x = 0; x < ChunkWidth; x++) {
 			for (int y = 0; y < ChunkHeight; y++) {
 				var chunk = terrainChunkScene.Instantiate<MapChunk>();
-				var chunkPosition = new Vector2(x, y) * chunkSize;
+				var chunkPosition = new Vector2(x, y) * PlanetData.ChunkSize;
 				chunk.Position = new Vector3(chunkPosition.x, 0, chunkPosition.y);
 				
 				GD.PrintS("Setup chunk", chunkPosition);
-				chunk.WorldSize = worldSize;
-				chunk.ChunkSize = chunkSize;
-				chunk.TerrainSize = terrainSize;
 				chunk.ChunkPosition = chunkPosition;
-				chunk.PlanetData = planetData;
+				chunk.PlanetData = PlanetData;
 				AddChild(chunk);
 			}
 		}

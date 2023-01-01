@@ -6,7 +6,6 @@ uniform sampler2D heightmap;
 uniform vec2 chunkPosition;
 uniform vec2 worldSize;
 uniform vec2 chunkSize;
-uniform vec2 terrainSize;
 
 varying vec2 tex_position;
 

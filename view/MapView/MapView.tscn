@@ -1,5 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://cc35soqfohkbr"]
+[gd_scene load_steps=7 format=3 uid="uid://cc35soqfohkbr"]
 
+[ext_resource type="Script" path="res://view/MapView/MapView.cs" id="1_coh0q"]
 [ext_resource type="Script" path="res://view/MapView/Camera.gd" id="1_jsai4"]
 [ext_resource type="Script" path="res://view/MapView/Planet.cs" id="2_1ikcm"]
 
@@ -15,13 +16,14 @@ ambient_light_source = 2
 ambient_light_color = Color(0.407843, 0.407843, 0.407843, 1)
 
 [node name="MapView" type="Node3D"]
+script = ExtResource("1_coh0q")
 
 [node name="Camera" type="Camera3D" parent="."]
-transform = Transform3D(0.999285, -0.0377395, 0.00192541, 0, 0.0509521, 0.998701, -0.0377886, -0.997987, 0.0509157, 6.55019, 71.3115, -0.974012)
+transform = Transform3D(0.999285, -0.0377395, 0.00192541, 0, 0.0509521, 0.998701, -0.0377886, -0.997987, 0.0509157, 6.55, 100, -0.974)
 script = ExtResource("1_jsai4")
 max_speed = 100.0
 
-[node name="OmniLight3D" type="OmniLight3D" parent="."]
+[node name="Light" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 100, 0)
 light_energy = 16.0
 shadow_enabled = true
@@ -46,10 +48,12 @@ offset_right = 518.0
 offset_bottom = 228.0
 
 [node name="Heightmap" type="TextureRect" parent="UI"]
-layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 31.0
 ignore_texture_size = true
 
 [node name="Splatmap" type="TextureRect" parent="UI"]
 visible = false
-layout_mode = 2
 ignore_texture_size = true

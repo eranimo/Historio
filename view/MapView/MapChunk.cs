@@ -2,9 +2,6 @@ using Godot;
 using System;
 
 public partial class MapChunk : VisibleOnScreenNotifier3D {
-	[Export] public Vector2 WorldSize;
-	[Export] public Vector2 ChunkSize;
-	[Export] public Vector2 TerrainSize;
 	[Export] public Vector2 ChunkPosition;
 	[Export] public PlanetData PlanetData;
 	public ShaderMaterial TerrainMaterial;
@@ -19,8 +16,6 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 
 		terrainChunk = GetNode<MeshInstance3D>("%TerrainChunk");
 		waterChunk = GetNode<MeshInstance3D>("%WaterChunk");
-
-		setup();
 	}
 
 	private void render() {
@@ -31,7 +26,7 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 		hasRendered = true;
 		// GD.PrintS("Render chunk", ChunkPosition);
 
-		// setup();
+		setup();
 	}
 
 	private void remove() {
@@ -40,13 +35,12 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 	}
 
 	private void setup() {
-		(terrainChunk.Mesh as PlaneMesh).Size = ChunkSize;
-		(waterChunk.Mesh as PlaneMesh).Size = ChunkSize;
+		(terrainChunk.Mesh as PlaneMesh).Size = PlanetData.ChunkSize;
+		(waterChunk.Mesh as PlaneMesh).Size = PlanetData.ChunkSize;
 		var material = ResourceLoader.Load<ShaderMaterial>("res://view/MapView/TerrainMaterial.tres").Duplicate() as ShaderMaterial;
 		material.SetShaderParameter("chunkPosition", ChunkPosition);
-		material.SetShaderParameter("worldSize", WorldSize);
-		material.SetShaderParameter("terrainSize", TerrainSize);
-		material.SetShaderParameter("chunkSize", ChunkSize);
+		material.SetShaderParameter("worldSize", PlanetData.WorldSize);
+		material.SetShaderParameter("chunkSize", PlanetData.ChunkSize);
 		material.SetShaderParameter("heightmap", PlanetData.Heightmap);
 		material.SetShaderParameter("splatmap", PlanetData.Splatmap);
 		terrainChunk.MaterialOverride = material;
