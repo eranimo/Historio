@@ -43,9 +43,12 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 		var material = ResourceLoader.Load<ShaderMaterial>("res://view/MapView/TerrainMaterial.tres").Duplicate() as ShaderMaterial;
 		material.SetShaderParameter("chunkPosition", ChunkPosition);
 		material.SetShaderParameter("worldSize", planet.WorldSize);
+		material.SetShaderParameter("worldSizeHexes", planet.WorldSizeHexes);
 		material.SetShaderParameter("chunkSize", planet.ChunkSize);
+		material.SetShaderParameter("chunkSizeHexes", planet.ChunkSizehexes);
 		material.SetShaderParameter("heightmap", planet.heightmap);
 		material.SetShaderParameter("splatmap", planet.splatmap);
+		material.SetShaderParameter("hexHeight", planet.hexHeightTexture);
 		terrainChunk.MaterialOverride = material;
 	}
 

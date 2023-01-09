@@ -52,11 +52,13 @@ public partial class Planet : Node3D {
 	// chunk grid size in hexes
 	public Vector2i ChunkGridSizeHexes => worldSizeHexes / chunkSizeHexes;
 
+	public ImageTexture hexHeightTexture;
+
 
 	public void Generate() {
 		GD.PrintS("(Planet) Generating");
-		// RenderingServer.SetDebugGenerateWireframes(true);
-		// GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
+		RenderingServer.SetDebugGenerateWireframes(true);
+		GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
 
 		GD.PrintS("\t worldSizeHexes", worldSizeHexes);
 		GD.PrintS("\t chunkSizeHexes", chunkSizeHexes);
@@ -66,12 +68,16 @@ public partial class Planet : Node3D {
 		GD.PrintS("\t chunkGridSizeHexes", ChunkGridSizeHexes);
 
 		var hexHeightNoise = new WorldNoise(worldSizeHexes.x, worldSizeHexes.y, seed);
+		var hexHeightImage = Image.Create(worldSizeHexes.x, worldSizeHexes.y, false, Image.Format.Rgbaf);
 		for (int x = 0; x < WorldSizeHexes.x; x++) {
 			for (int y = 0; y < WorldSizeHexes.y; y++) {
 				var height = Convert.ToInt32(hexHeightNoise.Get(x, y) * 5);
 				hexHeights[new Hex(x, y)] = height;
+				hexHeightImage.SetPixel(x, y, new Color(height * 20, height * 20, height * 20));
 			}
 		}
+
+		hexHeightTexture = ImageTexture.CreateFromImage(hexHeightImage);
 
 		foreach (var child in GetChildren()) {
 			RemoveChild(child);

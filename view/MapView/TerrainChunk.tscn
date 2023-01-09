@@ -23,6 +23,7 @@ script = ExtResource("1_kxy0x")
 [node name="WaterChunk" type="MeshInstance3D" parent="."]
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25, 0)
+visible = false
 mesh = SubResource("PlaneMesh_71ca3")
 skeleton = NodePath("../TerrainChunk")
 surface_material_override/0 = SubResource("StandardMaterial3D_st8f1")
