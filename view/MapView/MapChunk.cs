@@ -4,12 +4,12 @@ using System;
 public partial class MapChunk : VisibleOnScreenNotifier3D {
 	[Export] public Vector2i ChunkID;
 	[Export] public Vector2 ChunkPosition;
-	[Export] public PlanetData PlanetData;
 	public ShaderMaterial TerrainMaterial;
 
 	public MeshInstance3D terrainChunk;
 	private MeshInstance3D waterChunk;
 	private bool hasRendered = false;
+	private Planet planet;
 
 	public event Despawn OnDespawn = delegate {};
 
@@ -23,6 +23,10 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 		waterChunk = GetNode<MeshInstance3D>("%WaterChunk");
 	}
 
+	public void Setup(Planet _planet) {
+		planet = _planet;
+	}
+
 	private void render() {
 		terrainChunk.Show();
 		if (hasRendered) {
@@ -31,7 +35,18 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 		hasRendered = true;
 		// GD.PrintS("Render chunk", ChunkPosition);
 
-		setup();
+		Aabb = new AABB(new Vector3(0, 0, 0), new Vector3(planet.ChunkSize.x, 50, planet.ChunkSize.y));
+		(terrainChunk.Mesh as PlaneMesh).Size = planet.ChunkSize;
+		(terrainChunk.Mesh as PlaneMesh).CenterOffset = new Vector3(planet.ChunkSize.x / 2f, 0, planet.ChunkSize.y / 2f);
+		(waterChunk.Mesh as PlaneMesh).Size = planet.ChunkSize;
+		(waterChunk.Mesh as PlaneMesh).CenterOffset = new Vector3(planet.ChunkSize.x / 2f, 0, planet.ChunkSize.y / 2f);
+		var material = ResourceLoader.Load<ShaderMaterial>("res://view/MapView/TerrainMaterial.tres").Duplicate() as ShaderMaterial;
+		material.SetShaderParameter("chunkPosition", ChunkPosition);
+		material.SetShaderParameter("worldSize", planet.WorldSize);
+		material.SetShaderParameter("chunkSize", planet.ChunkSize);
+		material.SetShaderParameter("heightmap", planet.heightmap);
+		material.SetShaderParameter("splatmap", planet.splatmap);
+		terrainChunk.MaterialOverride = material;
 	}
 
 	private void remove() {
@@ -41,17 +56,6 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 	}
 
 	private void setup() {
-		Aabb = new AABB(new Vector3(0, 0, 0), new Vector3(PlanetData.ChunkSize.x, 50, PlanetData.ChunkSize.y));
-		(terrainChunk.Mesh as PlaneMesh).Size = PlanetData.ChunkSize;
-		(terrainChunk.Mesh as PlaneMesh).CenterOffset = new Vector3(PlanetData.ChunkSize.x / 2f, 0, PlanetData.ChunkSize.y / 2f);
-		(waterChunk.Mesh as PlaneMesh).Size = PlanetData.ChunkSize;
-		(waterChunk.Mesh as PlaneMesh).CenterOffset = new Vector3(PlanetData.ChunkSize.x / 2f, 0, PlanetData.ChunkSize.y / 2f);
-		var material = ResourceLoader.Load<ShaderMaterial>("res://view/MapView/TerrainMaterial.tres").Duplicate() as ShaderMaterial;
-		material.SetShaderParameter("chunkPosition", ChunkPosition);
-		material.SetShaderParameter("worldSize", PlanetData.WorldSize);
-		material.SetShaderParameter("chunkSize", PlanetData.ChunkSize);
-		material.SetShaderParameter("heightmap", PlanetData.Heightmap);
-		material.SetShaderParameter("splatmap", PlanetData.Splatmap);
-		terrainChunk.MaterialOverride = material;
+		
 	}
 }

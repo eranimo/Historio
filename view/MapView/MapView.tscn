@@ -39,8 +39,7 @@ environment = SubResource("Environment_o00p4")
 [node name="Planet" type="Node3D" parent="."]
 script = ExtResource("2_1ikcm")
 seed = 1234
-worldWidth = 1000
-worldHeight = 500
+hexSize = 2.0
 
 [node name="UI" type="TabContainer" parent="."]
 offset_right = 518.0

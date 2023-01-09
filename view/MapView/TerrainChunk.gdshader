@@ -2,10 +2,26 @@ shader_type spatial;
 render_mode specular_toon;
 
 uniform float height_scale = 0.5;
+
 uniform sampler2D heightmap;
+
+// chunk position in map units
 uniform vec2 chunkPosition;
+
+// size of world in map units
 uniform vec2 worldSize;
+
+// size of chunk in map units
 uniform vec2 chunkSize;
+
+// size of world in hexes
+uniform vec2 worldSizeHexes;
+
+// size of chunk in map units
+uniform vec2 chunkSizeHexes;
+
+// height in map units of each hex
+uniform sampler2D hexHeight;
 
 varying vec2 tex_position;
 
