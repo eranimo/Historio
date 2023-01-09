@@ -11,7 +11,7 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 	private MeshInstance3D waterChunk;
 	private bool hasRendered = false;
 
-	public event Despawn OnDespawn;
+	public event Despawn OnDespawn = delegate {};
 
 	public delegate void Despawn();
 

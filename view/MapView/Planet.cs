@@ -87,24 +87,28 @@ public partial class Planet : Node3D {
 		
 		for (int x = 0; x < ChunkWidth; x++) {
 			for (int y = 0; y < ChunkHeight; y++) {
-				handleChunkSpawn(new Vector2i(x, y));
+				var chunk = SpawnChunk(new Vector2i(x, y));
+				chunk.Position = new Vector3(chunk.ChunkPosition.x, 0, chunk.ChunkPosition.y);
 			}
 		}
 	}
 
-	private void handleChunkSpawn(Vector2i chunkID) {
+	public MapChunk SpawnChunk(Vector2i chunkID) {
+		if (chunks.ContainsKey(chunkID)) {
+			return chunks[chunkID];
+		}
+		GD.PrintS("Setup chunk", chunkID);
 		var terrainChunkScene = ResourceLoader.Load<PackedScene>("res://view/MapView/TerrainChunk.tscn");
 		var chunk = terrainChunkScene.Instantiate<MapChunk>();
 		var chunkPosition = chunkID * PlanetData.ChunkSize;
-		chunk.Position = new Vector3(chunkPosition.x, 0, chunkPosition.y);
 
-		GD.PrintS("Setup chunk", chunkPosition);
 		chunk.ChunkID = chunkID;
 		chunk.ChunkPosition = chunkPosition;
 		chunk.PlanetData = PlanetData;
-		AddChild(chunk);
 		chunks[chunkID] = chunk;
+		AddChild(chunk);
 		// chunk.OnDespawn += () => this.handleChunkDespawn(chunk);
+		return chunk;
 	}
 
 	private void handleChunkDespawn(MapChunk chunk) {

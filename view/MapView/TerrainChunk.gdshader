@@ -19,7 +19,7 @@ uniform float rockres = 1;
 
 
 void vertex() {
-	vec2 position_in_chunk = VERTEX.xz / chunkSize + 0.5;
+	vec2 position_in_chunk = VERTEX.xz / chunkSize;
 	vec2 inv_atlas_size = vec2(1.0, 1.0) / worldSize;
 	vec2 uv_offset = chunkPosition * inv_atlas_size;
 	vec2 uv_scale = chunkSize * inv_atlas_size;

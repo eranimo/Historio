@@ -22,7 +22,23 @@ public partial class MapView : Node3D {
 		base._Process(delta);
 
 		if (!(planet is null)) {
-			GD.PrintS(GetViewport().GetCamera3d().Position);
+			var cameraVec = GetViewport().GetCamera3d().Position;
+			var cameraPos = new Vector2(cameraVec.x, cameraVec.z);
+			if (cameraPos.x < 0) {
+				cameraPos = planet.PlanetData.WorldSize - (cameraPos.Abs() % planet.PlanetData.WorldSize);
+			} else {
+				cameraPos = cameraPos % planet.PlanetData.WorldSize;
+			}
+			var chunkAtCamera = (cameraPos / planet.PlanetData.WorldSize) * planet.PlanetData.ChunkGridSize;
+			chunkAtCamera = chunkAtCamera.Floor();
+			if (
+				chunkAtCamera.y >= 0 && chunkAtCamera.y < planet.PlanetData.ChunkGridSize.y
+				&& chunkAtCamera.x >= 0 && chunkAtCamera.x < planet.PlanetData.ChunkGridSize.x
+			) {
+				GD.PrintS(cameraPos, chunkAtCamera);
+			} else {
+				GD.PrintS("Not over chunk");
+			}
 		}
 	}
 }

@@ -23,7 +23,6 @@ shader_parameter/height_scale = 50.0
 shader_parameter/chunkPosition = null
 shader_parameter/worldSize = null
 shader_parameter/chunkSize = null
-shader_parameter/terrainSize = null
 shader_parameter/sandres = 10.0
 shader_parameter/grassres = 10.0
 shader_parameter/rockres = 10.0

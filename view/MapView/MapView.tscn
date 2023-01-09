@@ -21,7 +21,7 @@ script = ExtResource("1_coh0q")
 [node name="Camera" type="Camera3D" parent="."]
 transform = Transform3D(0.999285, -0.0377395, 0.00192541, 0, 0.0509521, 0.998701, -0.0377886, -0.997987, 0.0509157, 6.55, 100, -0.974)
 script = ExtResource("1_jsai4")
-max_speed = 100.0
+max_speed = 500.0
 
 [node name="Light" type="OmniLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 500, 0)
