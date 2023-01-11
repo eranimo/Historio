@@ -33,7 +33,7 @@ public partial class Planet : Node3D {
 	private float hexSize = 1f;
 
 	public Vector2i WorldSizeHexes { get => worldSizeHexes; set { worldSizeHexes = value; Generate(); } }
-	public Vector2i ChunkSizehexes { get => chunkSizeHexes; set { chunkSizeHexes = value; Generate(); } }
+	public Vector2i ChunkSizeHexes { get => chunkSizeHexes; set { chunkSizeHexes = value; Generate(); } }
 	public float HexSize { get => hexSize; set { hexSize = value; Generate(); } }
 
 	private Dictionary<Hex, int> hexHeights = new Dictionary<Hex, int>();
@@ -53,10 +53,11 @@ public partial class Planet : Node3D {
 	public Vector2i ChunkGridSizeHexes => worldSizeHexes / chunkSizeHexes;
 
 	public ImageTexture hexHeightTexture;
-
+	private TerrainChunkMesh terrainChunkMesh;
 
 	public void Generate() {
 		GD.PrintS("(Planet) Generating");
+
 		RenderingServer.SetDebugGenerateWireframes(true);
 		GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
 
@@ -73,7 +74,8 @@ public partial class Planet : Node3D {
 			for (int y = 0; y < WorldSizeHexes.y; y++) {
 				var height = Convert.ToInt32(hexHeightNoise.Get(x, y) * 5);
 				hexHeights[new Hex(x, y)] = height;
-				hexHeightImage.SetPixel(x, y, new Color(height * 20, height * 20, height * 20));
+				var h = (height * 20) / 255f;
+				hexHeightImage.SetPixel(x, y, new Color(h, h, h));
 			}
 		}
 
@@ -107,10 +109,15 @@ public partial class Planet : Node3D {
 		splatmapDebug.Texture = splatmap;
 		splatmapDebug.Size = WorldSize / 2;
 
+		terrainChunkMesh = new TerrainChunkMesh(HexSize, ChunkSizeHexes, 4);
+
+		var layout = new Layout(new Point(hexSize, hexSize), new Point(0, 0));
+
 		for (int x = 0; x < ChunkGridSizeHexes.x; x++) {
 			for (int y = 0; y < ChunkGridSizeHexes.y; y++) {
 				var chunk = SpawnChunk(new Vector2i(x, y));
-				chunk.Position = new Vector3(chunk.ChunkPosition.x, 0, chunk.ChunkPosition.y);
+				var chunkPosition = layout.HexToPixel(new Hex(chunk.ChunkOriginHexes.x, chunk.ChunkOriginHexes.y)).ToVector();
+				chunk.Position = new Vector3(chunkPosition.x, 0, chunkPosition.y);
 			}
 		}
 	}
@@ -126,9 +133,11 @@ public partial class Planet : Node3D {
 		var chunkPosition = chunkID * ChunkSize;
 
 		chunk.ChunkID = chunkID;
+		chunk.ChunkOriginHexes = chunkID * ChunkSizeHexes;
 		chunk.ChunkPosition = chunkPosition;
 		chunks[chunkID] = chunk;
 		AddChild(chunk);
+		chunk.terrainChunk.Mesh = terrainChunkMesh;
 		// chunk.OnDespawn += () => this.handleChunkDespawn(chunk);
 		return chunk;
 	}

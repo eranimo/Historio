@@ -4,6 +4,7 @@ using System;
 public partial class MapChunk : VisibleOnScreenNotifier3D {
 	[Export] public Vector2i ChunkID;
 	[Export] public Vector2 ChunkPosition;
+	public Vector2i ChunkOriginHexes;
 	public ShaderMaterial TerrainMaterial;
 
 	public MeshInstance3D terrainChunk;
@@ -36,16 +37,14 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 		// GD.PrintS("Render chunk", ChunkPosition);
 
 		Aabb = new AABB(new Vector3(0, 0, 0), new Vector3(planet.ChunkSize.x, 50, planet.ChunkSize.y));
-		(terrainChunk.Mesh as PlaneMesh).Size = planet.ChunkSize;
-		(terrainChunk.Mesh as PlaneMesh).CenterOffset = new Vector3(planet.ChunkSize.x / 2f, 0, planet.ChunkSize.y / 2f);
-		(waterChunk.Mesh as PlaneMesh).Size = planet.ChunkSize;
-		(waterChunk.Mesh as PlaneMesh).CenterOffset = new Vector3(planet.ChunkSize.x / 2f, 0, planet.ChunkSize.y / 2f);
+
 		var material = ResourceLoader.Load<ShaderMaterial>("res://view/MapView/TerrainMaterial.tres").Duplicate() as ShaderMaterial;
 		material.SetShaderParameter("chunkPosition", ChunkPosition);
+		material.SetShaderParameter("chunkOriginHexes", ChunkOriginHexes);
 		material.SetShaderParameter("worldSize", planet.WorldSize);
 		material.SetShaderParameter("worldSizeHexes", planet.WorldSizeHexes);
 		material.SetShaderParameter("chunkSize", planet.ChunkSize);
-		material.SetShaderParameter("chunkSizeHexes", planet.ChunkSizehexes);
+		material.SetShaderParameter("chunkSizeHexes", planet.ChunkSizeHexes);
 		material.SetShaderParameter("heightmap", planet.heightmap);
 		material.SetShaderParameter("splatmap", planet.splatmap);
 		material.SetShaderParameter("hexHeight", planet.hexHeightTexture);
