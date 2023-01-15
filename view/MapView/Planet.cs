@@ -13,6 +13,10 @@ public static class VectorConvert {
 			Convert.ToInt32(vec.y)
 		);
 	}
+
+	public static Vector3 ToVector3(Vector2 vec, float y = 0) {
+		return new Vector3(vec.x, y, vec.y);
+	}
 }
 
 public partial class Planet : Node3D {
@@ -117,6 +121,7 @@ public partial class Planet : Node3D {
 			for (int y = 0; y < ChunkGridSizeHexes.y; y++) {
 				var chunk = SpawnChunk(new Vector2i(x, y));
 				var chunkPosition = layout.HexToPixel(new Hex(chunk.ChunkOriginHexes.x, chunk.ChunkOriginHexes.y)).ToVector();
+				chunk.ChunkPosition = chunkPosition;
 				chunk.Position = new Vector3(chunkPosition.x, 0, chunkPosition.y);
 			}
 		}
@@ -130,11 +135,9 @@ public partial class Planet : Node3D {
 		var terrainChunkScene = ResourceLoader.Load<PackedScene>("res://view/MapView/TerrainChunk.tscn");
 		var chunk = terrainChunkScene.Instantiate<MapChunk>();
 		chunk.Setup(this);
-		var chunkPosition = chunkID * ChunkSize;
 
 		chunk.ChunkID = chunkID;
 		chunk.ChunkOriginHexes = chunkID * ChunkSizeHexes;
-		chunk.ChunkPosition = chunkPosition;
 		chunks[chunkID] = chunk;
 		AddChild(chunk);
 		chunk.terrainChunk.Mesh = terrainChunkMesh;

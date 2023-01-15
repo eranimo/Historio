@@ -26,6 +26,8 @@ uniform vec2 chunkSizeHexes;
 // height in map units of each hex
 uniform sampler2D hexHeight;
 
+uniform float hexSize;
+
 uniform sampler2D splatmap;
 uniform sampler2D grass;
 uniform sampler2D rock;
@@ -38,12 +40,16 @@ varying vec2 tex_position;
 varying vec2 hex_position;
 varying float hex_height;
 
-void vertex() {
-	vec2 position_in_chunk = VERTEX.xz / chunkSize;
+vec2 get_position(vec2 pos) {
+	vec2 position_in_chunk = pos / chunkSize;
 	vec2 inv_atlas_size = vec2(1.0, 1.0) / worldSize;
 	vec2 uv_offset = chunkPosition * inv_atlas_size;
 	vec2 uv_scale = chunkSize * inv_atlas_size;
-	tex_position = position_in_chunk * uv_scale + uv_offset;
+	return position_in_chunk * uv_scale + uv_offset;
+}
+
+void vertex() {
+	tex_position = get_position(VERTEX.xz);
 	// hex_position = tex_position * worldSizeHexes;
 
 	// float height = texture(heightmap, tex_position).x;
@@ -77,13 +83,12 @@ void fragment() {
 	rockcolor = texture(rock, UV * rockres).rgb * splatmapcolor.b;
 
 	// ALBEDO = sandcolor + grasscolor + rockcolor;
- 
+
 	vec4 color;
 	if (hex_position.x < 0.0 || hex_position.y < 0.0 || hex_position.x >= worldSizeHexes.x || hex_position.y >= worldSizeHexes.y) {
 		color = vec4(0.0, 0.0, 0.0, 0.0);
 	} else {
 		color = vec4(hex_height, hex_height, hex_height, 1.0);
 	}
-
 	ALBEDO = color.rgb;
 }
