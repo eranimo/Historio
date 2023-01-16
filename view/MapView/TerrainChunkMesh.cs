@@ -44,7 +44,10 @@ public partial class TerrainChunkMesh : ArrayMesh {
 						center3,
 						center3,
 						new Vector3(PR.x, 0, PR.y),
-						new Vector3(PL.x, 0, PL.y)
+						new Vector3(PL.x, 0, PL.y),
+						new Vector3(0, 0, 1),
+						new Vector3(0, 1, 0),
+						new Vector3(1, 0, 0)
 					);
 				}
 			}
@@ -62,7 +65,18 @@ public partial class TerrainChunkMesh : ArrayMesh {
 		GD.PrintS($"(TerrainChunkMesh) generated terrain mesh in {watch.ElapsedMilliseconds}ms");
 	}
 
-	public void addTriangle(int subdivision, Hex hex, HexDirection dir, Vector3 center, Vector3 p1, Vector3 p2, Vector3 p3) {
+	public void addTriangle(
+		int subdivision,
+		Hex hex,
+		HexDirection dir,
+		Vector3 center,
+		Vector3 p1,
+		Vector3 p2,
+		Vector3 p3,
+		Vector3 c1,
+		Vector3 c2,
+		Vector3 c3
+	) {
 		var current = new Vector2i(hex.col, hex.row);
 		if (subdivision == 1) {
 			var opposite = VectorConvert.ToVector3(layout.HexToPixel(hex.Neighbor(dir)).ToVector());
@@ -84,41 +98,41 @@ public partial class TerrainChunkMesh : ArrayMesh {
 			Vertex neighbor weights:
 			
 			The height of a vertex is dependent on the current hex, the opposite hex, and hexes on the left and right adjacent.
-			The custom0 and custom1 channels store the ratio of the distance from that point to each hex in that direction
-			
-			Custom0 r = SE
-			Custom0 g = NE
-			Custom0 b = N
-			Custom0 a = NW
-			Custom1 r = SW
-			Custom1 g = S
+			The custom0 channel contains the ratio of the distance from that point to each hex in that direction
 			*/
-			custom0.Add(new float[] {
-				d3,
-				p3.DistanceTo(opposite) / hexSize,
-				p3.DistanceTo(adj_left) / hexSize,
-				p3.DistanceTo(adj_right) / hexSize
-			});
-			custom0.Add(new float[] {
-				d2,
-				p2.DistanceTo(opposite) / hexSize,
-				p2.DistanceTo(adj_left) / hexSize,
-				p2.DistanceTo(adj_right) / hexSize
-			});
-			custom0.Add(new float[] {
-				d1,
-				p1.DistanceTo(opposite) / hexSize,
-				p1.DistanceTo(adj_left) / hexSize,
-				p1.DistanceTo(adj_right) / hexSize
-			});
+			var dir_value = ((int) dir / 5f);
+			custom0.Add(new float[] { c3.x, c3.y, c3.z, dir_value });
+			custom0.Add(new float[] { c2.x, c2.y, c2.z, dir_value });
+			custom0.Add(new float[] { c1.x, c1.y, c1.z, dir_value });
+			// custom0.Add(new float[] {
+			// 	d3,
+			// 	p3.DistanceTo(opposite) - hexSize,
+			// 	p3.DistanceTo(adj_left) - hexSize,
+			// 	p3.DistanceTo(adj_right) - hexSize
+			// });
+			// custom0.Add(new float[] {
+			// 	d2,
+			// 	p2.DistanceTo(opposite) - hexSize,
+			// 	p2.DistanceTo(adj_left) - hexSize,
+			// 	p2.DistanceTo(adj_right) - hexSize
+			// });
+			// custom0.Add(new float[] {
+			// 	d1,
+			// 	p1.DistanceTo(opposite) - hexSize,
+			// 	p1.DistanceTo(adj_left) - hexSize,
+			// 	p1.DistanceTo(adj_right) - hexSize
+			// });
 		} else {
 			var p1_2 = p1.Lerp(p2, 0.5f);
 			var p1_3 = p1.Lerp(p3, 0.5f);
 			var p2_3 = p2.Lerp(p3, 0.5f);
-			addTriangle(subdivision - 1, hex, dir, center, p1, p1_3, p1_2);
-			addTriangle(subdivision - 1, hex, dir, center, p1_2, p1_3, p2_3);
-			addTriangle(subdivision - 1, hex, dir, center, p1_2, p2_3, p2);
-			addTriangle(subdivision - 1, hex, dir, center, p1_3, p3, p2_3);
+			var c1_2 = c1.Lerp(c2, 0.5f);
+			var c1_3 = c1.Lerp(c3, 0.5f);
+			var c2_3 = c2.Lerp(c3, 0.5f);
+			addTriangle(subdivision - 1, hex, dir, center, p1, p1_3, p1_2, c1, c1_3, c1_2);
+			addTriangle(subdivision - 1, hex, dir, center, p1_2, p1_3, p2_3, c1_2, c1_3, c2_3);
+			addTriangle(subdivision - 1, hex, dir, center, p1_2, p2_3, p2, c1_2, c2_3, c2);
+			addTriangle(subdivision - 1, hex, dir, center, p1_3, p3, p2_3, c1_3, c3, c2_3);
 		}
 	}
 }
