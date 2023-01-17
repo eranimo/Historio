@@ -113,7 +113,7 @@ vec2 get_position(vec2 pos) {
 }
 
 ivec2 get_neighbor(ivec2 hex, int direction) {
-	int parity = hex.y & 1;
+	int parity = hex.x & 1;
 	ivec2 diff;
 	if (parity == 0) {
 		diff = directions_even[direction];
