@@ -22,6 +22,7 @@ public partial class HexGrid {
 	}
 }
 
+// odd-q hexagon layout
 public partial class Layout {
 	public Layout(Point size, Point origin) {
 		this.size = size;

@@ -48,14 +48,15 @@ varying vec3 color;
 #define DIR_SOUTHWEST 4
 #define DIR_SOUTH 5
 
-const ivec2 oddr_direction_differences_even[] = {
-	ivec2(+1,  0), ivec2(0, -1), ivec2(-1, -1),
-	ivec2(-1,  0), ivec2(-1, +1), ivec2( 0, +1)
+// odd-q layout
+const ivec2 directions_even[] = {
+	ivec2(+1,  0), ivec2(+1, -1), ivec2(0, -1),
+	ivec2(-1, -1), ivec2(-1,  0), ivec2(0, +1)
 };
 
-const ivec2 oddr_direction_differences_odd[] = {
-	ivec2(+1,  0), ivec2(+1, -1), ivec2( 0, -1),
-	ivec2(-1,  0), ivec2( 0, +1), ivec2(+1, +1)
+const ivec2 directions_odd[] = {
+	ivec2(+1, +1), ivec2(+1,  0), ivec2(0, -1),
+	ivec2(-1,  0), ivec2(-1, +1), ivec2(0, +1)
 };
 
 const int direction_left[] = {
@@ -115,9 +116,9 @@ ivec2 get_neighbor(ivec2 hex, int direction) {
 	int parity = hex.y & 1;
 	ivec2 diff;
 	if (parity == 0) {
-		diff = oddr_direction_differences_even[direction];
+		diff = directions_even[direction];
 	} else if(parity == 1) {
-		diff = oddr_direction_differences_odd[direction];
+		diff = directions_odd[direction];
 	}
 	return hex + diff;
 }
@@ -141,14 +142,15 @@ void vertex() {
 	// VERTEX.y += hex_height * height_scale;
 
 	// get the direction this vertex is facing
-	int dir = int(CUSTOM0.a * 5.0);
+	int dir = int(round(CUSTOM0.a * 5.0));
 	vec3 vertex_pos_in_face = CUSTOM0.rgb;
-	ivec2 neighbor_opposite = get_neighbor(hex, dir);
+	ivec2 neighbor = get_neighbor(hex, dir);
 	ivec2 neighbor_left = get_neighbor(hex, direction_left[dir]);
 	ivec2 neighbor_right = get_neighbor(hex, direction_right[dir]);
+	float hex_height_neighbor = get_hex_height(neighbor);
 	vec3 face_heights = vec3(
-		(hex_height + get_hex_height(neighbor_opposite) + get_hex_height(neighbor_left)) / 3.0,
-		(hex_height + get_hex_height(neighbor_opposite) + get_hex_height(neighbor_right)) / 3.0,
+		(hex_height + hex_height_neighbor + get_hex_height(neighbor_right)) / 3.0,
+		(hex_height + hex_height_neighbor + get_hex_height(neighbor_left)) / 3.0,
 		hex_height
 	);
 	float final_height = (face_heights.x * vertex_pos_in_face.x) + (face_heights.y * vertex_pos_in_face.y) + (face_heights.z * vertex_pos_in_face.z);
@@ -156,6 +158,7 @@ void vertex() {
 	VERTEX.y += final_height * height_scale;
 
 	color = vec3(hex_height, hex_height, hex_height);
+	// color = vec3(final_height, final_height, final_height);
 	// color = vertex_pos_in_face;
 
 	// generate normals

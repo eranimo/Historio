@@ -19,7 +19,7 @@ noise = SubResource("FastNoiseLite_g7do7")
 [resource]
 render_priority = 0
 shader = ExtResource("1_uk7lx")
-shader_parameter/height_scale = 10.0
+shader_parameter/height_scale = 20.0
 shader_parameter/chunkPosition = null
 shader_parameter/chunkOriginHexes = null
 shader_parameter/worldSize = null
