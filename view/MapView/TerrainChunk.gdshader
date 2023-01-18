@@ -144,6 +144,8 @@ void vertex() {
 	// get the direction this vertex is facing
 	int dir = int(round(CUSTOM0.a * 5.0));
 	vec3 vertex_pos_in_face = CUSTOM0.rgb;
+	float center_dist = COLOR.r; // distance to center
+	vec3 face_weight = vertex_pos_in_face;
 	ivec2 neighbor = get_neighbor(hex, dir);
 	ivec2 neighbor_left = get_neighbor(hex, direction_left[dir]);
 	ivec2 neighbor_right = get_neighbor(hex, direction_right[dir]);
@@ -153,13 +155,13 @@ void vertex() {
 		(hex_height + hex_height_neighbor + get_hex_height(neighbor_left)) / 3.0,
 		hex_height
 	);
-	float final_height = (face_heights.x * vertex_pos_in_face.x) + (face_heights.y * vertex_pos_in_face.y) + (face_heights.z * vertex_pos_in_face.z);
+	float final_height = (face_heights.x * face_weight.x) + (face_heights.y * face_weight.y) + (face_heights.z * face_weight.z);
 
 	VERTEX.y += final_height * height_scale;
 
-	color = vec3(hex_height, hex_height, hex_height);
+	// color = vec3(hex_height, hex_height, hex_height);
 	// color = vec3(final_height, final_height, final_height);
-	// color = vertex_pos_in_face;
+	color = vertex_pos_in_face;
 
 	// generate normals
 	float texelSize = 1.0 / float(textureSize(heightmap, 0).x); 

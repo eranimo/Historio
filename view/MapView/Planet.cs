@@ -62,8 +62,8 @@ public partial class Planet : Node3D {
 	public void Generate() {
 		GD.PrintS("(Planet) Generating");
 
-		RenderingServer.SetDebugGenerateWireframes(true);
-		GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
+		// RenderingServer.SetDebugGenerateWireframes(true);
+		// GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
 
 		GD.PrintS("\t worldSizeHexes", worldSizeHexes);
 		GD.PrintS("\t chunkSizeHexes", chunkSizeHexes);
@@ -113,7 +113,7 @@ public partial class Planet : Node3D {
 		splatmapDebug.Texture = splatmap;
 		splatmapDebug.Size = WorldSize / 2;
 
-		terrainChunkMesh = new TerrainChunkMesh(HexSize, ChunkSizeHexes, 4);
+		terrainChunkMesh = new TerrainChunkMesh(HexSize, ChunkSizeHexes, 2);
 
 		var layout = new Layout(new Point(hexSize, hexSize), new Point(0, 0));
 

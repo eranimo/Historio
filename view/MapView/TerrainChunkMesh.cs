@@ -34,24 +34,26 @@ public partial class TerrainChunkMesh : ArrayMesh {
 				var center = layout.HexToPixel(hex).ToVector();
 
 				foreach (HexDirection dir in Enum.GetValues(typeof(HexDirection))) {
-					var PL = center + layout.HexCornerOffset(dir.CornerLeft()).ToVector();
-					var PR = center + layout.HexCornerOffset(dir.CornerRight()).ToVector();
-					var center3 = new Vector3(center.x, 0, center.y);
-					addTriangle(
-						subdivisions,
-						hex,
-						dir,
-						center3,
+					var PL = VectorConvert.ToVector3(center + layout.HexCornerOffset(dir.CornerLeft()).ToVector());
+					var PR = VectorConvert.ToVector3(center + layout.HexCornerOffset(dir.CornerRight()).ToVector());
+					var p1 = VectorConvert.ToVector3(center);
+					var p2 = PL;
+					var p3 = PR;	
+					var p1_2 = p1.Lerp(p2, 0.5f);
+					var p1_3 = p1.Lerp(p3, 0.5f);
+					var p2_3 = p2.Lerp(p3, 0.5f);
 
-						center3, // center vertex
-						new Vector3(PR.x, 0, PR.y), // left adjacent corner vertex
-						new Vector3(PL.x, 0, PL.y), // right adjacent corner vertex
+					var c1 = new Vector3(0, 0, 1);
+					var c1_3 = new Vector3(0, 0, 1);
+					var c1_2 = new Vector3(0, 0, 1);
+					var c2 = new Vector3(0, 1, 0);
+					var c3 = new Vector3(1, 0, 0);
+					var c2_3 = new Vector3(0.5f, 0.5f, 0);
 
-						// in the form (Left, Right, Center)
-						new Vector3(0, 0, 1), // center point
-						new Vector3(1, 0, 0), // Right
-						new Vector3(0, 1, 0) // Left
-					);
+					addTriangle(subdivisions, hex, dir, p1,    p1, p1_3, p1_2,     c1, c1_3, c1_2);
+					addTriangle(subdivisions, hex, dir, p1,    p1_2, p1_3, p2_3,   c1_2, c1_3, c2_3);
+					addTriangle(subdivisions, hex, dir, p1,    p1_2, p2_3, p2,     c1_2, c2_3, c2);
+					addTriangle(subdivisions, hex, dir, p1,    p1_3, p3, p2_3,     c1_3, c3, c2_3);
 				}
 			}
 		}
@@ -94,9 +96,9 @@ public partial class TerrainChunkMesh : ArrayMesh {
 			var d3 = p3.DistanceTo(center) / hexSize;
 			var d2 = p2.DistanceTo(center) / hexSize;
 			var d1 = p1.DistanceTo(center) / hexSize;
-			colors.Add(new Color(d3, 0, 0, 0));
-			colors.Add(new Color(d2, 0, 0, 0));
-			colors.Add(new Color(d1, 0, 0, 0));
+			colors.Add(new Color(1f - d3, 0, 0, 0));
+			colors.Add(new Color(1f - d2, 0, 0, 0));
+			colors.Add(new Color(1f - d1, 0, 0, 0));
 			var dir_value = (((int) dir) / 5f);
 			custom0.Add(new float[] { c3.x, c3.y, c3.z, dir_value });
 			custom0.Add(new float[] { c2.x, c2.y, c2.z, dir_value });
