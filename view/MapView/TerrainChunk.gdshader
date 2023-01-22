@@ -150,18 +150,29 @@ void vertex() {
 	ivec2 neighbor_left = get_neighbor(hex, direction_left[dir]);
 	ivec2 neighbor_right = get_neighbor(hex, direction_right[dir]);
 	float hex_height_neighbor = get_hex_height(neighbor);
-	vec3 face_heights = vec3(
-		(hex_height + hex_height_neighbor + get_hex_height(neighbor_right)) / 3.0,
-		(hex_height + hex_height_neighbor + get_hex_height(neighbor_left)) / 3.0,
-		hex_height
-	);
+	int triangle_id = int(round(CUSTOM1.r * 6.0));
+	vec3 face_heights = vec3(1.0, 1.0, 1.0);
+
+	if (triangle_id == 1 || triangle_id == 2 || triangle_id == 3 || triangle_id == 4) {
+		face_heights = vec3(
+			(hex_height + hex_height_neighbor + get_hex_height(neighbor_right)) / 3.0,
+			(hex_height + hex_height_neighbor) / 2.0,
+			hex_height
+		);
+	} else if (triangle_id == 5 || triangle_id == 6 || triangle_id == 7 || triangle_id == 8) {
+		face_heights = vec3(
+			(hex_height + hex_height_neighbor + get_hex_height(neighbor_left)) / 3.0,
+			(hex_height + hex_height_neighbor) / 2.0,
+			hex_height
+		);
+	}
 	float final_height = (face_heights.x * face_weight.x) + (face_heights.y * face_weight.y) + (face_heights.z * face_weight.z);
 
 	VERTEX.y += final_height * height_scale;
 
 	// color = vec3(hex_height, hex_height, hex_height);
-	// color = vec3(final_height, final_height, final_height);
-	color = vertex_pos_in_face;
+	color = vec3(final_height, final_height, final_height);
+	// color = vertex_pos_in_face;
 
 	// generate normals
 	float texelSize = 1.0 / float(textureSize(heightmap, 0).x); 

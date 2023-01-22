@@ -113,7 +113,7 @@ public partial class Planet : Node3D {
 		splatmapDebug.Texture = splatmap;
 		splatmapDebug.Size = WorldSize / 2;
 
-		terrainChunkMesh = new TerrainChunkMesh(HexSize, ChunkSizeHexes, 2);
+		terrainChunkMesh = new TerrainChunkMesh(HexSize, ChunkSizeHexes, 4);
 
 		var layout = new Layout(new Point(hexSize, hexSize), new Point(0, 0));
 
