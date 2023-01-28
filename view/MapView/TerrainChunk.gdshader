@@ -23,22 +23,19 @@ uniform vec2 worldSizeHexes;
 // size of chunk in map units
 uniform vec2 chunkSizeHexes;
 
-// height in map units of each hex
-uniform sampler2D hexHeight;
+// (level, biome, terrain, [unused])
+uniform sampler2D hexData;
 
 uniform float hexSize;
 
-uniform sampler2D splatmap;
-uniform sampler2D grass;
-uniform sampler2D rock;
-uniform sampler2D sand;
-uniform float sandres = 1;
-uniform float grassres = 1;
-uniform float rockres = 1;
+uniform vec3 color_ocean : source_color;
+uniform vec3 color_coast : source_color;
+uniform vec3 color_temperate : source_color;
+uniform vec3 color_tropical : source_color;
+uniform vec3 color_desert : source_color;
+uniform vec3 color_arctic : source_color;
 
 varying vec2 tex_position;
-varying vec2 hex_position;
-varying float hex_height;
 varying vec3 color;
 
 #define DIR_SOUTHEAST 0
@@ -124,22 +121,16 @@ ivec2 get_neighbor(ivec2 hex, int direction) {
 }
 
 float get_hex_height(ivec2 hex) {
-	return texelFetch(hexHeight, hex, 0).x;
+	return (texelFetch(hexData, hex, 0).r * 255.0) / height_scale;
 }
 
 void vertex() {
-	tex_position = get_position(VERTEX.xz);
-	// hex_position = tex_position * worldSizeHexes;
-
-	// float height = texture(heightmap, tex_position).x;
+	// tex_position = get_position(VERTEX.xz);
 
 	// find height of current hex
-	hex_position = round(chunkOriginHexes + UV2);
+	vec2 hex_position = round(chunkOriginHexes + UV2);
 	ivec2 hex = ivec2(int(hex_position.x), int(hex_position.y));
-	hex_height = get_hex_height(hex);
-
-	// determine vertex height
-	// VERTEX.y += hex_height * height_scale;
+	float hex_height = get_hex_height(hex);
 
 	// get the direction this vertex is facing
 	int dir = int(round(CUSTOM0.a * 5.0));
@@ -175,15 +166,17 @@ void vertex() {
 	// color = vertex_pos_in_face;
 
 	// generate normals
-	float texelSize = 1.0 / float(textureSize(heightmap, 0).x); 
-    float n = texture(heightmap, tex_position + vec2(0, -texelSize)).x; 
-    float s = texture(heightmap, tex_position + vec2(0, texelSize)).x; 
-    float e = texture(heightmap, tex_position + vec2(-texelSize, 0)).x; 
-    float w = texture(heightmap, tex_position + vec2(texelSize, 0)).x;
-    NORMAL.x = n - s;
-	NORMAL.y = 2.0;
-	NORMAL.z = e - w;
-	NORMAL = normalize(NORMAL);
+	// float texelSize = 1.0 / float(textureSize(heightmap, 0).x); 
+    // float n = texture(heightmap, tex_position + vec2(0, -texelSize)).x; 
+    // float s = texture(heightmap, tex_position + vec2(0, texelSize)).x; 
+    // float e = texture(heightmap, tex_position + vec2(-texelSize, 0)).x; 
+    // float w = texture(heightmap, tex_position + vec2(texelSize, 0)).x;
+    // NORMAL.x = n - s;
+	// NORMAL.y = 2.0;
+	// NORMAL.z = e - w;
+	// NORMAL = normalize(NORMAL);
+	NORMAL = vec3(0.0, final_height, 0.0);
+	// TODO: calculate normals using a compute shader
 }
 
 void fragment() {
@@ -191,15 +184,6 @@ void fragment() {
 	vec3 grasscolor;
 	vec3 rockcolor;
 	vec3 splatmapcolor;
-
-	// NORMAL_MAP = texture(normalmap, tex_position).xyz;
-	splatmapcolor = texture(splatmap, tex_position).rgb;
-
-	sandcolor = texture(sand, UV * sandres).rgb * splatmapcolor.r;
-	grasscolor = texture(grass, UV * grassres).rgb * splatmapcolor.g;
-	rockcolor = texture(rock, UV * rockres).rgb * splatmapcolor.b;
-
-	// ALBEDO = sandcolor + grasscolor + rockcolor;
 
 	// if (hex_position.x < 0.0 || hex_position.y < 0.0 || hex_position.x >= worldSizeHexes.x || hex_position.y >= worldSizeHexes.y) {
 	// 	color = vec3(0.0, 0.0, 0.0);
