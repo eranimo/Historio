@@ -24,14 +24,14 @@ script = ExtResource("1_jsai4")
 max_speed = 500.0
 
 [node name="Light" type="OmniLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 500, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 50, 0)
 light_energy = 16.0
 shadow_enabled = true
-shadow_bias = 0.25
+shadow_bias = 0.803
 shadow_opacity = 0.5
 shadow_blur = 10.0
 omni_range = 4096.0
-omni_attenuation = 0.406126
+omni_attenuation = 0.450626
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_o00p4")

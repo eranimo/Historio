@@ -6,6 +6,7 @@ using Godot;
 using MessagePack;
 
 public static class Tile {
+	// controls terrain texture
 	public enum BiomeType {
 		Ocean,
 		Coast,
@@ -13,18 +14,20 @@ public static class Tile {
 		Desert,
 		Arctic,
 		Freshwater,
+		Tropical,
 	}
 
+	// Controls terrain shape
 	public enum TerrainType {
-		Plains,
-		Hills,
-		Mountains,
+		Plains, // mostly flat
+		Hills, // a few small round hills
+		Mountains, // one single mountain peak, foothills around it
 	}
 
 	public enum FeatureType {
 		Grassland,
 		Forest,
-		Jungle,
+		Shrubland,
 		Lake,
 		River,
 	}

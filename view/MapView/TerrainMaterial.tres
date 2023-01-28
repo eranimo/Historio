@@ -1,20 +1,6 @@
-[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://cbql2tgvwudof"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cbql2tgvwudof"]
 
 [ext_resource type="Shader" path="res://view/MapView/TerrainChunk.gdshader" id="1_uk7lx"]
-[ext_resource type="Texture2D" uid="uid://bjhd6jrsnjrh6" path="res://view/MapView/textures/grass.jpg" id="2_k8xln"]
-[ext_resource type="Texture2D" uid="uid://codwub2cv2l0k" path="res://view/MapView/textures/rock.jpg" id="3_lbrao"]
-[ext_resource type="Texture2D" uid="uid://b1cnjipxt5l7s" path="res://view/MapView/textures/sand.jpg" id="4_6wchw"]
-
-[sub_resource type="Gradient" id="Gradient_wmu50"]
-colors = PackedColorArray(1, 0, 0, 1, 0, 0.980392, 0, 1)
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_g7do7"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_m2cnk"]
-width = 100
-height = 100
-color_ramp = SubResource("Gradient_wmu50")
-noise = SubResource("FastNoiseLite_g7do7")
 
 [resource]
 render_priority = 0
@@ -27,10 +13,9 @@ shader_parameter/chunkSize = null
 shader_parameter/worldSizeHexes = null
 shader_parameter/chunkSizeHexes = null
 shader_parameter/hexSize = null
-shader_parameter/sandres = 10.0
-shader_parameter/grassres = 10.0
-shader_parameter/rockres = 10.0
-shader_parameter/splatmap = SubResource("NoiseTexture2D_m2cnk")
-shader_parameter/grass = ExtResource("2_k8xln")
-shader_parameter/rock = ExtResource("3_lbrao")
-shader_parameter/sand = ExtResource("4_6wchw")
+shader_parameter/color_ocean = Color(0.2, 0.313726, 0.478431, 1)
+shader_parameter/color_coast = Color(0.337255, 0.541176, 0.772549, 1)
+shader_parameter/color_temperate = Color(0.196078, 0.458824, 0.215686, 1)
+shader_parameter/color_tropical = Color(0.129412, 0.611765, 0.101961, 1)
+shader_parameter/color_desert = Color(0.772549, 0.788235, 0.462745, 1)
+shader_parameter/color_arctic = Color(0.858824, 0.972549, 1, 1)

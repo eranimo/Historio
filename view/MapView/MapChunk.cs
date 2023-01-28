@@ -45,10 +45,8 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 		material.SetShaderParameter("worldSizeHexes", planet.WorldSizeHexes);
 		material.SetShaderParameter("chunkSize", planet.ChunkSize);
 		material.SetShaderParameter("chunkSizeHexes", planet.ChunkSizeHexes);
-		material.SetShaderParameter("heightmap", planet.heightmap);
-		material.SetShaderParameter("splatmap", planet.splatmap);
 		material.SetShaderParameter("hexSize", planet.HexSize);
-		material.SetShaderParameter("hexHeight", planet.hexHeightTexture);
+		material.SetShaderParameter("hexData", planet.hexData.Texture);
 		terrainChunk.MaterialOverride = material;
 	}
 
@@ -56,9 +54,5 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 		// GD.PrintS("Remove chunk", ChunkPosition);
 		terrainChunk.Show();
 		OnDespawn.Invoke();
-	}
-
-	private void setup() {
-		
 	}
 }
