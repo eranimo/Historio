@@ -95,8 +95,8 @@ public partial class Planet : Node3D {
 	public void Generate() {
 		GD.PrintS("(Planet) Generating");
 
-		RenderingServer.SetDebugGenerateWireframes(true);
-		GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
+		// RenderingServer.SetDebugGenerateWireframes(true);
+		// GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -125,13 +125,13 @@ public partial class Planet : Node3D {
 				
 				if (height < 100) {
 					tile.Biome = Tile.BiomeType.Ocean;
-					tile.Level = 0;
+					tile.Level = 1;
 				} else if (height < 150) {
 					tile.Biome = Tile.BiomeType.Coast;
-					tile.Level = 1;
+					tile.Level = 2;
 				} else {
 					tile.Biome = Tile.BiomeType.Temperate;
-					tile.Level = 2;
+					tile.Level = 3;
 					
 					if (terrain < 0.33) {
 						tile.Terrain = Tile.TerrainType.Plains;

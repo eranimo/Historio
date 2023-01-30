@@ -6,12 +6,12 @@
 render_priority = 0
 shader = ExtResource("1_uk7lx")
 shader_parameter/height_scale = 20.0
-shader_parameter/color_ocean = Color(0.2, 0.313726, 0.478431, 1)
-shader_parameter/color_coast = Color(0.337255, 0.541176, 0.772549, 1)
+shader_parameter/color_ocean = Color(0.168627, 0.262745, 0.4, 1)
+shader_parameter/color_coast = Color(0.215686, 0.345098, 0.490196, 1)
 shader_parameter/color_temperate = Color(0.196078, 0.458824, 0.215686, 1)
 shader_parameter/color_desert = Color(0.772549, 0.788235, 0.462745, 1)
 shader_parameter/color_arctic = Color(0.858824, 0.972549, 1, 1)
-shader_parameter/color_freshwater = Color(0.337255, 0.541176, 0.772549, 1)
+shader_parameter/color_freshwater = Color(0.294118, 0.470588, 0.670588, 1)
 shader_parameter/color_tropical = Color(0.129412, 0.611765, 0.101961, 1)
 shader_parameter/chunkPosition = null
 shader_parameter/chunkOriginHexes = null

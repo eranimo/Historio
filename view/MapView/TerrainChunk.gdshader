@@ -137,6 +137,24 @@ int get_hex_biome(ivec2 hex) {
 	return int(texelFetch(hexData, hex, 0).g * 255.0);
 }
 
+vec3 get_biome_color(int biome) {
+	if (biome == BIOME_OCEAN) {
+		return color_ocean;
+	} else if (biome == BIOME_COAST) {
+		return color_coast;
+	} else if (biome == BIOME_TEMPERATE) {
+		return color_temperate;
+	} else if (biome == BIOME_DESERT) {
+		return color_desert;
+	} else if (biome == BIOME_ARCTIC) {
+		return color_arctic;
+	} else if (biome == BIOME_FRESHWATER) {
+		return color_freshwater;
+	} else if (biome == BIOME_TROPICAL) {
+		return color_tropical;
+	}
+}
+
 void vertex() {
 	// tex_position = get_position(VERTEX.xz);
 
@@ -176,25 +194,25 @@ void vertex() {
 	// decide color
 
 	int biome = get_hex_biome(current_hex);
+	vec3 hex_biome_color = get_biome_color(biome);
+	vec3 hex_biome_color_neighbor = get_biome_color(get_hex_biome(neighbor));
+	vec3 hex_biome_color_neighbor_left = get_biome_color(get_hex_biome(neighbor_left));
+	vec3 hex_biome_color_neighbor_right = get_biome_color(get_hex_biome(neighbor_right));
 
-	vec3 biome_color = vec3(0.0, 0.0, 0.0);
-	if (biome == BIOME_OCEAN) {
-		biome_color = color_ocean;
-	} else if (biome == BIOME_COAST) {
-		biome_color = color_coast;
-	} else if (biome == BIOME_TEMPERATE) {
-		biome_color = color_temperate;
-	} else if (biome == BIOME_DESERT) {
-		biome_color = color_desert;
-	} else if (biome == BIOME_ARCTIC) {
-		biome_color = color_arctic;
-	} else if (biome == BIOME_FRESHWATER) {
-		biome_color = color_freshwater;
-	} else if (biome == BIOME_TROPICAL) {
-		biome_color = color_tropical;
+	vec3 blended_color = vec3(1.0, 1.0, 1.0);
+	if (triangle_id == 1 || triangle_id == 2 || triangle_id == 3 || triangle_id == 4) {
+		vec3 A = (hex_biome_color + hex_biome_color_neighbor + hex_biome_color_neighbor_right) / 3.0;
+		vec3 B = (hex_biome_color + hex_biome_color_neighbor) / 2.0;
+		vec3 C = hex_biome_color;
+		blended_color = (A * face_weight.x) + (B * face_weight.y) + (C * face_weight.z);
+	} else if (triangle_id == 5 || triangle_id == 6 || triangle_id == 7 || triangle_id == 8) {
+		vec3 A = (hex_biome_color + hex_biome_color_neighbor + hex_biome_color_neighbor_left) / 3.0;
+		vec3 B = (hex_biome_color + hex_biome_color_neighbor) / 2.0;
+		vec3 C = hex_biome_color;
+		blended_color = (A * face_weight.x) + (B * face_weight.y) + (C * face_weight.z);
 	}
 
-	color = biome_color;
+	color = blended_color;
 
 	// color = vec3(hex_height, hex_height, hex_height);
 	// color = vec3(final_height, final_height, final_height);
