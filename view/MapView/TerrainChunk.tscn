@@ -1,8 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://d87ugtab85uc"]
+[gd_scene load_steps=8 format=3 uid="uid://d87ugtab85uc"]
 
 [ext_resource type="Script" path="res://view/MapView/MapChunk.cs" id="1_kxy0x"]
 [ext_resource type="Material" uid="uid://cbql2tgvwudof" path="res://view/MapView/TerrainMaterial.tres" id="1_yoqno"]
 [ext_resource type="Script" path="res://view/MapView/TerrainChunk.cs" id="1_yyifd"]
+[ext_resource type="Shader" path="res://view/MapView/WaterShader.gdshader" id="2_2a85r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_x2ym5"]
+render_priority = 0
+shader = ExtResource("2_2a85r")
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_71ca3"]
 center_offset = Vector3(1, 0, 1)
@@ -19,6 +24,7 @@ script = ExtResource("1_kxy0x")
 unique_name_in_owner = true
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 25, 0)
 visible = false
+material_override = SubResource("ShaderMaterial_x2ym5")
 mesh = SubResource("PlaneMesh_71ca3")
 skeleton = NodePath("../TerrainChunk")
 surface_material_override/0 = SubResource("StandardMaterial3D_st8f1")

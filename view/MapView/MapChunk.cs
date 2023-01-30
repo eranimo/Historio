@@ -8,7 +8,7 @@ public partial class MapChunk : VisibleOnScreenNotifier3D {
 	public ShaderMaterial TerrainMaterial;
 
 	public MeshInstance3D terrainChunk;
-	private MeshInstance3D waterChunk;
+	public MeshInstance3D waterChunk;
 	private bool hasRendered = false;
 	private Planet planet;
 

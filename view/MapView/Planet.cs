@@ -95,8 +95,8 @@ public partial class Planet : Node3D {
 	public void Generate() {
 		GD.PrintS("(Planet) Generating");
 
-		// RenderingServer.SetDebugGenerateWireframes(true);
-		// GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
+		RenderingServer.SetDebugGenerateWireframes(true);
+		GetViewport().DebugDraw = Viewport.DebugDrawEnum.Wireframe;
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -116,19 +116,23 @@ public partial class Planet : Node3D {
 
 		for (int x = 0; x < WorldSizeHexes.x; x++) {
 			for (int y = 0; y < WorldSizeHexes.y; y++) {
-				var height = Convert.ToInt32(heightNoise.Get(x, y) * 5);
+				var height = Convert.ToInt32(Mathf.Round(heightNoise.Get(x, y) * 255));
 				var terrain = heightNoise.Get(x, y);
 				var temperature = temperatureNoise.Get(x, y);
 				var rainfall = rainfallNoise.Get(x, y);
 				var hex = new Hex(x, y);
 				var tile = new PlanetTile(hex);
-				tile.Level = height;
 				
-				if (height == 1) {
+				if (height < 100) {
 					tile.Biome = Tile.BiomeType.Ocean;
-				} else if (height == 2) {
+					tile.Level = 0;
+				} else if (height < 150) {
 					tile.Biome = Tile.BiomeType.Coast;
+					tile.Level = 1;
 				} else {
+					tile.Biome = Tile.BiomeType.Temperate;
+					tile.Level = 2;
+					
 					if (terrain < 0.33) {
 						tile.Terrain = Tile.TerrainType.Plains;
 					} else if (terrain < 0.66) {
@@ -172,7 +176,7 @@ public partial class Planet : Node3D {
 			RemoveChild(child);
 		}
 
-		terrainChunkMesh = new TerrainChunkMesh(HexSize, ChunkSizeHexes, 4);
+		terrainChunkMesh = new TerrainChunkMesh(HexSize, ChunkSizeHexes, 2);
 
 		var layout = new Layout(new Point(hexSize, hexSize), new Point(0, 0));
 

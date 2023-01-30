@@ -3,23 +3,19 @@ render_mode specular_toon;
 
 uniform float height_scale = 0.5;
 
-uniform sampler2D heightmap;
+// uniform sampler2D heightmap;
 
+group_uniforms WorldParameters;
 // chunk position in map units
 uniform vec2 chunkPosition;
-
 // position of hex in top left of chunk
 uniform vec2 chunkOriginHexes;
-
 // size of world in map units
 uniform vec2 worldSize;
-
 // size of chunk in map units
 uniform vec2 chunkSize;
-
 // size of world in hexes
 uniform vec2 worldSizeHexes;
-
 // size of chunk in map units
 uniform vec2 chunkSizeHexes;
 
@@ -27,15 +23,20 @@ uniform vec2 chunkSizeHexes;
 uniform sampler2D hexData;
 
 uniform float hexSize;
+group_uniforms;
 
+group_uniforms Colors;
 uniform vec3 color_ocean : source_color;
 uniform vec3 color_coast : source_color;
 uniform vec3 color_temperate : source_color;
-uniform vec3 color_tropical : source_color;
 uniform vec3 color_desert : source_color;
 uniform vec3 color_arctic : source_color;
+uniform vec3 color_freshwater : source_color;
+uniform vec3 color_tropical : source_color;
+group_uniforms;
 
 varying vec2 tex_position;
+varying flat ivec2 current_hex;
 varying vec3 color;
 
 #define DIR_SOUTHEAST 0
@@ -44,6 +45,14 @@ varying vec3 color;
 #define DIR_NORTHWEST 3
 #define DIR_SOUTHWEST 4
 #define DIR_SOUTH 5
+
+#define BIOME_OCEAN 0
+#define BIOME_COAST 1
+#define BIOME_TEMPERATE 2
+#define BIOME_DESERT 3
+#define BIOME_ARCTIC 4
+#define BIOME_FRESHWATER 5
+#define BIOME_TROPICAL 6
 
 // odd-q layout
 const ivec2 directions_even[] = {
@@ -124,22 +133,25 @@ float get_hex_height(ivec2 hex) {
 	return (texelFetch(hexData, hex, 0).r * 255.0) / height_scale;
 }
 
+int get_hex_biome(ivec2 hex) {
+	return int(texelFetch(hexData, hex, 0).g * 255.0);
+}
+
 void vertex() {
 	// tex_position = get_position(VERTEX.xz);
 
 	// find height of current hex
-	vec2 hex_position = round(chunkOriginHexes + UV2);
-	ivec2 hex = ivec2(int(hex_position.x), int(hex_position.y));
-	float hex_height = get_hex_height(hex);
+	current_hex = ivec2(round(chunkOriginHexes + UV2));
+	float hex_height = get_hex_height(current_hex);
 
 	// get the direction this vertex is facing
 	int dir = int(round(CUSTOM0.a * 5.0));
 	vec3 vertex_pos_in_face = CUSTOM0.rgb;
 	float center_dist = COLOR.r; // distance to center
 	vec3 face_weight = vertex_pos_in_face;
-	ivec2 neighbor = get_neighbor(hex, dir);
-	ivec2 neighbor_left = get_neighbor(hex, direction_left[dir]);
-	ivec2 neighbor_right = get_neighbor(hex, direction_right[dir]);
+	ivec2 neighbor = get_neighbor(current_hex, dir);
+	ivec2 neighbor_left = get_neighbor(current_hex, direction_left[dir]);
+	ivec2 neighbor_right = get_neighbor(current_hex, direction_right[dir]);
 	float hex_height_neighbor = get_hex_height(neighbor);
 	int triangle_id = int(round(CUSTOM1.r * 6.0));
 	vec3 face_heights = vec3(1.0, 1.0, 1.0);
@@ -161,8 +173,31 @@ void vertex() {
 
 	VERTEX.y += final_height * height_scale;
 
+	// decide color
+
+	int biome = get_hex_biome(current_hex);
+
+	vec3 biome_color = vec3(0.0, 0.0, 0.0);
+	if (biome == BIOME_OCEAN) {
+		biome_color = color_ocean;
+	} else if (biome == BIOME_COAST) {
+		biome_color = color_coast;
+	} else if (biome == BIOME_TEMPERATE) {
+		biome_color = color_temperate;
+	} else if (biome == BIOME_DESERT) {
+		biome_color = color_desert;
+	} else if (biome == BIOME_ARCTIC) {
+		biome_color = color_arctic;
+	} else if (biome == BIOME_FRESHWATER) {
+		biome_color = color_freshwater;
+	} else if (biome == BIOME_TROPICAL) {
+		biome_color = color_tropical;
+	}
+
+	color = biome_color;
+
 	// color = vec3(hex_height, hex_height, hex_height);
-	color = vec3(final_height, final_height, final_height);
+	// color = vec3(final_height, final_height, final_height);
 	// color = vertex_pos_in_face;
 
 	// generate normals
