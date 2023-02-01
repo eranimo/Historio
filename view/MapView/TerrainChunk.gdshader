@@ -1,7 +1,8 @@
 shader_type spatial;
 render_mode specular_toon;
 
-uniform float height_scale = 0.5;
+uniform float height_scale = 20.0;
+uniform float terrain_noise_size = 5.0;
 
 // uniform sampler2D heightmap;
 
@@ -35,6 +36,12 @@ uniform vec3 color_freshwater : source_color;
 uniform vec3 color_tropical : source_color;
 group_uniforms;
 
+group_uniforms TerrainTypeNoiseScale;
+uniform float terrain_noise_scale_plains = 100.0;
+uniform float terrain_noise_scale_hills = 500.0;
+uniform float terrain_noise_scale_mountains = 1000.0;
+group_uniforms;
+
 varying vec2 tex_position;
 varying flat ivec2 current_hex;
 varying vec3 color;
@@ -53,6 +60,10 @@ varying vec3 color;
 #define BIOME_ARCTIC 4
 #define BIOME_FRESHWATER 5
 #define BIOME_TROPICAL 6
+
+#define TERRAIN_PLAINS 0
+#define TERRAIN_HILLS 1
+#define TERRAIN_MOUNTAINS 2
 
 // odd-q layout
 const ivec2 directions_even[] = {
@@ -137,6 +148,10 @@ int get_hex_biome(ivec2 hex) {
 	return int(texelFetch(hexData, hex, 0).g * 255.0);
 }
 
+int get_terrain_type(ivec2 hex) {
+	return int(texelFetch(hexData, hex, 0).b * 255.0);
+}
+
 vec3 get_biome_color(int biome) {
 	if (biome == BIOME_OCEAN) {
 		return color_ocean;
@@ -155,8 +170,39 @@ vec3 get_biome_color(int biome) {
 	}
 }
 
+vec2 random(vec2 uv){
+    uv = vec2( dot(uv, vec2(127.1,311.7) ),
+               dot(uv, vec2(269.5,183.3) ) );
+    return -1.0 + 2.0 * fract(sin(uv) * 43758.5453123);
+}
+
+float noise(vec2 uv) {
+    vec2 uv_index = floor(uv);
+    vec2 uv_fract = fract(uv);
+
+    vec2 blur = smoothstep(0.0, 1.0, uv_fract);
+
+    return mix( mix( dot( random(uv_index + vec2(0.0,0.0) ), uv_fract - vec2(0.0,0.0) ),
+                     dot( random(uv_index + vec2(1.0,0.0) ), uv_fract - vec2(1.0,0.0) ), blur.x),
+                mix( dot( random(uv_index + vec2(0.0,1.0) ), uv_fract - vec2(0.0,1.0) ),
+                     dot( random(uv_index + vec2(1.0,1.0) ), uv_fract - vec2(1.0,1.0) ), blur.x), blur.y) + 0.5;
+}
+
+float get_terrain_noise_height(ivec2 hex, vec2 pos) {
+	int terrain_type = get_terrain_type(hex);
+	float value = 0.0;
+	vec2 loc = (pos / hexSize);
+	if (terrain_type == TERRAIN_PLAINS) {
+		return noise(loc * terrain_noise_scale_plains);
+	} else if (terrain_type == TERRAIN_HILLS) {
+		return noise(loc * terrain_noise_scale_hills);
+	} else if (terrain_type == TERRAIN_MOUNTAINS) {
+		return noise(loc * terrain_noise_scale_mountains);
+	}
+}
+
 void vertex() {
-	// tex_position = get_position(VERTEX.xz);
+	tex_position = get_position(VERTEX.xz);
 
 	// find height of current hex
 	current_hex = ivec2(round(chunkOriginHexes + UV2));
@@ -189,7 +235,14 @@ void vertex() {
 	}
 	float final_height = (face_heights.x * face_weight.x) + (face_heights.y * face_weight.y) + (face_heights.z * face_weight.z);
 
-	VERTEX.y += final_height * height_scale;
+	// VERTEX.y += final_height * height_scale;
+
+	// get terrain noise height
+	float terrain_noise = ((get_terrain_noise_height(current_hex, tex_position) * 2.0) - 1.0) * face_weight.z;
+	float terrain_noise_height = terrain_noise_size * terrain_noise;
+	VERTEX.y += (final_height * height_scale) + terrain_noise_height;
+	// VERTEX.y = terrain_noise_height;
+	// VERTEX.y = terrain_noise;
 
 	// decide color
 
@@ -217,6 +270,7 @@ void vertex() {
 	// color = vec3(hex_height, hex_height, hex_height);
 	// color = vec3(final_height, final_height, final_height);
 	// color = vertex_pos_in_face;
+	// color = vec3(terrain_noise, terrain_noise, terrain_noise);
 
 	// generate normals
 	// float texelSize = 1.0 / float(textureSize(heightmap, 0).x); 

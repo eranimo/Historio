@@ -8,6 +8,7 @@ public partial class TerrainChunkMesh : ArrayMesh {
 	private readonly Vector2i chunkSizeHexes;
 	private Layout layout;
 	private List<Vector3> vertices;
+	private List<Vector2> uv;
 	private List<Vector2> uv2;
 	private List<float[]> custom0;
 	private List<float[]> custom1;
@@ -25,6 +26,7 @@ public partial class TerrainChunkMesh : ArrayMesh {
 		layout = new Layout(new Point(hexSize, hexSize), new Point(0, 0));
 
 		vertices = new List<Vector3>();
+		uv = new List<Vector2>();
 		uv2 = new List<Vector2>();
 		custom0 = new List<float[]>();
 		custom1 = new List<float[]>();
@@ -74,6 +76,7 @@ public partial class TerrainChunkMesh : ArrayMesh {
 		var arrays = new Godot.Collections.Array();
 		arrays.Resize((int) Mesh.ArrayType.Max);
 		arrays[(int) Mesh.ArrayType.Vertex] = vertices.ToArray();
+		arrays[(int) Mesh.ArrayType.TexUv] = uv.ToArray();
 		arrays[(int) Mesh.ArrayType.TexUv2] = uv2.ToArray();
 		arrays[(int) Mesh.ArrayType.Color] = colors.ToArray();
 		arrays[(int) Mesh.ArrayType.Custom0] = custom0.SelectMany(i => i).ToArray();
@@ -112,22 +115,45 @@ public partial class TerrainChunkMesh : ArrayMesh {
 			vertices.Add(p3);
 			vertices.Add(p2);
 			vertices.Add(p1);
+
+			uv.Add(VectorConvert.Flatten(p3 - center));
+			uv.Add(VectorConvert.Flatten(p2 - center));
+			uv.Add(VectorConvert.Flatten(p1 - center));
+			var distance_face = hexSize * Mathf.Cos(Mathf.Pi / 180f * 60f);
+
 			uv2.Add(current);
 			uv2.Add(current);
 			uv2.Add(current);
-			var d3 = p3.DistanceTo(center) / hexSize;
-			var d2 = p2.DistanceTo(center) / hexSize;
-			var d1 = p1.DistanceTo(center) / hexSize;
-			colors.Add(new Color(1f - d3, 0, 0, 0));
-			colors.Add(new Color(1f - d2, 0, 0, 0));
-			colors.Add(new Color(1f - d1, 0, 0, 0));
+
+			var d3 = distance_face - (p3.DistanceTo(center) / distance_face);
+			var d2 = distance_face - (p2.DistanceTo(center) / distance_face);
+			var d1 = distance_face - (p1.DistanceTo(center) / distance_face);
+			colors.Add(new Color(0, 0, 0, 0));
+			colors.Add(new Color(0, 0, 0, 0));
+			colors.Add(new Color(0, 0, 0, 0));
 			var dir_value = (((int) dir) / 5f);
+
 			custom0.Add(new float[] { c3.x, c3.y, c3.z, dir_value });
 			custom0.Add(new float[] { c2.x, c2.y, c2.z, dir_value });
 			custom0.Add(new float[] { c1.x, c1.y, c1.z, dir_value });
-			custom1.Add(new float[] { triangle_id / 6f, 0f, 0f, 0f });
-			custom1.Add(new float[] { triangle_id / 6f, 0f, 0f, 0f });
-			custom1.Add(new float[] { triangle_id / 6f, 0f, 0f, 0f });
+			custom1.Add(new float[] {
+				triangle_id / 6f,
+				(d3),
+				0f,
+				0f
+			});
+			custom1.Add(new float[] {
+				triangle_id / 6f,
+				(d2),
+				0f,
+				0f
+			});
+			custom1.Add(new float[] {
+				triangle_id / 6f,
+				(d1),
+				0f,
+				0f
+			});
 		} else {
 			var p1_2 = p1.Lerp(p2, 0.5f);
 			var p1_3 = p1.Lerp(p3, 0.5f);

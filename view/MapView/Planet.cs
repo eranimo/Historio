@@ -7,6 +7,10 @@ public static class VectorConvert {
 		return new Vector2(vec.x, vec.y);
 	}
 
+	public static Vector2 Flatten(Vector3 vec) {
+		return new Vector2(vec.x, vec.z);
+	}
+
 	public static Vector2i ToVector2i(Vector2 vec) {
 		return new Vector2i(
 			Convert.ToInt32(vec.x),

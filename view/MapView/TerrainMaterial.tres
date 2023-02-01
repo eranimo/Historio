@@ -1,11 +1,38 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cbql2tgvwudof"]
+[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://cbql2tgvwudof"]
 
 [ext_resource type="Shader" path="res://view/MapView/TerrainChunk.gdshader" id="1_uk7lx"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ljn53"]
+seed = 123
+frequency = 0.02
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_d8b6k"]
+width = 100
+height = 100
+noise = SubResource("FastNoiseLite_ljn53")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_j3aat"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ebsp6"]
+width = 100
+height = 100
+noise = SubResource("FastNoiseLite_j3aat")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ippej"]
+seed = 1243235
+frequency = 0.004
+domain_warp_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hm10e"]
+width = 100
+height = 100
+noise = SubResource("FastNoiseLite_ippej")
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_uk7lx")
 shader_parameter/height_scale = 20.0
+shader_parameter/terrain_noise_size = 0.5
 shader_parameter/color_ocean = Color(0.168627, 0.262745, 0.4, 1)
 shader_parameter/color_coast = Color(0.215686, 0.345098, 0.490196, 1)
 shader_parameter/color_temperate = Color(0.196078, 0.458824, 0.215686, 1)
@@ -13,6 +40,9 @@ shader_parameter/color_desert = Color(0.772549, 0.788235, 0.462745, 1)
 shader_parameter/color_arctic = Color(0.858824, 0.972549, 1, 1)
 shader_parameter/color_freshwater = Color(0.294118, 0.470588, 0.670588, 1)
 shader_parameter/color_tropical = Color(0.129412, 0.611765, 0.101961, 1)
+shader_parameter/terrain_plains = SubResource("NoiseTexture2D_hm10e")
+shader_parameter/terrain_hills = SubResource("NoiseTexture2D_d8b6k")
+shader_parameter/terrain_mountains = SubResource("NoiseTexture2D_ebsp6")
 shader_parameter/chunkPosition = null
 shader_parameter/chunkOriginHexes = null
 shader_parameter/worldSize = null
